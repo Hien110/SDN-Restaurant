@@ -5,7 +5,8 @@ const router = require('./routes');
 const path = require('path');
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'resources','views'));
+
 
 db.connect();
 
@@ -19,7 +20,6 @@ app.use(express.json());
 
 app.use(express.static('src/public'));
 
-app.use(router);
-
+router(app);
 
 app.listen(3000);
