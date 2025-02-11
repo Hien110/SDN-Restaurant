@@ -1,8 +1,11 @@
-const router = require('../routes/usersRoutes');
+const siteRouter = require('./siteRouter');
+const router = require('./routes/usersRoutes');
 
 
-router.get('/', (req, res) => {
-    res.send('Trang chủ');
-});
+function routes(app) {
+    app.use('/', siteRouter);
+    app.use('/account', siteRouter);
+}
 
+module.exports = routes;
 module.exports = router; 
