@@ -1,24 +1,26 @@
 const express = require('express');
-const usersController = require('../controllers/usersController');
+const userController = require('../app/controllers/UserController');
 
-const usersRoutes = express.Router();
+const userRoutes = express.Router();
 
-usersRoutes.use(express.json());
-usersRoutes.use(express.urlencoded({ extended: true }));
+userRoutes.use(express.json());
+userRoutes.use(express.urlencoded({ extended: true }));
 
-usersRoutes.route('/')
-.get(usersController.findAll)
-.post(usersController.create)
+userRoutes.route('/')
+.get(userController.findAll)
+.post(userController.create)
 .put((req, res) => {
-    res.status(403).json('PUT operation not supported on /users');
+    res.status(403).json('PUT operation not supported on /user');
 })
-.delete(usersController.delete);
-usersRoutes.route('/:id')
-.get(usersController.findById)
-.post((req, res) => {
-    res.status(403).json('POST operation not supported on /users/:id');
-})
-.put(usersController.update)
-.delete(usersController.delete);
+.delete(userController.delete);
 
-module.exports = usersRoutes;
+userRoutes.route('/:id')
+.get(userController.findById)
+.post((req, res) => {
+    res.status(403).json('POST operation not supported on /user/:id' + req.params.id);
+})
+.put(userController.update)
+.delete(userController.delete);
+
+module.exports = userRoutes;
+
