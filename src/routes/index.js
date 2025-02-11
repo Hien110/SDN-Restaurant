@@ -1,8 +1,7 @@
-const express = require('express');
-const router = express.Router();
+const siteRouter = require('./siteRouter');
 
-router.get('/', (req, res) => {
-    res.send('Trang chủ');
-});
+function routes(app) {
+    app.use('/', siteRouter);
+}
 
-module.exports = router; // ✅ Export đúng cách
+module.exports = routes;
