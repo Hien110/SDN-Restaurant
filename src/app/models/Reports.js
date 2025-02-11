@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const reportsSchema = new Schema({
-  restaurantId: { type: Number, ref: 'Restaurant', required: true },
+  restaurantId: { type: String, ref: 'Restaurant', required: true },
   reportDate: { type: Date, required: true },
   totalSales: { type: Schema.Types.Decimal128, required: true },
   totalOrders: { type: Number, required: true },

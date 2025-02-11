@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const loyaltySchema = new Schema({
-  userId: { type: Number, ref: 'User', required: true },
+  userId: { type: String, ref: 'User', required: true },
   points: { type: Number, required: true },
   lastUpdated: { type: Date, default: Date.now }
 });
