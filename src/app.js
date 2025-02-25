@@ -18,7 +18,7 @@ app.use(
 
 app.use(express.json());
 
-app.use(express.static('src/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 router(app);
 
