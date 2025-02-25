@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix Login Page | CodingNepal</title>
     <link rel="stylesheet" href="/css/home.css">
-  
+
 </head>
+
 <body>
     <nav>
         <a href="#"><img src="image/image.png" alt="logo"></a>
     </nav>
-    <div class="form-wrapper">   
+    <div class="form-wrapper">
         <h2>Đăng nhập</h2>
-        <form action="#">
+        <form action="/sign-in" method="POST">
             <div class="form-control">
-                <input type="text" required>
+                <input type="text" name="email" required>
                 <label>Email </label>
             </div>
             <div class="form-control">
-                <input type="password" required>
+                <input type="password" name="password" required>
                 <label>Mật khẩu</label>
             </div>
             <button type="submit">Đăng nhập</button>
-            <div class="form-help"> 
+            <div class="form-help">
                 <div class="remember-me">
                     <input type="checkbox" id="remember-me">
                     <label for="remember-me">Lưu mật khẩu</label>
@@ -33,4 +35,5 @@
         </form>
     </div>
 </body>
+
 </html>
