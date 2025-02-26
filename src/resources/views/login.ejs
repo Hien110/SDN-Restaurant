@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix Login Page | CodingNepal</title>
     <link rel="stylesheet" href="/css/home.css">
-
 </head>
 
 <body>
@@ -25,15 +24,31 @@
                 <label>Mật khẩu</label>
             </div>
             <button type="submit">Đăng nhập</button>
+            <div>
+            </div>
             <div class="form-help">
                 <div class="remember-me">
                     <input type="checkbox" id="remember-me">
                     <label for="remember-me">Lưu mật khẩu</label>
                 </div>
             </div>
-            <p style="padding-top: 8px; font-size: 14px;">Bạn chưa có tài khoản? <a href="./register">Đăng ký</a></p>
+            <div>
+            </div>
+            <p>
+                <%= typeof error !=='undefined' ? error: "" %>
+            </p>
+
+            <div>
+                <p style="padding-top: 8px; font-size: 14px;">Bạn chưa có tài khoản? <a href="./register">Đăng
+                        ký</a>
+                </p>
+                <a href="/reset-password">Quên mật khẩu</a>
+            </div>
         </form>
     </div>
+    <script>
+
+    </script>
 </body>
 
 </html>

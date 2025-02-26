@@ -1,12 +1,19 @@
-
 class SiteController {
   // [Get] /news
   index(req, res, next) {
-      res.render('login');
+    console.log(req.session.isLoggedIn);
+    console.log(req.session.user);
+    if (req.session.isLoggedIn) {
+      return res.redirect("/");
+    }
+    res.render("login");
   }
 
   register(req, res, next) {
-      res.render('register');
+    if (req.session.isLoggedIn) {
+      return res.redirect("/");
+    }
+    res.render("register");
   }
 
   // [Get] /search
@@ -14,6 +21,5 @@ class SiteController {
     res.render("search");
   }
 }
-
 
 module.exports = new SiteController();
