@@ -13,14 +13,17 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "cloudinary": "^2.5.1",
+    "connect-mongo": "^5.1.0",
+    "csurf": "^1.10.0",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.1",
     "mongoose": "^8.10.0",
-    "multer": "^1.4.5-lts.1",
-    "sdn301-project": "file:",
-    "stream": "^0.0.3"
+    "sdn301-project": "file:"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
