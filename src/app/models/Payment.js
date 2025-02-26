@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const paymentsSchema = new Schema({
-  orderId: { type: Number, ref: 'Order', required: true },
+  orderId: { type: String, ref: 'Order', required: true },
   amount: { type: Schema.Types.Decimal128, required: true },
   method: { type: String, enum: ['Cash', 'Credit Card', 'Debit Card', 'Online'], required: true },
   status: { type: String, enum: ['Pending', 'Completed', 'Failed', 'Refunded'], required: true },

@@ -1,24 +1,30 @@
 const express = require('express');
-const usersController = require('../controllers/usersController');
+const mongoose = require('mongoose');
+const userController = require('../app/controllers/UserController');
 
-const usersRoutes = express.Router();
+const userRoutes = express.Router();
 
-usersRoutes.use(express.json());
-usersRoutes.use(express.urlencoded({ extended: true }));
+userRoutes.use(express.json());
+userRoutes.use(express.urlencoded({ extended: true }));
 
-usersRoutes.route('/')
-.get(usersController.findAll)
-.post(usersController.create)
-.put((req, res) => {
-    res.status(403).json('PUT operation not supported on /users');
-})
-.delete(usersController.delete);
-usersRoutes.route('/:id')
-.get(usersController.findById)
-.post((req, res) => {
-    res.status(403).json('POST operation not supported on /users/:id');
-})
-.put(usersController.update)
-.delete(usersController.delete);
+userRoutes.post('/', userController.create);
+userRoutes.post("/update-profile/:id", userController.upload.single('avatar'), userController.updateProfile);
 
-module.exports = usersRoutes;
+userRoutes.get("/update-profile/:id", userController.renderUpdateProfilePage);
+userRoutes.get("/change-password/:id", userController.renderChangePasswordPage);
+userRoutes.post("/change-password/:id", userController.changePassword);
+userRoutes.put("/change-password/:id", userController.changePassword);
+
+userRoutes.use("/:id", (req, res, next) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.render("errorpage");
+    }
+    next();
+});
+
+userRoutes.get("/:id", userController.findById);
+
+userRoutes.route('/:id')
+    .delete(userController.delete);
+
+module.exports = userRoutes;

@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const UserSchema = new Schema(
-  {
-    fisrtName: { type: String, required: false },
+const UserSchema = new Schema({
+    firstName: { type: String, required: false },
     lastName: { type: String, required: false },
     password: { type: String, required: true },
     phoneNumber: { type: String, required: true },
