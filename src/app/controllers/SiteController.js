@@ -6,19 +6,22 @@ class SiteController {
     if (req.session.isLoggedIn) {
       return res.redirect("/");
     }
-    res.render("login");
+    res.render("login", { layout: "layouts/auth", title: "Login" });
   }
 
   register(req, res, next) {
     if (req.session.isLoggedIn) {
       return res.redirect("/");
     }
-    res.render("register");
+    res.render("register", { layout: "layouts/auth", title: "Register" });
   }
 
-  // [Get] /search
-  search(req, res) {
-    res.render("search");
+  home(req, res) {
+    res.render("home");
+  }
+
+  homeAdmin(req, res, next) {
+    res.render("admin", { layout: "layouts/auth", title: "admin" });
   }
 }
 
