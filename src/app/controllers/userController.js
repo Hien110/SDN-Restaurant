@@ -51,8 +51,13 @@ exports.postSignIn = async (req, res, next) => {
         error: "Email or password is incorrect",
       });
     }
+
     req.session.isLoggedIn = true;
-    req.session.user = user;
+    req.session.user = {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+    };
     req.session.save();
     res.redirect("/");
   } catch (err) {
@@ -67,7 +72,6 @@ exports.getReset = async (req, res, next) => {
 };
 
 // [POST] => postReset
-
 exports.postReset = async (req, res, next) => {
   try {
     const buffer = await randomBytesAsync(32);
