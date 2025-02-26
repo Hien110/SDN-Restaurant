@@ -10,8 +10,8 @@ function routes(app) {
   // app.use(getFooterData);
   app.use("/restaurantInfor", restaurantRouter);
   app.use("/", getFooterData, siteRouter);
-  router.use("/", siteRouter);
-  router.use("/", authRouter);
+  // app.use("/", siteRouter);
+  // app.use("/", authRouter);
     app.use('/users', userRoutes); 
 }
 

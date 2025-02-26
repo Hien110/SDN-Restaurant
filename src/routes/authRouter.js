@@ -1,16 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("../app/controllers/userController");
+const UserController = require("../app/controllers/UserController");
 
 //BE
-router.post("/sign-up", authController.postSignUp);
-router.post("/sign-in", authController.postSignIn);
-router.post("/reset-password", authController.postReset);
-router.post("/logout", authController.postLogout);
-
-//FE
-// router.get("/sign-up", authController.getSignUp);
-// router.get("/sign-in", authController.getSignIn);
-// router.get("/reset", authController.getReset);
+// // router.post("/sign-up", UserController.postSignUp);
+// router.post("/sign-in", UserController.postSignIn);
+// router.post("/reset-password", UserController.postReset);
+// router.post("/logout", UserController.postLogout);
 
 module.exports = router;
