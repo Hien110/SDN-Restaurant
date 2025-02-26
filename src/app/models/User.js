@@ -21,6 +21,7 @@ const UserSchema = new Schema(
       required: true,
     },
     status: { type: String, enum: ["ACTIVE", "INACTIVE"], required: true },
+    resetToken: { type: String, required: false },
   },
   { timestamps: true }
 );

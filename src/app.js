@@ -6,6 +6,7 @@ const router = require("./routes");
 const MongoStore = require("connect-mongo");
 const path = require("path");
 const session = require("express-session");
+// const csurf = require("csurf");
 const port = process.env.PORT || 3000;
 const dbUri = process.env.DB_URI;
 const sessionSecret = process.env.SESSION_SECRET;
@@ -21,7 +22,6 @@ app.use(
     extended: true,
   })
 );
-
 app.use(express.json());
 
 app.use(
@@ -39,6 +39,8 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, "public")));
+
+// app.use(csurfProtection);
 
 app.use(router);
 
