@@ -11,11 +11,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "mongoose": "^8.10.0",
-    "sdn301-project": "file:"
+    "multer": "^1.4.5-lts.1",
+    "sdn301-project": "file:",
+    "stream": "^0.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
