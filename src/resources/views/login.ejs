@@ -1,36 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Netflix Login Page | CodingNepal</title>
     <link rel="stylesheet" href="/css/home.css">
-  
 </head>
+
 <body>
     <nav>
         <a href="#"><img src="/image/logoRes.png" alt="logo"></a>
     </nav>
-    <div class="form-wrapper">   
+    <div class="form-wrapper">
         <h2>Đăng nhập</h2>
-        <form action="#">
+        <form action="/sign-in" method="POST">
             <div class="form-control">
-                <input type="text" required>
+                <input type="text" name="email" required>
                 <label>Email </label>
             </div>
             <div class="form-control">
-                <input type="password" required>
+                <input type="password" name="password" required>
                 <label>Mật khẩu</label>
             </div>
             <button type="submit">Đăng nhập</button>
-            <div class="form-help"> 
+            <div>
+            </div>
+            <div class="form-help">
                 <div class="remember-me">
                     <input type="checkbox" id="remember-me">
                     <label for="remember-me">Lưu mật khẩu</label>
                 </div>
             </div>
-            <p style="padding-top: 8px; font-size: 14px;">Bạn chưa có tài khoản? <a href="./register">Đăng ký</a></p>
+            <div>
+            </div>
+            <p>
+                <%= typeof error !=='undefined' ? error: "" %>
+            </p>
+
+            <div>
+                <p style="padding-top: 8px; font-size: 14px;">Bạn chưa có tài khoản? <a href="./register">Đăng
+                        ký</a>
+                </p>
+                <a href="/reset-password">Quên mật khẩu</a>
+            </div>
         </form>
     </div>
+    <script>
+
+    </script>
 </body>
+
 </html>
