@@ -2,16 +2,15 @@
 class SiteController {
   // [Get] /news
   index(req, res, next) {
-      res.render('login');
+      res.render('login', { layout: 'layouts/auth', title: 'Login' });
   }
 
   register(req, res, next) {
-      res.render('register');
+      res.render('register', { layout: 'layouts/auth', title: 'Register' });
   }
 
-  // [Get] /search
-  search(req, res) {
-    res.render("search");
+  home(req, res) {
+    res.render('home')
   }
 }
 
