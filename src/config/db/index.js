@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const dbUri = process.env.DB_URI;
 async function connect() {
   try {
     console.log("Connect success!!!");
-    await mongoose.connect("mongodb://127.0.0.1:27017/restaurant_manager");
+    await mongoose.connect(dbUri);
   } catch (error) {
     console.log("Connect failure!!!");
   }
