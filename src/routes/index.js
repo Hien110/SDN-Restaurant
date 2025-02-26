@@ -1,11 +1,12 @@
 const siteRouter = require('./siteRouter');
-const restaurantRouter = require('./restaurantsRouter')
-const { getFooterData } = require('../app/controllers/RestaurantsController');
 
 function routes(app) {
-    // app.use(getFooterData);
-    app.use('/restaurantInfor', restaurantRouter)
-    app.use('/',getFooterData, siteRouter);
+    //app.use(getFooterData);
+    //app.use('/restaurantInfor', restaurantRouter)
+    //app.use('/',getFooterData, siteRouter);
+    app.get('/admin', (req, res) => {
+        res.render('layouts/admin');
+    }); 
 }
 
 module.exports = routes;
