@@ -3,8 +3,10 @@ const express = require("express");
 const db = require("./config/db");
 const app = express();
 const router = require("./routes");
-const MongoStore = require("connect-mongo");
 const path = require("path");
+const expressLayouts = require("express-ejs-layouts");
+
+const MongoStore = require("connect-mongo");
 const session = require("express-session");
 // const csurf = require("csurf");
 const port = process.env.PORT || 3000;
@@ -15,6 +17,8 @@ const ageSession = Number(process.env.AGE_SESSION);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "resources", "views"));
 
+app.use(expressLayouts);
+app.set("layout", "layouts/main");
 db.connect();
 
 app.use(
@@ -42,6 +46,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // app.use(csurfProtection);
 
-app.use(router);
+router(app);
 
 app.listen(port);
