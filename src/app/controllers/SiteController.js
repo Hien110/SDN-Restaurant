@@ -12,6 +12,10 @@ class SiteController {
   home(req, res) {
     res.render('home')
   }
+
+  homeAdmin(req, res, next) {
+    res.render('admin', { layout: 'layouts/auth', title: 'admin' });
+}
 }
 
 
