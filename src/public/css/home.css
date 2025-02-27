@@ -33,3 +33,34 @@
     width: 100%;
     height: auto;
 }
+
+.gallery {
+    display: flex;
+    gap: 20px;
+}
+.gallery-item {
+    text-align: center;
+}
+.gallery-item img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border: 1px solid #e0a16b;
+    border-radius: 5px;
+}
+.gallery-item p {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+
+.image--view{
+    font-family: 'Arial, sans-serif';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px !important;
+    margin: 0;
+    background-color: #fff;
+}
