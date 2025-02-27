@@ -87,3 +87,42 @@ body {
     font-size: 14px;
     padding: 0;
 }
+
+.user-avatar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .user-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+  
+  .dropdown {
+    width: 100px;
+    position: absolute;
+    top: 50px;
+    right: -30px;
+    background: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    overflow: hidden;
+    display: none; /* Ẩn mặc định */
+    z-index: 10;
+  }
+  
+  .dropdown a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: black;
+    transition: background 0.2s;
+  }
+  
+  .dropdown a:hover {
+    background: #f0f0f0;
+  }
+  
