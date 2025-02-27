@@ -9,10 +9,10 @@ const userRoutes = require('./usersRoutes');
 function routes(app) {
   // app.use(getFooterData);
   app.use("/restaurantInfor", restaurantRouter);
-  app.use("/", getFooterData, siteRouter);
   // app.use("/", siteRouter);
-  // app.use("/", authRouter);
-    app.use('/users', userRoutes); 
+  app.use("/", getFooterData, siteRouter);
+  app.use("/", authRouter);
+  app.use('/users', userRoutes); 
 }
 
 module.exports = routes;

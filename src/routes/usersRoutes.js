@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userController = require('../app/controllers/UserController');
+const userController = require('../app/controllers/userController');
 
 const userRoutes = express.Router();
 
