@@ -1,0 +1,137 @@
+/* Header: căn giữa tiêu đề và đặt nút Thêm món ăn bên cạnh */
+.menu-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #f5f5f5;
+  }
+  .menu-header h1 {
+    padding-left: 200px;
+    flex: 1;
+    margin: 0;
+    text-align: center;
+  }
+  .btn-add {
+    top: 0.5rem;
+    margin-right: 120px;
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Canh giữa toàn bộ danh sách món ăn */
+  .menu-container {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  /* Danh sách món ăn */
+  .menu-list {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  /* Mỗi món ăn hiển thị theo hàng */
+  .menu-item {
+    position: relative;
+    display: flex;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    background-color: #fff;
+    align-items: center;
+  }
+  
+  /* Cột trái: ảnh món ăn */
+  .menu-item-left img {
+    width: 120px;
+    height: auto;
+    margin-right: 1rem;
+  }
+  
+  /* Cột bên phải: chứa thông tin món ăn */
+  .menu-item-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Hàng trên: Tên món bên trái; Giá và nút Sửa bên phải */
+  .menu-text-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .dish-info-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .dish-price {
+    font-weight: bold;
+  }
+  
+  /* Hàng dưới: Mô tả bên trái; Đánh giá và nút Xóa bên phải */
+  .menu-text-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  .dish-desc-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  /* Giới hạn dòng cho mô tả nếu quá dài */
+  .dish-description {
+    width: 60%;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+  
+  /* Nút Sửa */
+  .btn-edit {
+    position: absolute;
+    top: 1.5rem;  /* điều chỉnh để khớp chính xác với giá tiền */
+    right: 0;
+    background-color: #2196F3;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    width: 60px; /* hoặc giá trị bạn muốn */
+    text-align: center;
+  }
+  
+  /* Nút Xóa */
+  .btn-delete {
+    position: absolute;
+    bottom: 2rem;  /* điều chỉnh để khớp chính xác với đánh giá sao */
+    right: 0;
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    width: 60px; /* hoặc giá trị bạn muốn */
+    text-align: center;
+  }
+
+  .menu-item-buttons {
+    position: absolute;
+    right: -85px;  /* Điều chỉnh giá trị này để căn chỉnh khoảng cách */
+    top: 0;
+    bottom: 0;
+    display: flex;
+  }
+  
