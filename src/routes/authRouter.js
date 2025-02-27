@@ -1,19 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const authController = require("../app/controllers/userController");
-
+const siteController = require("../app/controllers/siteController");
 //BE
 router.post("/sign-up", authController.postSignUp);
 router.post("/sign-in", authController.postSignIn);
-router.post("/reset-password", authController.postNewPassword);
-router.get("/verify/:resetToken", authController.getVerify);
-router.post("/logout", authController.postLogout);
+router.post("/reset-password", authController.postResetNewPassword);
 router.post("/new-password", authController.postNewPassword);
+router.post("/logout", authController.postLogout);
+router.get("/verify/:resetToken", authController.getVerify);
 router.get("/new-password/:resetToken", authController.getNewPassword);
 
 //FE
-// router.get("/sign-up", authController.getSignUp);
-// router.get("/sign-in", authController.getSignIn);
-// router.get("/reset", authController.getReset);
+router.get("/login", siteController.index);
+router.get("/register", siteController.register);
+router.get("/reset-password", authController.getResetPassword);
 
 module.exports = router;
