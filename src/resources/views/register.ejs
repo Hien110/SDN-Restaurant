@@ -1,27 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="/css/home.css">
-
-</head>
-
 <body>
     <nav>
         <a href="#"><img src="/image/logoRes.png" alt="logo"></a>
     </nav>
     <div class="form-wrapper">
         <h2>Đăng ký</h2>
+        <h3 class="error">
+            <%= typeof message !=='undefined' ? message: "" %>
+        </h3>
         <form action="/sign-up" method="post">
             <div class="form-control">
-                <input type="text" name="email" required>
+                <input type="email" name="email" required>
                 <label>Email </label>
             </div>
             <div class="form-control">
-                <input type="text" name="phone" required>
+                <input type="number" name="phone" required>
                 <label>Số điện thoại </label>
             </div>
             <div class="form-control">
@@ -37,5 +29,3 @@
         </form>
     </div>
 </body>
-
-</html>
