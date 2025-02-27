@@ -11,7 +11,7 @@ router.get("/reset-password", userController.getReset);
 router.get("/home", siteController.home);
 router.get("/admin", siteController.homeAdmin);
 
-// router.get("/new-password/:resetToken", authController.getNewPassword);
-// router.post("/new-password", authController.postNewPassword);
+router.get("/new-password/:resetToken", userController.getNewPassword);
+router.post("/new-password", userController.postNewPassword);
 
 module.exports = router;
