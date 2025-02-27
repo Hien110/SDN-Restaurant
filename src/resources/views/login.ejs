@@ -1,55 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Netflix Login Page | CodingNepal</title>
-    <link rel="stylesheet" href="/css/login.css">
-  
-</head>
+    <link rel="stylesheet" href="/css/login.css" />
+  </head>
 
-<body>
+  <body>
     <nav>
-        <a href="#"><img src="/image/logoRes.png" alt="logo"></a>
+      <a href="#"><img src="/image/logoRes.png" alt="logo" /></a>
     </nav>
     <div class="form-wrapper">
-        <h2>Đăng nhập</h2>
-        <form action="/sign-in" method="POST">
-            <div class="form-control">
-                <input type="text" name="email" required>
-                <label>Email </label>
-            </div>
-            <div class="form-control">
-                <input type="password" name="password" required>
-                <label>Mật khẩu</label>
-            </div>
-            <button type="submit">Đăng nhập</button>
-            <div>
-            </div>
-            <div class="form-help">
-                <div class="remember-me">
-                    <input type="checkbox" id="remember-me">
-                    <label for="remember-me">Lưu mật khẩu</label>
-                </div>
-            </div>
-            <div>
-            </div>
-            <p>
-                <%= typeof error !=='undefined' ? error: "" %>
-            </p>
-
-            <div>
-                <p style="padding-top: 8px; font-size: 14px;">Bạn chưa có tài khoản? <a href="./register">Đăng
-                        ký</a>
-                </p>
-                <a href="/reset-password">Quên mật khẩu</a>
-            </div>
-        </form>
+      <h2>Đăng nhập</h2>
+      <form action="/sign-in" method="POST">
+        <div class="form-control">
+          <input type="text" name="email" required />
+          <label>Email </label>
+        </div>
+        <div class="form-control">
+          <input type="password" name="password" required />
+          <label>Mật khẩu</label>
+        </div>
+        <button type="submit">Đăng nhập</button>
+        <div></div>
+        <div class="form-help">
+          <div class="remember-me">
+            <input type="checkbox" id="remember-me" />
+            <label for="remember-me">Lưu mật khẩu</label>
+          </div>
+        </div>
+        <div></div>
+        <p style="color: red; padding-top: 8px; padding-bottom: 8px; font-size: 14px">
+          <%= typeof error !=='undefined' ? error: "" %>
+        </p>
+        <a style="font-size: 14px; padding-top: 8px" href="/reset-password"
+          >Quên mật khẩu</a
+        >
+        <div>
+          <p style="padding-top: 8px; font-size: 14px">
+            Bạn chưa có tài khoản? <a href="./register">Đăng ký</a>
+          </p>
+        </div>
+      </form>
     </div>
-    <script>
-
-    </script>
-</body>
-
+    <script></script>
+  </body>
 </html>
