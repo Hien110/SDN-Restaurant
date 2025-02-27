@@ -1,3 +1,4 @@
+const Menu = require('../models/Menu');
 
 class SiteController {
   // [Get] /news
@@ -14,8 +15,9 @@ class SiteController {
   }
 
   homeAdmin(req, res, next) {
-    res.render('admin', { layout: 'layouts/auth', title: 'admin' });
-}
+    res.render('admin', { layout: 'layouts/mainAdmin', title: 'admin' });
+  }
+
 }
 
 
