@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Cập nhật thông tin cá nhân</h2>
+
+        <% if (typeof successMessage !== 'undefined') { %>
+            <div class="success-message"><%= successMessage %></div>
+        <% } %>
+
+        <form action="/users/update-profile/<%= userId %>" method="POST" enctype="multipart/form-data">
+            <div class="avatar-container">
+                <label for="avatar">Ảnh đại diện</label>
+                <input type="file" id="avatar" name="avatar" accept="image/*">
+            </div>
+
+            <div>
+                <label for="firstName">Họ:</label>
+                <input type="text" id="firstName" name="firstName" value="<%= user.firstName || '' %>" required>
+            </div>
+
+            <div>
+                <label for="lastName">Tên:</label>
+                <input type="text" id="lastName" name="lastName" value="<%= user.lastName || '' %>" required>
+            </div>
+
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="<%= user.email %>" required>
+            </div>
+
+            <div>
+                <label for="phoneNumber">Số điện thoại:</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" value="<%= user.phoneNumber || '' %>" required>
+            </div>
+
+            <div>
+                <label for="address">Địa chỉ:</label>
+                <input type="text" id="address" name="address" value="<%= user.address || '' %>" required>
+            </div>
+
+            <div>
+                <label for="gender">Giới tính:</label>
+                <select id="gender" name="gender">
+                    <option value="true" <%= user.gender === true ? 'selected' : '' %>>Nam</option>
+                    <option value="false" <%= user.gender === false ? 'selected' : '' %>>Nữ</option>
+                    <option value="" <%= user.gender === null ? 'selected' : '' %>>Không xác định</option>
+                </select>
+            </div>
+
+            <button type="submit">Cập nhật</button>
+        </form>
+
+        <a href="/users/<%= userId %>">
+            <button>Quay lại trang cá nhân</button>
+        </a>
+    </div>
+</body>
+</html>

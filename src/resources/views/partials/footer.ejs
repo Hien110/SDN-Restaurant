@@ -44,7 +44,57 @@
       </div>
       <div class="phone-icon">
         <i class="fas fa-phone"> </i>
+=======
+
+<head>
+  <title>Footer Section</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link href="/css/footer.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="footer">
+    <div>
+      <img alt="Thư vãn logo" src="/image/logoRes.png" />
+    </div>
+    <div>
+      <h3>Địa chỉ</h3>
+      <p style="width: 170px; ">
+        <%= footerData.address %>
+      </p>
+    </div>
+    <div>
+      <h3>Thời gian mở cửa</h3>
+      <p>
+        <%= footerData.openingHours %> – <%= footerData.closingHours %>
+      </p>
+      <p>
+        <%= footerData.openingDay %> - <%= footerData.closingDay %>
+      </p>
+    </div>
+    <div>
+      <h3>Liên hệ</h3>
+      <p>
+        <%= footerData.hotline %>
+      </p>
+      <p>
+        <%= footerData.email %>
+      </p>
+    </div>
+    <div>
+      <h3>Theo dõi</h3>
+      <div class="social-icons">
+        <i class="fab fa-tripadvisor"> </i>
+        <i class="fab fa-facebook"> </i>
+        <i class="fab fa-instagram"> </i>
+        <i class="fab fa-tripadvisor"> </i>
       </div>
     </div>
-  </body>
+    <div class="phone-icon">
+      <i class="fas fa-phone"> </i>
+    </div>
+  </div>
+</body>
+
 </html>
