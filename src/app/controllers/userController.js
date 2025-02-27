@@ -191,7 +191,7 @@ class UserController {
   updateProfile = async (req, res) => {
     try {
       let avatarUrl = null;
-
+  
       if (req.file) {
         const result = await cloudinary.uploader.upload_stream(
           {
@@ -206,9 +206,9 @@ class UserController {
                 .status(500)
                 .json({ message: "Lỗi khi tải ảnh lên Cloudinary" });
             }
-
+  
             avatarUrl = result.secure_url;
-
+  
             const userId = req.params.id;
             const updatedData = {
               firstName: req.body.firstName,
@@ -218,17 +218,17 @@ class UserController {
               address: req.body.address,
               gender: req.body.gender,
             };
-
+  
             if (avatarUrl) {
               updatedData.avatar = avatarUrl;
             }
-
+  
             User.findByIdAndUpdate(userId, updatedData, { new: true })
               .then((updatedUser) => {
                 if (!updatedUser) {
                   return res.status(404).json({ message: "User not found" });
                 }
-
+  
                 return res.render("updateProfile", {
                   successMessage: "Cập nhật thông tin cá nhân thành công",
                   user: updatedUser,
@@ -243,7 +243,7 @@ class UserController {
               });
           }
         );
-
+  
         const bufferStream = new stream.PassThrough();
         bufferStream.end(req.file.buffer);
         bufferStream.pipe(result);
@@ -257,13 +257,13 @@ class UserController {
           address: req.body.address,
           gender: req.body.gender,
         };
-
+  
         User.findByIdAndUpdate(userId, updatedData, { new: true })
           .then((updatedUser) => {
             if (!updatedUser) {
               return res.status(404).json({ message: "User not found" });
             }
-
+  
             return res.render("updateProfile", {
               successMessage: "Cập nhật thông tin cá nhân thành công",
               user: updatedUser,
@@ -336,11 +336,13 @@ class UserController {
     try {
       const { oldPassword, newPassword, confirmPassword } = req.body;
       const userId = req.params.id;
-
+  
+      
       if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
         return res.render("errorpage");
       }
-
+  
+      
       const user = await User.findById(userId);
       if (!user) {
         return res.render("changePassword", {
@@ -348,31 +350,38 @@ class UserController {
           userId,
         });
       }
-
-      if (oldPassword !== user.password) {
+  
+      
+      const isOldPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isOldPasswordMatch) {
         return res.render("changePassword", {
           message: "Mật khẩu cũ không đúng!",
           userId,
         });
       }
-
+  
+      
       if (newPassword !== confirmPassword) {
         return res.render("changePassword", {
           message: "Mật khẩu mới không khớp!",
           userId,
         });
       }
-
+  
+      
       if (newPassword.length < 8) {
         return res.render("changePassword", {
           message: "Mật khẩu mới phải có ít nhất 8 ký tự!",
           userId,
         });
       }
-
-      user.password = newPassword;
-      await user.save();
-
+  
+      
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+      user.password = hashedPassword;  
+      await user.save();  
+  
+      
       return res.render("changePassword", {
         successMessage: "Mật khẩu đã được cập nhật thành công!",
         userId,
@@ -385,6 +394,7 @@ class UserController {
       });
     }
   };
+  
 }
 
 module.exports = new UserController();

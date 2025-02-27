@@ -36,19 +36,19 @@
         <a href="#"> Tin tức </a>
       </div>
       <div class="user-menu">
-              <!-- Nếu chưa đăng nhập, hiển thị nút -->
+            
               <% if (session.user) { %>
-                <!-- Nếu đã đăng nhập, hiển thị avatar -->
+               
                 <div class="user-avatar">
                   <img src="<%= session.user.avatar %>" alt="Avatar" />
                   <div class="dropdown">
-                    <a href="/profile">Hồ sơ</a>
+                    <a href="/users/<%= session.user._id.toString() %>">Hồ sơ</a>
                     <a href="/logout">Đăng xuất</a>
                   </div>
                 </div>
                 
                 <% } else { %>
-                <!-- Nếu chưa đăng nhập, hiển thị nút -->
+               
                 <div class="auth-links">
                   <a href="/login">Đăng nhập</a>
                   <a>|</a>
