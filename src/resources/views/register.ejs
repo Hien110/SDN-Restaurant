@@ -33,6 +33,9 @@
                 <label>Nhập lại mật khẩu</label>
             </div>
             <button type="submit">Đăng ký</button>
+            <p style="color: red; padding-top: 8px; padding-bottom: 8px; font-size: 14px">
+                <%= typeof error !=='undefined' ? error: "" %>
+            </p>
             <p style="padding-top: 8px; font-size: 14px;">Bạn đã có tài khoản? <a href="./login">Đăng nhập</a></p>
         </form>
     </div>
