@@ -21,8 +21,7 @@ class SiteController {
   }
 
   homeAdmin(req, res, next) {
-    res.render("admin", { layout: "layouts/auth", title: "admin" });
+    res.render('admin', { layout: 'layouts/mainAdmin', title: 'admin' });
   }
-}
 
 module.exports = new SiteController();
