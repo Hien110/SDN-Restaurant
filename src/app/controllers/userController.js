@@ -82,25 +82,33 @@ exports.postSignIn = async (req, res, next) => {
   }
 };
 
-// [GET] => getReset
+// [GET] => getResetPassword
 exports.getResetPassword = async (req, res, next) => {
   res.render("reset-password", { layout: "layouts/auth", title: "Reset" });
 };
 
-// [GET] => getNewPassword
-exports.getNewPassword = async (req, res, next) => {
+// [POST] => postNewPassword
+exports.postResetNewPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
+    console.log(req.body.email);
 
     if (!user) {
-      console.log("No account with that email found.");
-      return res.redirect("/reset-password");
+      return res.render("reset-password", {
+        layout: "layouts/auth",
+        title: "Reset",
+        message: "Account does not exist",
+      });
     }
-    user.resetToken = await genarateResetToken;
+    user.resetToken = await genarateResetToken();
     user.resetTokenExpiration = Date.now() + 3600000;
     await sendMail(req.body.email, user.resetToken, false);
     await user.save();
-    res.redirect("/login");
+    res.render("login", {
+      layout: "layouts/auth",
+      title: "Login",
+      message: "Please check your email to reset password",
+    });
   } catch (err) {
     console.error(err);
     res.redirect("/reset-password");
