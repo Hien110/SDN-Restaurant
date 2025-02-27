@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const isAuth = require("../app/middlewares/is-auth");
 const userController = require('../app/controllers/userController');
 
 const userRoutes = express.Router();
