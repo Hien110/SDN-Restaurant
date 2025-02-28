@@ -1,0 +1,10 @@
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <form action="payments/querydr" method="post">
+    <label for="orderId">Mã đơn hàng:</label>
+    <input type="text" id="orderId" name="orderId" required>
+    <button type="submit">Truy vấn</button>
+  </form>
+</body>
