@@ -4,7 +4,7 @@ class RestaurantsController {
     async getAll(req, res, next) {
         try {
             const restaurantInfo = await RestaurantInfor.findOne();
-            res.locals.footerData = restaurantInfo;
+            res.locals.footerData = restaurantInfo || { address: 'Địa chỉ chưa cập nhật', phone: 'Chưa có số điện thoại' };
             next();
         } catch (error) {
             next(error);

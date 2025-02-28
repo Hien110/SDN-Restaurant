@@ -1,139 +1,65 @@
- <!-- <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông tin cá nhân</title>
-    <link rel="stylesheet" href="/css/index.css">
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Profile Page</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Thông tin cá nhân</h2>
-        <div class="avatar-container">
-            <img src="<%= users.avatar %>" alt="Avatar" class="avatar">
+    
+    <div class="main-content">
+      <div class="profile-card">
+        <div class="profile-header">
+          <img src="<%= users.avatar %>" alt="Avatar" class="avatar">
+          <div class="profile-info">
+            <h2>
+              <%= users.firstName || "Chưa cập nhật" %> <%= users.lastName || "Chưa cập nhật" %>
+            </h2>
+            <p class="profile-email">
+              <%= users.email %>
+            </p>
+          </div>
         </div>
-
-        <div class="info-section">
-            <p><strong>Họ:</strong> <%= users.firstName || "Chưa cập nhật" %></p>
-            <p><strong>Tên:</strong> <%= users.lastName || "Chưa cập nhật" %></p>
-            <p><strong>Email:</strong> <%= users.email %></p>
-            <p><strong>Số điện thoại:</strong> <%= users.phoneNumber %></p>
-            <p><strong>Địa chỉ:</strong> <%= users.address || "Chưa cập nhật" %></p>
-            <p><strong>Giới tính:</strong> <%= users.gender === true ? "Nam" : users.gender === false ? "Nữ" : "Không xác định" %></p>
-            <p><strong>Ngày tạo:</strong> <%= new Date(users.createdDate).toLocaleDateString() %></p>
-            <p><strong>Ngày cập nhật:</strong> <%= new Date(users.updatedDate).toLocaleDateString() %></p>
-        </div>
-        <div>
+        
+        <div class="profile-details">
+          <div class="form-group">
+            <label>Họ Và Tên</label>
+            <p><%= users.firstName || "Chưa cập nhật" %> <%= users.lastName || "Chưa cập nhật" %></p>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <p><%= users.email %></p>
+          </div>
+          <div class="form-group">
+            <label>Giới Tính</label>
+            <p><%= users.gender === true ? "Nam" : users.gender === false ? "Nữ" : "Không xác định" %></p>
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ</label>
+            <p><%= users.address || "Chưa cập nhật" %></p>
+          </div>
+          <div class="form-group">
+            <label>Điện thoại</label>
+            <p><%= users.phoneNumber || "Chưa cập nhật" %></p>
+          </div>
+          <p style="color: red; padding-top: 8px; padding-bottom: 8px; font-size: 14px">
+            <%= typeof error !=='undefined' ? error: "" %>
+          </p>
+          <div class="edit-buttons">
             <a href="/users/change-password/<%= users.id %>">
-                <button>Đổi mật khẩu</button>
+              <button class="edit-btn">Đổi mật khẩu</button>
             </a>
             <a href="/users/update-profile/<%= users.id %>">
-                <button>Cập nhật thông tin cá nhân</button>
+              <button class="edit-btn">Cập nhật thông tin</button>
             </a>
+            <a href="/users/update-profile/<%= users.id %>">
+              <button class="edit-btn">Lịch sử đặt bàn</button>
+            </a>
+          </div>
         </div>
-
+      </div>
     </div>
+
 </body>
-</html> 
- -->
-
-
- <html lang="en">
-    <head>
-     <meta charset="utf-8"/>
-     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-     <title>
-      Profile Page
-     </title>
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-     <link rel="stylesheet" href="/css/index.css">
-    </head>
-    <body>
-     <div class="container">
-      <div class="sidebar">
-       <i class="fas fa-th-large active">
-       </i>
-       <i class="fas fa-clock">
-       </i>
-       <i class="fas fa-user-friends">
-       </i>
-       <i class="fas fa-comments">
-       </i>
-       <i class="fas fa-cog">
-       </i>
-      </div>
-      <div class="main-content">
-       <div class="profile-card">
-        <div class="profile-header">
-            <img src="<%= users.avatar %>" alt="Avatar" class="avatar">
-         <div>
-          <h2>
-            <%= users.firstName || "Chưa cập nhật" %> <%= users.lastName || "Chưa cập nhật" %>
-          </h2>
-          <p>
-            <%= users.email %>
-          </p>
-         </div>
-         <a href="/users/change-password/<%= users.id %>">
-            <button>
-             Edit
-            </button>
-        </a>
-        <a href="/users/update-profile/<%= users.id %>">
-            <button>
-             Edit
-            </button>
-        </a>
-        </div>
-        <div class="form-grid">
-         <div class="form-group">
-          <label>
-           Full Name
-          </label>
-          <label for=""><%= users.firstName || "Chưa cập nhật" %></label>
-         </div>
-         <div class="form-group">
-          <label>
-           Email
-          </label>
-          <label for=""><%= users.email %></label>
-         </div>
-         <div class="form-group">
-          <label>
-           Gender
-          </label>
-          <label for=""><%= users.gender === true ? "Nam" : users.gender === false ? "Nữ" : "Không xác định" %></label>
-         </div>
-         <div class="form-group">
-          <label>
-           Country
-          </label>
-          <label for=""><%= users.address || "Chưa cập nhật" %></label>
-         </div>
-         <div class="form-group">
-          <label>
-           Create At
-          </label>
-          <label for=""><%= new Date(users.createdDate).toLocaleDateString() %></label>
-         </div>
-         <div class="form-group">
-          <label>
-           Update At
-          </label>
-          <label for=""><%= new Date(users.updatedDate).toLocaleDateString() %></label>
-         </div>
-        </div>
-       </div>
-      </div>
-      <!-- Profile Icon -->
-      <div class="top-right-icons">
-       <i class="fas fa-bell">
-       </i>
-       <img alt="Profile icon" height="40" src="<%= users.avatar %>" width="40"/>
-      </div>
-     </div>
-    </body>
-   </html>
-   
-
-
+</html>

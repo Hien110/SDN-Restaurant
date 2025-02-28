@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo Món Ăn Mới</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    form { max-width: 400px; margin: auto; }
+    label { display: block; margin-top: 10px; }
+    input, textarea, select { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px 15px; }
+  </style>
+</head>
+<body>
+  <h1>Tạo Món Ăn Mới</h1>
+  <form action="/menu/create" method="POST">
+    <label for="foodName">Tên món ăn:</label>
+    <input type="text" id="foodName" name="foodName" required>
+
+    <label for="description">Mô tả:</label>
+    <textarea id="description" name="description" required></textarea>
+
+    <label for="price">Giá:</label>
+    <input type="number" step="0.01" id="price" name="price" required>
+
+    <label for="imageUrl">Đường dẫn ảnh:</label>
+    <input type="text" id="imageUrl" name="imageUrl" required>
+
+    <label for="starRating">Đánh giá (1-5):</label>
+    <input type="number" id="starRating" name="starRating" min="1" max="5">
+
+    <label for="statusFood">Trạng thái:</label>
+    <select id="statusFood" name="statusFood" required>
+      <option value="AVAILABLE">Còn hàng</option>
+      <option value="UNAVAILABLE">Hết hàng</option>
+    </select>
+
+    <!-- Nếu có trường danh mục, bạn có thể bổ sung:
+    <label for="category">Danh mục:</label>
+    <input type="text" id="category" name="category" required> 
+    -->
+
+    <button type="submit">Tạo Món Ăn</button>
+  </form>
+</body>
+</html>
