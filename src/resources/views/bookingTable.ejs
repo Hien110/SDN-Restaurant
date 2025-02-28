@@ -1,0 +1,63 @@
+<head>
+  <link rel="stylesheet" href="/css/bookingTable.css" />
+</head>
+<div class="container-bookingTable">
+  <div class="container">
+    <div style="margin-top: 20px; margin-bottom: 20px;" class="image-section">
+      <img
+     
+        alt="A variety of buffet dishes displayed on a table. Text overlay: 'Ăn buffet mãi mê không giới hạn thời gian. Hotline: 0905 455 033 - 0905 435 033. 209/5 Nguyễn Văn Thoại, Sơn Trà, Đà Nẵng'"
+        src="https://storage.googleapis.com/a1aa/image/QNa22lh9jdhaPSNU6MEN_2I8xfOUR5BITQc4xllpW3o.jpg"
+        width="600"
+      />
+    </div>
+    <div class="form-section">
+      <h1>HÃY ĐẶT BÀN NGAY NÀO!</h1>
+      <p>Nhà hàng Thư Vãn Đà Nẵng luôn hân hạnh được phục vụ bạn</p>
+      <form>
+        <div class="form-group">
+          <label for="name"> Họ và Tên </label>
+          <input id="name" value="<%=session.user.firstName %> <%=session.user.lastName %>" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="phone"> Số điện thoại </label>
+          <input id="phone" value="<%=session.user.phoneNumber %>" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="guests"> Số khách </label>
+          <input id="guests" placeholder="Số khách" type="number" />
+        </div>
+        <div class="form-group">
+          <label for="guests">Số bàn</label>
+          <input id="guests" placeholder="Số khách" type="number" />
+        </div>
+        <div class="form-group">
+          <label for="date"> Ngày đặt </label>
+          <input id="date" placeholder="dd/mm/yyyy" type="date" />
+        </div>
+        <div class="form-group">
+          <label for="time"> Thời gian </label>
+          <input id="time" placeholder="--:-- --" type="time" />
+        </div>
+        <div class="form-group">
+          <label for="email"> Email xác nhận đặt bàn </label>
+          <input
+          value="<%=session.user.email %>"
+          />
+        </div>
+        <div class="form-group">
+          <label for="requests"> Yêu cầu thêm </label>
+          <textarea
+            id="requests"
+            placeholder="Nhập yêu cầu cần hỗ trợ..."
+            rows="4"
+          ></textarea>
+        </div>
+       
+        <div class="form-group">
+          <input type="submit" value="Đặt ngay" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
