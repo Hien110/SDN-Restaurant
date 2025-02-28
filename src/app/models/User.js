@@ -21,6 +21,7 @@ const UserSchema = new Schema({
     },
     status: { type: String, enum: ["ACTIVE", "INACTIVE"], required: true },
     resetToken: { type: String, required: false },
+    resetTokenExpiration: { type: Date, required: false },
   },
   { timestamps: true }
 );
