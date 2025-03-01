@@ -4,6 +4,6 @@ const isAuth = require('../app/middlewares/is-auth');
 const userController = require("../app/controllers/userController");
 const bookingTableController = require("../app/controllers/BookingTableController");
 
-bookingRouter.get('/',isAuth, bookingTableController.index);
+bookingRouter.get('/',isAuth.requireAuth, bookingTableController.index);
 
 module.exports = bookingRouter;

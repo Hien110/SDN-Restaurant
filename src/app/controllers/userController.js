@@ -23,11 +23,8 @@ exports.postSignUp = async (req, res, next) => {
       return res.render("register", {
         layout: "layouts/auth",
         title: "register",
-        error: "Tài khoản tồn tại",
+        error: "Email đã được đăng kí",
       });
-    }
-    if (existingUser) {
-      return res.render("register", { message: "Account already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -44,7 +41,7 @@ exports.postSignUp = async (req, res, next) => {
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
-      message: "Please check your email to verify account",
+      message: "Hãy kiểm tra email của bạn để xác thực tài khoản",
     });
     await user.save();
   } catch (err) {
@@ -63,13 +60,15 @@ exports.postSignIn = async (req, res, next) => {
       return res.render("login", {
         layout: "layouts/auth",
         title: "Login",
-        message: "Account does not exist",
+        error: "Tài khoản không tồn tại",
       });
     }
 
     if (user.status !== "ACTIVE") {
       return res.render("login", {
-        message: "Account is not active, try again",
+        layout: "layouts/auth",
+        title: "Login",
+        error: "Tài khoản của bạn chưa kích hoạt",
       });
     }
 
@@ -78,15 +77,13 @@ exports.postSignIn = async (req, res, next) => {
       return res.render("login", {
         layout: "layouts/auth",
         title: "Login",
-        message: "Invalid password",
+        error: "Mật khẩu sai",
       });
     }
 
-    req.session.user = {
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    };
+    req.session.user = { ...user.toObject() }; 
+    delete req.session.user.password; 
+
     req.session.save();
     res.redirect("/");
   } catch (err) {
@@ -94,7 +91,7 @@ exports.postSignIn = async (req, res, next) => {
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
-      message: "Something went wrong, please try again",
+      message: "Có sự cố, vui lòng đăng nhập sau",
     });
   }
 };
@@ -114,7 +111,7 @@ exports.postResetNewPassword = async (req, res, next) => {
       return res.render("reset-password", {
         layout: "layouts/auth",
         title: "Reset",
-        message: "Account does not exist",
+        error: "Tài khoản không tồn tại",
       });
     }
     user.resetToken = await genarateResetToken();
@@ -124,7 +121,7 @@ exports.postResetNewPassword = async (req, res, next) => {
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
-      message: "Please check your email to reset password",
+      message: "Kiểm tra tài khoản email của bạn để thay đổi mật khẩu",
     });
   } catch (err) {
     console.error(err);
@@ -167,7 +164,7 @@ exports.postNewPassword = async (req, res, next) => {
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
-    alert("Password reset successfully!");
+    alert("Thay đổi mật khẩu thành công!");
     res.redirect("/login");
   } catch (err) {
     console.error(err);
@@ -193,7 +190,7 @@ exports.getVerify = async (req, res, next) => {
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
-      message: "Account is verify successfully, please login",
+      message: "Xác thực tài khoản thành công!",
     });
   } catch (err) {
     console.error(err);
