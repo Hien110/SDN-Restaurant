@@ -51,7 +51,7 @@ exports.createPayment = (req, res) => {
     vnp_ReturnUrl: VNPayConfig.returnUrl,
     vnp_IpAddr: req.headers["x-forwarded-for"] || req.connection.remoteAddress,
     vnp_CreateDate: date.format("YYYYMMDDHHmmss"),
-    ...(req.body.bankCode && { vnp_BankCode: req.body.bankCode }),
+    vnp_BankCode: req.body.bankCode || "VNPAY",
   });
 
   vnp_Params.vnp_SecureHash = generateSignature(vnp_Params);
@@ -66,15 +66,46 @@ const verifyResponse = (params) => {
   const secureHash = params.vnp_SecureHash;
   delete params.vnp_SecureHash;
   delete params.vnp_SecureHashType;
-  return secureHash === generateSignature(sortObject(params))
-    ? params.vnp_ResponseCode
-    : "97";
+
+  const isValidChecksum = secureHash === generateSignature(sortObject(params));
+
+  return {
+    success: isValidChecksum && params.vnp_ResponseCode === "00",
+    responseCode: params.vnp_ResponseCode || "97",
+    message: isValidChecksum
+      ? params.vnp_ResponseCode === "00"
+        ? "Giao dịch thành công"
+        : "Giao dịch thất bại"
+      : "Lỗi xác thực checksum",
+    transactionId: params.vnp_TxnRef || null,
+    amount: params.vnp_Amount ? params.vnp_Amount / 100 : null,
+    bankCode: params.vnp_BankCode || null,
+    paymentTime: params.vnp_PayDate || null,
+  };
 };
 
-exports.vnpayReturn = (req, res) =>
-  res.render("payments/success", { code: verifyResponse(req.query) });
-exports.vnpayIPN = (req, res) =>
-  res.json({
-    RspCode: verifyResponse(req.query) === "00" ? "00" : "97",
-    Message: verifyResponse(req.query) === "00" ? "Success" : "Checksum failed",
+exports.vnpayReturn = (req, res) => {
+  const result = verifyResponse(req.query);
+  res.render("payments/success", {
+    code: result.responseCode,
+    message: result.message,
+    transactionId: result.transactionId,
+    amount: result.amount,
+    bankCode: result.bankCode,
+    paymentTime: result.paymentTime,
   });
+};
+
+exports.vnpayIPN = (req, res) => {
+  const result = verifyResponse(req.query);
+  res.json({
+    RspCode: result.success ? "00" : "97",
+    Message: result.message,
+    Transaction: {
+      id: result.transactionId,
+      amount: result.amount,
+      bankCode: result.bankCode,
+      paymentTime: result.paymentTime,
+    },
+  });
+};

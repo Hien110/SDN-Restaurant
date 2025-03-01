@@ -1,5 +1,31 @@
 <body>
-  <h1>Kết quả giao dịch</h1>
-  <p>Mã phản hồi: <%= code %>
-  </p>
+  <div class="container">
+    <h2>Payment Status</h2>
+    <p><strong>Response Code:</strong>
+      <%= code %>
+    </p>
+    <p><strong>Message:</strong>
+      <%= message %>
+    </p>
+    <p><strong>Transaction ID:</strong>
+      <%= transactionId %>
+    </p>
+    <p><strong>Amount:</strong>
+      <%= amount %> VND
+    </p>
+    <p><strong>Bank Code:</strong>
+      <%= bankCode %>
+    </p>
+    <p><strong>Payment Time:</strong>
+      <%= paymentTime %>
+    </p>
+
+    <% if (code==='00' ) { %>
+      <p class="success">Your payment was successful!</p>
+      <% } else { %>
+        <p class="error">Your payment failed. Please try again.</p>
+        <% } %>
+
+          <a href="/" class="btn">Return to Home</a>
+  </div>
 </body>

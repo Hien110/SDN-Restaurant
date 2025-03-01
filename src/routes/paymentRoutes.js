@@ -1,14 +1,18 @@
-// router.js
 const express = require("express");
 const router = express.Router();
 const VNPayController = require("../app/controllers/PaymentController");
 
 router.get("/", VNPayController.orderList);
-router.get("/create_payment_url", VNPayController.createPaymentPage);
-router.get("/querydr", VNPayController.queryTransactionPage);
+
+router.get("/create-payment", VNPayController.createPaymentPage);
+router.post("/create-payment", VNPayController.createPayment);
+
+router.get("/query-transaction", VNPayController.queryTransactionPage);
+
 router.get("/refund", VNPayController.refundPage);
-router.post("/create_payment_url", VNPayController.createPayment);
-router.get("/vnpay_return", VNPayController.vnpayReturn);
-router.get("/vnpay_ipn", VNPayController.vnpayIPN);
+
+router.get("/vnpay-return", VNPayController.vnpayReturn);
+
+router.post("/vnpay-ipn", VNPayController.vnpayIPN);
 
 module.exports = router;
