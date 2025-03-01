@@ -81,8 +81,8 @@ exports.postSignIn = async (req, res, next) => {
       });
     }
 
-    req.session.user = { ...user.toObject() }; 
-    delete req.session.user.password; 
+    req.session.user = { ...user.toObject() };
+    delete req.session.user.password;
 
     req.session.save();
     res.redirect("/");
@@ -230,6 +230,7 @@ exports.updateProfile = async (req, res) => {
 
           if (avatarUrl) {
             updatedData.avatar = avatarUrl;
+            req.session.user.avatar = avatarUrl;
           }
 
           User.findByIdAndUpdate(userId, updatedData, { new: true })
