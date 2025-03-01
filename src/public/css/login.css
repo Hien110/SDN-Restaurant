@@ -35,7 +35,7 @@ nav a img {
     padding: 70px;
     width: 450px;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, .25);
+    background: rgb(0 0 0 / 30%)
 }
 .form-wrapper h2 {
     color: #fff;
@@ -59,6 +59,10 @@ form .form-control {
     color: #fff;
     font-size: 1rem;
     padding: 0 20px;
+}
+.form-control{
+    padding: 0;
+    border: #333 ;
 }
 .form-control input:is(:focus, :valid) {
     background: #444;
