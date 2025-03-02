@@ -85,8 +85,6 @@ exports.postSignIn = async (req, res, next) => {
       });
     }
 
-    
-
     if (user.status !== "ACTIVE") {
       return res.render("login", {
         layout: "layouts/auth",
@@ -253,6 +251,7 @@ exports.updateProfile = async (req, res) => {
 
           if (avatarUrl) {
             updatedData.avatar = avatarUrl;
+            req.session.user.avatar = avatarUrl;
           }
 
           User.findByIdAndUpdate(userId, updatedData, { new: true })
