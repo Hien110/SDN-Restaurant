@@ -15,8 +15,8 @@ const User = require("../app/models/User");
 
 function routes(app) {
   app.use("/restaurantInfor", restaurantRouter);
-  app.use("/auth", isAuth.setUser, getFooterData, siteRouter);
-  app.use("/", authRouter);
+  app.use("/", isAuth.setUser, getFooterData, siteRouter);
+  app.use("/auth", authRouter);
   app.use("/users", userRoutes);
   app.use("/bookingTable", bookingRouter);
 
