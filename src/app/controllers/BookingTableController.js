@@ -7,11 +7,13 @@ class BookingTableController {
     try {
       const userId = req.session.user._id;
       const user = await User.findById(userId);
+      console.log(user.firstName + '.. ' + user.lastName  + '.. ' + user.phoneNumber + '.. '+  user.address );
+      
       if (
-        user.firstName == undefined ||
-        user.lastName == undefined ||
-        user.phoneNumber == undefined ||
-        user.address == undefined
+        user.firstName == undefined || user.firstName == "" ||
+        user.lastName == undefined || user.lastName == "" ||
+        user.phoneNumber == undefined || user.phoneNumber == "" ||
+        user.address == undefined || user.address == ""
       ) {
         return res.redirect(
           `/users/${userId}?error=${encodeURIComponent(
