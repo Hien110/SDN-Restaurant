@@ -15,6 +15,20 @@ const User = require("../app/models/User");
 
 function routes(app) {
   app.use("/restaurantInfor", restaurantRouter);
+<<<<<<< HEAD
+  app.use("/", isAuth.setUser, getFooterData, siteRouter);
+  app.use("/auth", authRouter);
+  app.use("/users", userRoutes);
+  app.use("/bookingTable", bookingRouter);
+  app.get404 = (req, res, next) => {
+    res.status(404).render("errorpage", {
+      layout: "layouts/main",
+      title: "Page Not Found",
+      errorCode: 404,
+      message: "Trang bạn tìm kiếm không tồn tại!",
+    });
+  };
+=======
   app.use("/",isAuth.setUser, getFooterData, siteRouter);
   app.use("/", authRouter);
   app.use('/users', userRoutes); 
@@ -70,6 +84,7 @@ function routes(app) {
         res.status(500).json({ message: "Lỗi máy chủ, vui lòng thử lại sau." });
     }
 });
+>>>>>>> main
 }
 
 module.exports = routes;
