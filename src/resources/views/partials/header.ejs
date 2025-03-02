@@ -21,7 +21,7 @@
       <a href="/"> Trang chủ </a>
       <a href="#"> Về chúng tôi </a>
       <a href="#"> Thực đơn </a>
-      <a href="#"> Đặt chỗ </a>
+      <a href="/bookingTable"> Đặt chỗ </a>
       <a href="#"> Khuyễn mãi </a>
       <a href="#"> Tin tức </a>
     </div>
@@ -32,10 +32,12 @@
         <div class="user-avatar">
           <img src="<%= user.avatar %>" alt="Avatar" />
           <div class="dropdown">
-            <span><%= user.name %></span>
+            <span><%= user.first %></span>
             <div class="dropdown-content">
               <a href="/users/<%= user._id %>">Hồ sơ</a>
-              <a href="/logout">Đăng xuất</a>
+              <form action="/logout" method="POST">
+                <button class="but1" style="background-color: #FFF; border: none; text-align: center;" type="submit">Đăng xuất</button>
+              </form>
             </div>
           </div>
         </div>

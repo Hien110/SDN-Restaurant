@@ -14,6 +14,7 @@ const dbUri = process.env.DB_URI;
 const sessionSecret = process.env.SESSION_SECRET;
 const ageSession = Number(process.env.AGE_SESSION);
 
+app.use(express.static(path.join(__dirname, "public"), { maxAge: "1y" }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "resources", "views"));
 
@@ -48,7 +49,6 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(path.join(__dirname, "public")));
-
 // app.use(csurfProtection);
 
 router(app);

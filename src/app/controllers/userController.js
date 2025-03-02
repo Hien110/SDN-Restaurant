@@ -419,8 +419,8 @@ exports.findById = async (req, res) => {
     if (!user) {
       return res.render("errorpage");
     }
-
-    res.render("informationUser", { users: user });
+    const error = req.query.error || "";
+    res.render("informationUser", { users: user, error  });
   } catch (error) {
     console.error(error);
     res.status(500).send("Lỗi server");
