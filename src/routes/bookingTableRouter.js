@@ -5,5 +5,6 @@ const userController = require("../app/controllers/userController");
 const bookingTableController = require("../app/controllers/BookingTableController");
 
 bookingRouter.get('/',isAuth.requireAuth, bookingTableController.index);
+bookingRouter.post('/', bookingTableController.createBooking);
 
 module.exports = bookingRouter;

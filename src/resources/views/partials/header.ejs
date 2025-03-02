@@ -21,32 +21,40 @@
       <a href="/"> Trang chủ </a>
       <a href="#"> Về chúng tôi </a>
       <a href="#"> Thực đơn </a>
-      <a href="#"> Đặt chỗ </a>
+      <a href="/bookingTable"> Đặt chỗ </a>
       <a href="#"> Khuyễn mãi </a>
       <a href="#"> Tin tức </a>
     </div>
 
     <div class="user-menu">
       <% if (user) { %>
-        <!-- Nếu đã đăng nhập, hiển thị avatar -->
         <div class="user-avatar">
           <img src="<%= user.avatar %>" alt="Avatar" />
           <div class="dropdown">
-            <span><%= user.name %></span>
+            <span>
+              <%= user.name %>
+            </span>
+            <span>
+              <%= user.name %>
+            </span>
             <div class="dropdown-content">
               <a href="/users/<%= user._id %>">Hồ sơ</a>
-              <a href="/logout">Đăng xuất</a>
+              <form action="/logout" method="POST">
+                <button class="but1" style="background-color: #FFF; border: none; text-align: center;" type="submit">Đăng xuất</button>
+              </form>
+              <form action="/logout" method="POST">
+                <button type="submit">Đăng xuất</button>
+              </form>
             </div>
           </div>
         </div>
         <% } else { %>
-        <!-- Nếu chưa đăng nhập, hiển thị nút -->
-        <div class="auth-links">
-          <a href="/login">Đăng nhập</a>
-          <a href="/">|</a>
-          <a href="/register">Đăng ký</a>
-        </div>
-        <% } %>
+          <div class="auth-links">
+            <a href="/login">Đăng nhập</a>
+            <a href="/">|</a>
+            <a href="/register">Đăng ký</a>
+          </div>
+          <% } %>
 
     </div>
 
