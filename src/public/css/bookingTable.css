@@ -23,7 +23,6 @@
 }
 .image-section img {
     width: 100%;
-    height: 100%;
     object-fit: cover;
 }
 .form-section {
@@ -74,6 +73,78 @@
 .recaptcha {
     margin-bottom: 20px;
 }
+
+.table-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .table-card {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .table-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .table-card .table-id {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .table-card .table-seat {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .table-card .table-status {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  /* Trạng thái bàn */
+  .available {
+    background-color: #dfffd6;
+    color: #2b8a3e;
+    border: 1px solid #2b8a3e;
+  }
+  
+  .reserved {
+    background-color: #fff5c2;
+    color: #a47d00;
+    border: 1px solid #a47d00;
+  }
+  
+  .occupied {
+    background-color: #ffdad6;
+    color: #d32f2f;
+    border: 1px solid #d32f2f;
+  }
+  
+  .table-card.selected {
+    border-color: green;
+    background-color: #c8f7c5;
+}
+
+.table-card.disabled {
+    opacity: 0.5; 
+    pointer-events: none; /* Không cho click */
+    cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
