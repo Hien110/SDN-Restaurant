@@ -13,13 +13,19 @@ const passport = require("passport");
 const storage = multer.memoryStorage();
 
 exports.upload = multer({ storage: storage });
-
-// [POST] => /sign-up
 exports.postSignUp = async (req, res, next) => {
   try {
     const { email, password, phone, confirmPassword } = req.body;
 
-    const existingUser = await User.findOne({ email: email });
+    if (password !== confirmPassword) {
+      return res.render("register", {
+        layout: "layouts/auth",
+        title: "register",
+        error: "Mật khẩu không khớp!",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.render("register", {
         layout: "layouts/auth",
@@ -29,22 +35,27 @@ exports.postSignUp = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = await bcrypt.hash(resetToken, 12);
+
     const user = new User({
-      email: email,
+      email,
       password: hashedPassword,
       phoneNumber: phone,
       role: "CUSTOMER",
       status: "INACTIVE",
+      resetToken: hashedToken,
+      resetTokenExpiration: Date.now() + 3600000,
     });
-    user.resetToken = await genarateResetToken();
-    user.resetTokenExpiration = Date.now() + 3600000;
-    await sendMail(req.body.email, user.resetToken, true);
+
+    await sendMail(email, resetToken, true);
+    await user.save();
+
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
       message: "Hãy kiểm tra email của bạn để xác thực tài khoản",
     });
-    await user.save();
   } catch (err) {
     console.error(err);
     next(err);
@@ -55,7 +66,7 @@ exports.postSignUp = async (req, res, next) => {
 exports.postSignIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return res.render("login", {
@@ -70,7 +81,7 @@ exports.postSignIn = async (req, res, next) => {
         layout: "layouts/auth",
         title: "Login",
         error:
-          "Tài khoản này đã được đăng ký bằng Google. Vui lòng đăng nhập bằng Google.",
+          "Tài khoản này đã đăng ký bằng Google. Vui lòng đăng nhập bằng Google.",
       });
     }
 
@@ -93,9 +104,9 @@ exports.postSignIn = async (req, res, next) => {
 
     req.session.user = { ...user.toObject() };
     delete req.session.user.password;
-
-    req.session.save();
-    res.redirect("/");
+    req.session.save(() => {
+      res.redirect("/");
+    });
   } catch (err) {
     console.error(err);
     res.render("login", {

@@ -36,5 +36,5 @@ app.use(express.static(path.join(__dirname, "public")));
 router(app);
 
 app.listen(port, () => {
-  console.log(`Server đang chạy tại http://localhost:${port}`);
+  console.log(`Server đang chạy`);
 });
