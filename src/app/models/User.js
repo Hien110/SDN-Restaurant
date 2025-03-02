@@ -1,20 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-<<<<<<< HEAD
 const UserSchema = new Schema(
   {
     firstName: { type: String, required: false },
     lastName: { type: String, required: false },
     password: { type: String, required: true },
     phoneNumber: { type: String, required: false },
-=======
-const UserSchema = new Schema({
-    firstName: { type: String, required: false },
-    lastName: { type: String, required: false },
-    password: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     email: { type: String, required: true },
     address: { type: String, required: false },
     gender: { type: Boolean, required: false },
@@ -29,11 +21,8 @@ const UserSchema = new Schema({
       required: true,
     },
     status: { type: String, enum: ["ACTIVE", "INACTIVE"], required: true },
-<<<<<<< HEAD
     provider: { type: String, default: "local" },
     googleId: { type: String, unique: true, sparse: true },
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     resetToken: { type: String, required: false },
     resetTokenExpiration: { type: Date, required: false },
   },

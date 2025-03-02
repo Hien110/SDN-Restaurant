@@ -1,25 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap");
-<<<<<<< HEAD
 
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
-<<<<<<< HEAD
 
 body {
     background: #000;
 }
 
-=======
-body {
-    background: #000;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 body::before {
     content: "";
     position: absolute;
@@ -31,26 +22,17 @@ body::before {
     background: url("../image/image.png") no-repeat;
     background-position: center;
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 nav {
     position: fixed;
     padding: 25px 60px;
     z-index: 1;
 }
-<<<<<<< HEAD
 
 nav a img {
     width: 167px;
 }
 
-=======
-nav a img {
-    width: 167px;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 .form-wrapper {
     position: absolute;
     left: 50%;
@@ -61,34 +43,22 @@ nav a img {
     transform: translate(-50%, -50%);
     background: rgb(0 0 0 / 30%)
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 .form-wrapper h2 {
     color: #fff;
     font-size: 2rem;
 }
-<<<<<<< HEAD
 
 .form-wrapper form {
     margin: 25px 0 0px;
 }
 
-=======
-.form-wrapper form {
-    margin: 25px 0 0px;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 form .form-control {
     height: 50px;
     position: relative;
     margin-bottom: 16px;
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 .form-control input {
     height: 100%;
     width: 100%;
@@ -100,27 +70,17 @@ form .form-control {
     font-size: 1rem;
     padding: 0 20px;
 }
-<<<<<<< HEAD
 
 .form-control {
     padding: 0;
     border: #333;
 }
 
-=======
-.form-control{
-    padding: 0;
-    border: #333 ;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 .form-control input:is(:focus, :valid) {
     background: #444;
     padding: 16px 20px 0;
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 .form-control label {
     position: absolute;
     left: 20px;
@@ -131,18 +91,12 @@ form .form-control {
     color: #8c8c8c;
     transition: all 0.1s ease;
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 .form-control input:is(:focus, :valid)~label {
     font-size: 0.75rem;
     transform: translateY(-130%);
 }
-<<<<<<< HEAD
 
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 form button {
     width: 100%;
     padding: 16px 0;
@@ -157,7 +111,6 @@ form button {
     cursor: pointer;
     transition: 0.1s ease;
 }
-<<<<<<< HEAD
 
 form button:hover {
     background: #c40812;
@@ -175,40 +128,19 @@ form button:hover {
     color: #b3b3b3;
 }
 
-=======
-form button:hover {
-    background: #c40812;
-}
-.form-wrapper a {
-    text-decoration: none;
-}
-.form-wrapper a:hover {
-    text-decoration: underline;
-}
-.form-wrapper :where(label, p, small, a) {
-    color: #b3b3b3;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 form .form-help {
     display: flex;
     justify-content: space-between;
 }
-<<<<<<< HEAD
 
 form .remember-me {
     display: flex;
 }
 
-=======
-form .remember-me {
-    display: flex;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 form .remember-me input {
     margin-right: 5px;
     accent-color: #b3b3b3;
 }
-<<<<<<< HEAD
 
 form .form-help :where(label, a) {
     font-size: 0.9rem;
@@ -218,35 +150,20 @@ form .form-help :where(label, a) {
     color: #fff;
 }
 
-=======
-form .form-help :where(label, a) {
-    font-size: 0.9rem;
-}
-.form-wrapper p a {
-    color: #fff;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 .form-wrapper small {
     display: block;
     margin-top: 15px;
     color: #b3b3b3;
 }
-<<<<<<< HEAD
 
 .form-wrapper small a {
     color: #0071eb;
 }
 
-=======
-.form-wrapper small a {
-    color: #0071eb;
-}
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 @media (max-width: 740px) {
     body::before {
         display: none;
     }
-<<<<<<< HEAD
 
     nav,
     .form-wrapper {
@@ -257,19 +174,10 @@ form .form-help :where(label, a) {
         width: 140px;
     }
 
-=======
-    nav, .form-wrapper {
-        padding: 20px;
-    }
-    nav a img {
-        width: 140px;
-    }
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     .form-wrapper {
         width: 100%;
         top: 43%;
     }
-<<<<<<< HEAD
 
     .form-wrapper form {
         margin: 25px 0 40px;
@@ -305,9 +213,4 @@ form .form-help :where(label, a) {
 .google-btn:hover {
     background-color: #f1f1f1;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-=======
-    .form-wrapper form {
-        margin: 25px 0 40px;
-    }
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 }

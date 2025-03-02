@@ -25,11 +25,8 @@
     "mongoose": "^8.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.10.0",
-<<<<<<< HEAD
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-=======
->>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     "sdn301-project": "file:"
   },
   "devDependencies": {
