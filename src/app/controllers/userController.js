@@ -8,15 +8,24 @@ const cloudinary = require("../../config/cloudinary/index.js");
 const multer = require("multer");
 const fs = require("fs");
 const stream = require("stream");
+<<<<<<< HEAD
 const passport = require("passport");
+=======
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 
 const storage = multer.memoryStorage();
 
 exports.upload = multer({ storage: storage });
+<<<<<<< HEAD
+=======
+
+// [POST] => /sign-up
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 exports.postSignUp = async (req, res, next) => {
   try {
     const { email, password, phone, confirmPassword } = req.body;
 
+<<<<<<< HEAD
     if (password !== confirmPassword) {
       return res.render("register", {
         layout: "layouts/auth",
@@ -26,6 +35,9 @@ exports.postSignUp = async (req, res, next) => {
     }
 
     const existingUser = await User.findOne({ email });
+=======
+    const existingUser = await User.findOne({ email: email });
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     if (existingUser) {
       return res.render("register", {
         layout: "layouts/auth",
@@ -35,15 +47,21 @@ exports.postSignUp = async (req, res, next) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+<<<<<<< HEAD
     const resetToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = await bcrypt.hash(resetToken, 12);
 
     const user = new User({
       email,
+=======
+    const user = new User({
+      email: email,
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
       password: hashedPassword,
       phoneNumber: phone,
       role: "CUSTOMER",
       status: "INACTIVE",
+<<<<<<< HEAD
       resetToken: hashedToken,
       resetTokenExpiration: Date.now() + 3600000,
     });
@@ -51,11 +69,21 @@ exports.postSignUp = async (req, res, next) => {
     await sendMail(email, resetToken, true);
     await user.save();
 
+=======
+    });
+    user.resetToken = await genarateResetToken();
+    user.resetTokenExpiration = Date.now() + 3600000;
+    await sendMail(req.body.email, user.resetToken, true);
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
       message: "Hãy kiểm tra email của bạn để xác thực tài khoản",
     });
+<<<<<<< HEAD
+=======
+    await user.save();
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
   } catch (err) {
     console.error(err);
     next(err);
@@ -66,7 +94,11 @@ exports.postSignUp = async (req, res, next) => {
 exports.postSignIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+<<<<<<< HEAD
     const user = await User.findOne({ email }).select("+password");
+=======
+    const user = await User.findOne({ email });
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
 
     if (!user) {
       return res.render("login", {
@@ -76,6 +108,7 @@ exports.postSignIn = async (req, res, next) => {
       });
     }
 
+<<<<<<< HEAD
     if (user.provider === "google") {
       return res.render("login", {
         layout: "layouts/auth",
@@ -85,6 +118,8 @@ exports.postSignIn = async (req, res, next) => {
       });
     }
 
+=======
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     if (user.status !== "ACTIVE") {
       return res.render("login", {
         layout: "layouts/auth",
@@ -102,17 +137,29 @@ exports.postSignIn = async (req, res, next) => {
       });
     }
 
+<<<<<<< HEAD
     req.session.user = { ...user.toObject() };
     delete req.session.user.password;
     req.session.save(() => {
       res.redirect("/");
     });
+=======
+    req.session.user = { ...user.toObject() }; 
+    delete req.session.user.password; 
+
+    req.session.save();
+    res.redirect("/");
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
   } catch (err) {
     console.error(err);
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
+<<<<<<< HEAD
       error: "Có sự cố, vui lòng đăng nhập sau",
+=======
+      message: "Có sự cố, vui lòng đăng nhập sau",
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
     });
   }
 };
@@ -534,6 +581,7 @@ exports.postLogout = async (req, res, next) => {
     res.redirect("/login");
   });
 };
+<<<<<<< HEAD
 
 // [GET] => /auth/google
 exports.googleLogin = (req, res, next) => {
@@ -561,3 +609,5 @@ exports.googleLoginCallback = (req, res, next) => {
     }
   )(req, res, next);
 };
+=======
+>>>>>>> 2cefcc466b7582122a2334ee7c6a93a3b7c6b1b2
