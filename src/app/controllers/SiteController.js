@@ -1,5 +1,3 @@
-const Menu = require('../models/Menu');
-
 class SiteController {
   // [Get] /news
   index(req, res, next) {

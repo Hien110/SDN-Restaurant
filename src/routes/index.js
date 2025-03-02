@@ -7,7 +7,7 @@ function routes(app) {
     // app.use(getFooterData);
     app.use('/restaurantInfor', restaurantRouter);
     app.use('/',getFooterData, siteRouter);
-    app.use('/api/menu', menuRoutes );
+    app.use('/admin/menu', menuRoutes );
 }
 
 module.exports = routes;

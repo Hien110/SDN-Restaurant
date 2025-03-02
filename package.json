@@ -11,12 +11,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.8.1",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-ejs-layouts": "^2.5.1",
     "mongoose": "^8.10.0",
-    "sdn301-project": "file:"
+    "sdn301-project": "file:",
+    "sweetalert2": "^11.17.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
