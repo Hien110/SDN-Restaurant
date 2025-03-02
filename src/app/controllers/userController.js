@@ -20,7 +20,6 @@ exports.postSignUp = async (req, res, next) => {
 
     if (password !== confirmPassword) {
       return res.render("register", {
-        layout: "layouts/auth",
         title: "register",
         error: "Mật khẩu không khớp!",
       });
@@ -29,7 +28,6 @@ exports.postSignUp = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.render("register", {
-        layout: "layouts/auth",
         title: "register",
         error: "Email đã được đăng kí",
       });
@@ -55,7 +53,6 @@ exports.postSignUp = async (req, res, next) => {
     await user.save();
 
     res.render("login", {
-      layout: "layouts/auth",
       title: "Login",
       message: "Hãy kiểm tra email của bạn để xác thực tài khoản",
     });
@@ -73,7 +70,6 @@ exports.postSignIn = async (req, res, next) => {
 
     if (!user) {
       return res.render("login", {
-        layout: "layouts/auth",
         title: "Login",
         error: "Tài khoản không tồn tại",
       });
@@ -81,7 +77,6 @@ exports.postSignIn = async (req, res, next) => {
 
     if (user.provider === "google") {
       return res.render("login", {
-        layout: "layouts/auth",
         title: "Login",
         error:
           "Tài khoản này đã đăng ký bằng Google. Vui lòng đăng nhập bằng Google.",
@@ -90,7 +85,6 @@ exports.postSignIn = async (req, res, next) => {
 
     if (user.status !== "ACTIVE") {
       return res.render("login", {
-        layout: "layouts/auth",
         title: "Login",
         error: "Tài khoản của bạn chưa kích hoạt",
       });
@@ -99,7 +93,6 @@ exports.postSignIn = async (req, res, next) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.render("login", {
-        layout: "layouts/auth",
         title: "Login",
         error: "Mật khẩu sai",
       });
@@ -113,7 +106,6 @@ exports.postSignIn = async (req, res, next) => {
   } catch (err) {
     console.error(err);
     res.render("login", {
-      layout: "layouts/auth",
       title: "Login",
       error: "Có sự cố, vui lòng đăng nhập sau",
     });
@@ -122,7 +114,7 @@ exports.postSignIn = async (req, res, next) => {
 
 // [GET] => getResetPassword
 exports.getResetPassword = async (req, res, next) => {
-  res.render("reset-password", { layout: "layouts/auth", title: "Reset" });
+  res.render("reset-password", { title: "Reset" });
 };
 
 // [POST] => postNewPassword
@@ -131,23 +123,26 @@ exports.postResetNewPassword = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.render("reset-password", {
-        layout: "layouts/auth",
         title: "Reset",
         error: "Tài khoản không tồn tại",
       });
     }
-    user.resetToken = await genarateResetToken();
+
+    const resetToken = await genarateResetToken();
+    const hashedToken = await bcrypt.hash(resetToken, 12);
+
+    user.resetToken = hashedToken;
     user.resetTokenExpiration = Date.now() + 3600000;
-    await sendMail(req.body.email, user.resetToken, false);
     await user.save();
+
+    await sendMail(req.body.email, resetToken, false);
+
     res.render("login", {
-      layout: "layouts/auth",
       title: "Login",
       message: "Kiểm tra tài khoản email của bạn để thay đổi mật khẩu",
     });
   } catch (err) {
-    console.error(err);
-    res.redirect("/reset-password");
+    res.render("reset-password", { message: "Có sự cố, vui lòng thử lại sau" });
   }
 };
 
@@ -155,22 +150,28 @@ exports.postResetNewPassword = async (req, res, next) => {
 exports.getNewPassword = async (req, res, next) => {
   try {
     const { resetToken } = req.params;
-    const user = await User.findOne({
+
+    const users = await User.find({
       resetTokenExpiration: { $gt: Date.now() },
     });
 
-    if (!user || !(await bcrypt.compare(resetToken, user.resetToken))) {
-      return res.redirect("/");
+    const user = users.find((u) =>
+      bcrypt.compareSync(resetToken, u.resetToken)
+    );
+
+    if (!user) {
+      return res.render("login", {
+        message: "Xác thực tài khoản không thành công, token không hợp lệ",
+      });
     }
 
     res.render("new-password", {
-      layout: "layouts/auth",
       title: "New Password",
       userId: user._id.toString(),
     });
   } catch (err) {
     console.error(err);
-    res.redirect("/reset-password");
+    next(err);
   }
 };
 
@@ -180,30 +181,34 @@ exports.postNewPassword = async (req, res, next) => {
     const { userId, password } = req.body;
     const user = await User.findById(userId);
     if (!user) {
-      return res.redirect("/login");
+      return res.redirect("/auth/login");
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     user.password = hashedPassword;
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
-    alert("Thay đổi mật khẩu thành công!");
-    res.redirect("/login");
+    res.render("login", { message: "Thay đổi mật khẩu thành công!" });
   } catch (err) {
-    console.error(err);
-    res.redirect("/login");
+    res.redirect("/auth/login");
   }
 };
 // [get] => getVerify
 exports.getVerify = async (req, res, next) => {
   try {
     const { resetToken } = req.params;
-    const user = await User.findOne({
+
+    const users = await User.find({
       resetTokenExpiration: { $gt: Date.now() },
     });
 
-    if (!user || !(await bcrypt.compare(resetToken, user.resetToken))) {
+    const user = users.find((u) =>
+      bcrypt.compareSync(resetToken, u.resetToken)
+    );
+
+    if (!user) {
       return res.render("login", {
+        title: "Login",
         message: "Xác thực tài khoản không thành công, token không hợp lệ",
       });
     }
@@ -214,13 +219,12 @@ exports.getVerify = async (req, res, next) => {
     await user.save();
 
     res.render("login", {
-      layout: "layouts/auth",
       title: "Login",
       message: "Xác thực tài khoản thành công!",
     });
   } catch (err) {
     console.error(err);
-    res.redirect("/");
+    next(err);
   }
 };
 
@@ -538,7 +542,7 @@ exports.changePassword = async (req, res) => {
 // [POST] => postLogout
 exports.postLogout = async (req, res, next) => {
   req.session.destroy((err) => {
-    res.redirect("/login");
+    res.redirect("/auth/login");
   });
 };
 
@@ -553,10 +557,10 @@ exports.googleLogin = (req, res, next) => {
 exports.googleLoginCallback = (req, res, next) => {
   passport.authenticate(
     "google",
-    { failureRedirect: "/login" },
+    { failureRedirect: "/auth/login" },
     (err, user) => {
       if (err) return next(err);
-      if (!user) return res.redirect("/login");
+      if (!user) return res.redirect("/auth/login");
       req.logIn(user, (err) => {
         if (err) return next(err);
         req.session.user = { ...user };
