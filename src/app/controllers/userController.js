@@ -1,5 +1,6 @@
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const User = require("../models/User");
 const { sendMail } = require("../../config/email");
 const { genarateResetToken } = require("../../util");
@@ -36,6 +37,8 @@ exports.postSignUp = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const resetToken = crypto.randomBytes(32).toString("hex");
+    console.log(resetToken);
+
     const hashedToken = await bcrypt.hash(resetToken, 12);
 
     const user = new User({
@@ -126,8 +129,6 @@ exports.getResetPassword = async (req, res, next) => {
 exports.postResetNewPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    console.log(req.body.email);
-
     if (!user) {
       return res.render("reset-password", {
         layout: "layouts/auth",
@@ -154,17 +155,18 @@ exports.postResetNewPassword = async (req, res, next) => {
 exports.getNewPassword = async (req, res, next) => {
   try {
     const { resetToken } = req.params;
-    const responseUser = await User.findOne({
-      resetToken: resetToken,
+    const user = await User.findOne({
       resetTokenExpiration: { $gt: Date.now() },
     });
-    if (!responseUser) {
+
+    if (!user || !(await bcrypt.compare(resetToken, user.resetToken))) {
       return res.redirect("/");
     }
+
     res.render("new-password", {
       layout: "layouts/auth",
       title: "New Password",
-      userId: responseUser._id.toString(),
+      userId: user._id.toString(),
     });
   } catch (err) {
     console.error(err);
@@ -193,21 +195,24 @@ exports.postNewPassword = async (req, res, next) => {
   }
 };
 // [get] => getVerify
-
 exports.getVerify = async (req, res, next) => {
   try {
     const { resetToken } = req.params;
     const user = await User.findOne({
-      resetToken: resetToken,
       resetTokenExpiration: { $gt: Date.now() },
     });
-    if (!user) {
-      return res.redirect("/login");
+
+    if (!user || !(await bcrypt.compare(resetToken, user.resetToken))) {
+      return res.render("login", {
+        message: "Xác thực tài khoản không thành công, token không hợp lệ",
+      });
     }
+
     user.status = "ACTIVE";
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
+
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
@@ -218,6 +223,7 @@ exports.getVerify = async (req, res, next) => {
     res.redirect("/");
   }
 };
+
 exports.updateProfile = async (req, res) => {
   try {
     let avatarUrl = null;
