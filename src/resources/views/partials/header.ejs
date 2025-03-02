@@ -32,21 +32,25 @@
         <div class="user-avatar">
           <img src="<%= user.avatar %>" alt="Avatar" />
           <div class="dropdown">
-            <span><%= user.name %></span>
+            <span>
+              <%= user.name %>
+            </span>
             <div class="dropdown-content">
               <a href="/users/<%= user._id %>">Hồ sơ</a>
-              <a href="/logout">Đăng xuất</a>
+              <form action="/logout" method="POST">
+                <button type="submit">Đăng xuất</button>
+              </form>
             </div>
           </div>
         </div>
         <% } else { %>
-        <!-- Nếu chưa đăng nhập, hiển thị nút -->
-        <div class="auth-links">
-          <a href="/login">Đăng nhập</a>
-          <a href="/">|</a>
-          <a href="/register">Đăng ký</a>
-        </div>
-        <% } %>
+          <!-- Nếu chưa đăng nhập, hiển thị nút -->
+          <div class="auth-links">
+            <a href="/login">Đăng nhập</a>
+            <a href="/">|</a>
+            <a href="/register">Đăng ký</a>
+          </div>
+          <% } %>
 
     </div>
 

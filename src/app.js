@@ -1,46 +1,30 @@
 require("dotenv").config();
 const express = require("express");
 const db = require("./config/db");
-const app = express();
 const router = require("./routes");
 const path = require("path");
+const passport = require("./config/oauth20");
+const sessionMiddleware = require("./config/session");
 const expressLayouts = require("express-ejs-layouts");
 
-const MongoStore = require("connect-mongo");
-const session = require("express-session");
-// const csurf = require("csurf");
+const app = express();
 const port = process.env.PORT || 3000;
-const dbUri = process.env.DB_URI;
-const sessionSecret = process.env.SESSION_SECRET;
-const ageSession = Number(process.env.AGE_SESSION);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "resources", "views"));
 
 app.use(expressLayouts);
 app.set("layout", "layouts/main");
+
 db.connect();
 
-app.use(
-  express.urlencoded({
-    extended: true,
-  })
-);
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(
-  session({
-    secret: sessionSecret,
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: dbUri,
-    }),
-    cookie: {
-      maxAge: ageSession,
-    },
-  })
-);
+app.use(sessionMiddleware);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((req, res, next) => {
   res.locals.session = req.session;
@@ -49,8 +33,8 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// app.use(csurfProtection);
-
 router(app);
 
-app.listen(port);
+app.listen(port, () => {
+  console.log(`Server đang chạy tại http://localhost:${port}`);
+});

@@ -8,6 +8,7 @@ const cloudinary = require("../../config/cloudinary/index.js");
 const multer = require("multer");
 const fs = require("fs");
 const stream = require("stream");
+const passport = require("passport");
 
 const storage = multer.memoryStorage();
 
@@ -64,6 +65,15 @@ exports.postSignIn = async (req, res, next) => {
       });
     }
 
+    if (user.provider === "google") {
+      return res.render("login", {
+        layout: "layouts/auth",
+        title: "Login",
+        error:
+          "Tài khoản này đã được đăng ký bằng Google. Vui lòng đăng nhập bằng Google.",
+      });
+    }
+
     if (user.status !== "ACTIVE") {
       return res.render("login", {
         layout: "layouts/auth",
@@ -81,8 +91,8 @@ exports.postSignIn = async (req, res, next) => {
       });
     }
 
-    req.session.user = { ...user.toObject() }; 
-    delete req.session.user.password; 
+    req.session.user = { ...user.toObject() };
+    delete req.session.user.password;
 
     req.session.save();
     res.redirect("/");
@@ -91,7 +101,7 @@ exports.postSignIn = async (req, res, next) => {
     res.render("login", {
       layout: "layouts/auth",
       title: "Login",
-      message: "Có sự cố, vui lòng đăng nhập sau",
+      error: "Có sự cố, vui lòng đăng nhập sau",
     });
   }
 };
@@ -512,4 +522,31 @@ exports.postLogout = async (req, res, next) => {
   req.session.destroy((err) => {
     res.redirect("/login");
   });
+};
+
+// [GET] => /auth/google
+exports.googleLogin = (req, res, next) => {
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })(req, res, next);
+};
+
+// [GET] => /auth/google/callback
+exports.googleLoginCallback = (req, res, next) => {
+  passport.authenticate(
+    "google",
+    { failureRedirect: "/login" },
+    (err, user) => {
+      if (err) return next(err);
+      if (!user) return res.redirect("/login");
+      req.logIn(user, (err) => {
+        if (err) return next(err);
+        req.session.user = { ...user };
+        delete req.session.user.password;
+        req.session.save(() => {
+          res.redirect("/");
+        });
+      });
+    }
+  )(req, res, next);
 };
