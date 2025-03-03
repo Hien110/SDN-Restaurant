@@ -8,7 +8,7 @@ const BookingTableSchema = new Schema({
     timeUse: { type: Number, default: 3 },
     customer: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     table: {type: mongoose.Schema.Types.ObjectId, ref: 'Table', required: true},  
-    request: { type: String, required: false },
+    request: { type: String, required: false }, 
 });
 
 module.exports = mongoose.model('BookingTable', BookingTableSchema);
