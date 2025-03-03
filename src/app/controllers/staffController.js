@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 exports.getStaffs = async (req, res) => {
     try {
         const searchQuery = req.query.search ? req.query.search.trim() : ""; 
-        const roleFilter = req.query.role ? req.query.role.trim() : ""; 
+        const roleFilter = req.query.role && req.query.role.trim() !== "" ? req.query.role.trim() : null; 
 
         let queryCondition = { role: { $ne: "CUSTOMER" } };
 
@@ -19,7 +19,8 @@ exports.getStaffs = async (req, res) => {
             ];
         }
 
-        if (roleFilter) {
+        // ❌ Fix lỗi: Khi tạo nhân viên xong, không áp dụng lọc role mặc định
+        if (roleFilter !== null) {
             queryCondition.role = roleFilter;
         }
 
@@ -29,14 +30,21 @@ exports.getStaffs = async (req, res) => {
             layout: "layouts/mainAdmin",
             title: "Danh sách nhân viên",
             staffs,
-            searchQuery,
-            selectedRole: roleFilter,
+            searchQuery: searchQuery || "",  
+            selectedRole: roleFilter !== null ? roleFilter : "",  // ✅ Đảm bảo `selectedRole` rỗng nếu không chọn gì
         });
     } catch (error) {
         console.error("❌ Lỗi khi lấy danh sách nhân viên:", error);
-        return res.render("errorpage", { message: "Lỗi hệ thống, vui lòng thử lại" });
+        return res.render("errorpage", { 
+            message: "Lỗi hệ thống, vui lòng thử lại",
+            searchQuery: "", 
+            selectedRole: "",
+        });
     }
 };
+
+
+
 
 
 exports.getStaffDetail = async (req, res) => {
@@ -156,10 +164,10 @@ exports.update = async (req, res) => {
 };
 
 exports.createStaff = async (req, res) => {
-    const { firstName, lastName, email, password, phone, confirmPassword, salary } = req.body;
+    const { firstName, lastName, email, password, phone, confirmPassword, salary, role } = req.body;
 
     try {
-        
+        // 1️⃣ Kiểm tra xem email đã tồn tại chưa
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.render("createStaff", {
@@ -190,7 +198,7 @@ exports.createStaff = async (req, res) => {
             email,
             password: hashedPassword,
             phoneNumber: phone,
-            role: "WAITER",
+            role: role || "WAITER",
             status: "ACTIVE",
         });
 
@@ -217,16 +225,11 @@ exports.createStaff = async (req, res) => {
             console.error("Lỗi gửi email:", err);
         }
 
-        return res.render("viewStaffInformation", {
-            layout: "layouts/mainAdmin",
-            title: "View Staff Information",
-            staffs: await User.find({ role: "WAITER" }),
-            successMessage: "Tạo tài khoản thành công!",
-            errorMessage: null,
-        });
+        // 8️⃣ Load lại danh sách toàn bộ nhân viên sau khi tạo
+        return res.redirect("/staffs?role="); // ✅ Reset bộ lọc role để hiển thị tất cả nhân viên
 
     } catch (error) {
-        console.error("Lỗi khi tạo nhân viên:", error);
+        console.error("❌ Lỗi khi tạo nhân viên:", error);
         return res.render("createStaff", {
             layout: "layouts/mainAdmin",
             title: "Create Staff",
@@ -235,6 +238,7 @@ exports.createStaff = async (req, res) => {
         });
     }
 };
+
 
 
 

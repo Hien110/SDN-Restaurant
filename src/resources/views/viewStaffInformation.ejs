@@ -21,15 +21,16 @@
     <!-- Thanh tìm kiếm -->
     <div class="search-bar">
         <form action="/staffs" method="GET">
-            <input type="text" name="search" placeholder="Nhập tên nhân viên..." value="<%= searchQuery ? searchQuery : '' %>">
+            <input type="text" name="search" placeholder="Nhập tên nhân viên..." 
+                   value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
 
             <!-- Dropdown lọc theo vai trò -->
             <select class="dropdown-role" name="role">
-                <option value="">Tất cả vai trò</option>
-                <option value="WAITER" <%= selectedRole === "WAITER" ? "selected" : "" %>>Waiter</option>
-                <option value="KITCHENSTAFF" <%= selectedRole === "KITCHENSTAFF" ? "selected" : "" %>>Kitchen Staff</option>
-                <option value="RESMANAGER" <%= selectedRole === "RESMANAGER" ? "selected" : "" %>>Restaurant Manager</option>
-                <option value="RESOWNER" <%= selectedRole === "RESOWNER" ? "selected" : "" %>>Restaurant Owner</option>
+                <option value="" <%= typeof selectedRole !== 'undefined' && selectedRole === "" ? "selected" : "" %>>Tất cả vai trò</option>
+                <option value="WAITER" <%= typeof selectedRole !== 'undefined' && selectedRole === "WAITER" ? "selected" : "" %>>Waiter</option>
+                <option value="KITCHENSTAFF" <%= typeof selectedRole !== 'undefined' && selectedRole === "KITCHENSTAFF" ? "selected" : "" %>>Kitchen Staff</option>
+                <option value="RESMANAGER" <%= typeof selectedRole !== 'undefined' && selectedRole === "RESMANAGER" ? "selected" : "" %>>Restaurant Manager</option>
+                <option value="RESOWNER" <%= typeof selectedRole !== 'undefined' && selectedRole === "RESOWNER" ? "selected" : "" %>>Restaurant Owner</option>
             </select>
 
             <button type="submit">Tìm kiếm</button>
@@ -54,7 +55,7 @@
             </tr>
         </thead>
         <tbody>
-            <% if (staffs.length > 0) { %>
+            <% if (staffs && staffs.length > 0) { %>
                 <% staffs.forEach((staff, index) => { %>
                     <tr>
                         <td><%= index + 1 %></td> <!-- Hiển thị số thứ tự -->
@@ -78,7 +79,7 @@
                 <% }); %>
             <% } else { %>
                 <tr>
-                    <td colspan="8" class="no-result">Không tìm thấy nhân viên nào phù hợp!</td>
+                    <td colspan="7" class="no-result">Không tìm thấy nhân viên nào phù hợp!</td>
                 </tr>
             <% } %>
         </tbody>
