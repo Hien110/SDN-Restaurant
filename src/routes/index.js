@@ -1,5 +1,6 @@
+module.exports = routes;
+
 const express = require("express");
-const router = express.Router();
 const authRouter = require("./authRouter");
 const siteRouter = require("./siteRouter");
 const bookingRouter = require("./bookingTableRouter");
@@ -10,12 +11,14 @@ const isAuth = require("../app/middlewares/is-auth");
 const BookingTable = require("../app/models/BookingTable");
 const Table = require("../app/models/Table");
 const User = require("../app/models/User");
+const router = express.Router();
 const menuRoutes = require('./menuRoutes');
 
 function routes(app) {
   app.use('/admin/menu', menuRoutes);
   app.use("/restaurantInfor", restaurantRouter);
   app.use("/",isAuth.setUser, getFooterData, siteRouter);
+  app.use("/auth", authRouter);
   app.use("/", authRouter);
   app.use('/users', userRoutes); 
   app.use('/bookingTable', bookingRouter); 
@@ -70,6 +73,7 @@ function routes(app) {
         res.status(500).json({ message: "Lỗi máy chủ, vui lòng thử lại sau." });
     }
 });
+  
 }
 
 module.exports = routes;

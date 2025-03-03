@@ -63,14 +63,13 @@
         <div class="edit-buttons">
           <% if (typeof users.googleId==='undefined' ) { %>
             <a href="/users/change-password/<%= users.id %>">
-              <button class="e
-              dit-btn">Đổi mật khẩu</button>
+              <button class="edit-btn">Đổi mật khẩu</button>
             </a>
             <%}%>
               <a href="/users/update-profile/<%= users.id %>">
                 <button class="edit-btn">Cập nhật thông tin</button>
               </a>
-              <a href="/users/update-profile/<%= users.id %>">
+              <a href="/bookingTable/bookingHistory/<%= users.id %>">
                 <button class="edit-btn">Lịch sử đặt bàn</button>
               </a>
         </div>

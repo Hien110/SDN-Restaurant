@@ -39,17 +39,17 @@
             </span>
             <div class="dropdown-content">
               <a href="/users/<%= user._id %>">Hồ sơ</a>
-              <form action="/logout" method="POST">
-                <button class="but1" style="background-color: #FFF; border: none; text-align: center;" type="submit">Đăng xuất</button>
+              <form action="/auth/logout" method="POST">
+                <button type="submit">Đăng xuất</button>
               </form>
             </div>
           </div>
         </div>
         <% } else { %>
           <div class="auth-links">
-            <a href="/login">Đăng nhập</a>
+            <a href="/auth/login">Đăng nhập</a>
             <a href="/">|</a>
-            <a href="/register">Đăng ký</a>
+            <a href="/auth/register">Đăng ký</a>
           </div>
           <% } %>
 
