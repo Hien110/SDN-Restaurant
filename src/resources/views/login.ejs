@@ -1,0 +1,30 @@
+<body>
+  <nav>
+    <a href="#"><img src="/image/logoRes.png" alt="logo" /></a>
+  </nav>
+  <div class="form-wrapper">
+    <h2>Đăng nhập</h2>
+    <h3>
+      <%= typeof message !=='undefined' ? message: "" %>
+    </h3>
+    <form action="/sign-in" method="POST">
+      <div class="form-control">
+        <input type="email" name="email" required>
+        <label>Email </label>
+      </div>
+      <div class="form-control">
+        <input type="password" name="password" required>
+        <label>Mật khẩu</label>
+      </div>
+      <button type="submit">Đăng nhập</button>
+      <div>
+      </div>
+      <div>
+        <p style="padding-top: 8px; font-size: 14px;">Bạn chưa có tài khoản? <a href="./register">Đăng
+            ký</a>
+        </p>
+        <a href="/reset-password">Quên mật khẩu</a>
+      </div>
+    </form>
+  </div>
+</body>

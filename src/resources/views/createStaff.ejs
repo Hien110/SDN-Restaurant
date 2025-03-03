@@ -1,0 +1,54 @@
+<head>
+    <link rel="stylesheet" href="/css/createStaff.css">
+</head>
+
+<div class="staff-container">
+    <h1 class="form-title">Tạo nhân viên mới</h1>
+
+    
+    <% if (typeof errorMessage !== "undefined" && errorMessage) { %>
+        <div class="alert error"><%= errorMessage %></div>
+    <% } %>
+
+    <form action="/staffs/create" method="POST" class="staff-form">
+        <div class="input-group">
+            <label>Họ</label>
+            <input type="text" name="firstName" required placeholder="Nhập họ nhân viên">
+        </div>
+
+        <div class="input-group">
+            <label>Tên</label>
+            <input type="text" name="lastName" required placeholder="Nhập tên nhân viên">
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" name="email" required placeholder="Nhập email nhân viên">
+        </div>
+
+        <div class="input-group">
+            <label>Số điện thoại</label>
+            <input type="text" name="phone" required placeholder="Nhập số điện thoại">
+        </div>
+
+        <div class="input-group">
+            <label>Mật khẩu</label>
+            <input type="password" name="password" required placeholder="Nhập mật khẩu">
+        </div>
+
+        <div class="input-group">
+            <label>Xác nhận mật khẩu</label>
+            <input type="password" name="confirmPassword" required placeholder="Nhập lại mật khẩu">
+        </div>
+
+        <div class="input-group">
+            <label>Mức lương</label>
+            <input type="number" name="salary" required placeholder="Nhập mức lương">
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-submit">Tạo nhân viên</button>
+            <a href="/staffs" class="btn-back">Quay lại danh sách</a>
+        </div>
+    </form>
+</div>
