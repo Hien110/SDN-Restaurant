@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authController = require("../app/controllers/userController");
-const siteController = require("../app/controllers/SiteController");//BE
+const siteController = require("../app/controllers/SiteController"); //BE
 router.post("/sign-up", authController.postSignUp);
 router.post("/sign-in", authController.postSignIn);
 router.post("/reset-password", authController.postResetNewPassword);
@@ -14,7 +14,7 @@ router.get("/new-password/:resetToken", authController.getNewPassword);
 router.get("/login", siteController.index);
 router.get("/register", siteController.register);
 router.get("/reset-password", authController.getResetPassword);
-router.get("/auth/google", authController.googleLogin);
-router.get("/auth/google/callback", authController.googleLoginCallback);
+router.get("/google", authController.googleLogin);
+router.get("/google/callback", authController.googleLoginCallback);
 
 module.exports = router;
