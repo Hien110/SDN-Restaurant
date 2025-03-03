@@ -1,5 +1,6 @@
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 const User = require("../models/User");
 const { sendMail } = require("../../config/email");
 const { genarateResetToken } = require("../../util");
@@ -8,45 +9,53 @@ const cloudinary = require("../../config/cloudinary/index.js");
 const multer = require("multer");
 const fs = require("fs");
 const stream = require("stream");
+const passport = require("passport");
 
 const storage = multer.memoryStorage();
 
 exports.upload = multer({ storage: storage });
-
-// [POST] => /sign-up
 exports.postSignUp = async (req, res, next) => {
   try {
     const { email, password, phone, confirmPassword } = req.body;
 
-    const existingUser = await User.findOne({ email: email });
-    if (existingUser) {
+    if (password !== confirmPassword) {
       return res.render("register", {
-        layout: "layouts/auth",
         title: "register",
-        error: "Tài khoản tồn tại",
+        error: "Mật khẩu không khớp!",
       });
     }
+
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.render("register", { message: "Account already exists" });
+      return res.render("register", {
+        title: "register",
+        error: "Email đã được đăng kí",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    console.log(resetToken);
+
+    const hashedToken = await bcrypt.hash(resetToken, 12);
+
     const user = new User({
-      email: email,
+      email,
       password: hashedPassword,
       phoneNumber: phone,
       role: "CUSTOMER",
       status: "INACTIVE",
+      resetToken: hashedToken,
+      resetTokenExpiration: Date.now() + 3600000,
     });
-    user.resetToken = await genarateResetToken();
-    user.resetTokenExpiration = Date.now() + 3600000;
-    await sendMail(req.body.email, user.resetToken, true);
-    res.render("login", {
-      layout: "layouts/auth",
-      title: "Login",
-      message: "Please check your email to verify account",
-    });
+
+    await sendMail(email, resetToken, true);
     await user.save();
+
+    res.render("login", {
+      title: "Login",
+      message: "Hãy kiểm tra email của bạn để xác thực tài khoản",
+    });
   } catch (err) {
     console.error(err);
     next(err);
@@ -57,78 +66,83 @@ exports.postSignUp = async (req, res, next) => {
 exports.postSignIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
       return res.render("login", {
-        layout: "layouts/auth",
         title: "Login",
-        message: "Account does not exist",
+        error: "Tài khoản không tồn tại",
+      });
+    }
+
+    if (user.provider === "google") {
+      return res.render("login", {
+        title: "Login",
+        error:
+          "Tài khoản này đã đăng ký bằng Google. Vui lòng đăng nhập bằng Google.",
       });
     }
 
     if (user.status !== "ACTIVE") {
       return res.render("login", {
-        message: "Account is not active, try again",
+        title: "Login",
+        error: "Tài khoản của bạn chưa kích hoạt",
       });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.render("login", {
-        layout: "layouts/auth",
         title: "Login",
-        message: "Invalid password",
+        error: "Mật khẩu sai",
       });
     }
 
-    req.session.user = {
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    };
-    req.session.save();
-    res.redirect("/");
+    req.session.user = { ...user.toObject() };
+    delete req.session.user.password;
+    req.session.save(() => {
+      res.redirect("/");
+    });
   } catch (err) {
     console.error(err);
     res.render("login", {
-      layout: "layouts/auth",
       title: "Login",
-      message: "Something went wrong, please try again",
+      error: "Có sự cố, vui lòng đăng nhập sau",
     });
   }
 };
 
 // [GET] => getResetPassword
 exports.getResetPassword = async (req, res, next) => {
-  res.render("reset-password", { layout: "layouts/auth", title: "Reset" });
+  res.render("reset-password", { title: "Reset" });
 };
 
 // [POST] => postNewPassword
 exports.postResetNewPassword = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    console.log(req.body.email);
-
     if (!user) {
       return res.render("reset-password", {
-        layout: "layouts/auth",
         title: "Reset",
-        message: "Account does not exist",
+        error: "Tài khoản không tồn tại",
       });
     }
-    user.resetToken = await genarateResetToken();
+
+    const resetToken = await genarateResetToken();
+    const hashedToken = await bcrypt.hash(resetToken, 12);
+
+    user.resetToken = hashedToken;
     user.resetTokenExpiration = Date.now() + 3600000;
-    await sendMail(req.body.email, user.resetToken, false);
     await user.save();
+
+    await sendMail(req.body.email, resetToken, false);
+
     res.render("login", {
-      layout: "layouts/auth",
       title: "Login",
-      message: "Please check your email to reset password",
+      message: "Kiểm tra tài khoản email của bạn để thay đổi mật khẩu",
     });
   } catch (err) {
-    console.error(err);
-    res.redirect("/reset-password");
+    res.render("reset-password", { message: "Có sự cố, vui lòng thử lại sau" });
   }
 };
 
@@ -136,21 +150,28 @@ exports.postResetNewPassword = async (req, res, next) => {
 exports.getNewPassword = async (req, res, next) => {
   try {
     const { resetToken } = req.params;
-    const responseUser = await User.findOne({
-      resetToken: resetToken,
+
+    const users = await User.find({
       resetTokenExpiration: { $gt: Date.now() },
     });
-    if (!responseUser) {
-      return res.redirect("/");
+
+    const user = users.find((u) =>
+      bcrypt.compareSync(resetToken, u.resetToken)
+    );
+
+    if (!user) {
+      return res.render("login", {
+        message: "Xác thực tài khoản không thành công, token không hợp lệ",
+      });
     }
+
     res.render("new-password", {
-      layout: "layouts/auth",
       title: "New Password",
-      userId: responseUser._id.toString(),
+      userId: user._id.toString(),
     });
   } catch (err) {
     console.error(err);
-    res.redirect("/reset-password");
+    next(err);
   }
 };
 
@@ -160,46 +181,53 @@ exports.postNewPassword = async (req, res, next) => {
     const { userId, password } = req.body;
     const user = await User.findById(userId);
     if (!user) {
-      return res.redirect("/login");
+      return res.redirect("/auth/login");
     }
     const hashedPassword = await bcrypt.hash(password, 12);
     user.password = hashedPassword;
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
-    alert("Password reset successfully!");
-    res.redirect("/login");
+    res.render("login", { message: "Thay đổi mật khẩu thành công!" });
   } catch (err) {
-    console.error(err);
-    res.redirect("/login");
+    res.redirect("/auth/login");
   }
 };
 // [get] => getVerify
-
 exports.getVerify = async (req, res, next) => {
   try {
     const { resetToken } = req.params;
-    const user = await User.findOne({
-      resetToken: resetToken,
+
+    const users = await User.find({
       resetTokenExpiration: { $gt: Date.now() },
     });
+
+    const user = users.find((u) =>
+      bcrypt.compareSync(resetToken, u.resetToken)
+    );
+
     if (!user) {
-      return res.redirect("/login");
+      return res.render("login", {
+        title: "Login",
+        message: "Xác thực tài khoản không thành công, token không hợp lệ",
+      });
     }
+
     user.status = "ACTIVE";
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
+
     res.render("login", {
-      layout: "layouts/auth",
       title: "Login",
-      message: "Account is verify successfully, please login",
+      message: "Xác thực tài khoản thành công!",
     });
   } catch (err) {
     console.error(err);
-    res.redirect("/");
+    next(err);
   }
 };
+
 exports.updateProfile = async (req, res) => {
   try {
     let avatarUrl = null;
@@ -233,6 +261,7 @@ exports.updateProfile = async (req, res) => {
 
           if (avatarUrl) {
             updatedData.avatar = avatarUrl;
+            req.session.user.avatar = avatarUrl;
           }
 
           User.findByIdAndUpdate(userId, updatedData, { new: true })
@@ -422,8 +451,8 @@ exports.findById = async (req, res) => {
     if (!user) {
       return res.render("errorpage");
     }
-
-    res.render("informationUser", { users: user });
+    const error = req.query.error || "";
+    res.render("informationUser", { users: user, error  });
   } catch (error) {
     console.error(error);
     res.status(500).send("Lỗi server");
@@ -513,6 +542,33 @@ exports.changePassword = async (req, res) => {
 // [POST] => postLogout
 exports.postLogout = async (req, res, next) => {
   req.session.destroy((err) => {
-    res.redirect("/login");
+    res.redirect("/auth/login");
   });
+};
+
+// [GET] => /auth/google
+exports.googleLogin = (req, res, next) => {
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })(req, res, next);
+};
+
+// [GET] => /auth/google/callback
+exports.googleLoginCallback = (req, res, next) => {
+  passport.authenticate(
+    "google",
+    { failureRedirect: "/auth/login" },
+    (err, user) => {
+      if (err) return next(err);
+      if (!user) return res.redirect("/auth/login");
+      req.logIn(user, (err) => {
+        if (err) return next(err);
+        req.session.user = { ...user };
+        delete req.session.user.password;
+        req.session.save(() => {
+          res.redirect("/");
+        });
+      });
+    }
+  )(req, res, next);
 };

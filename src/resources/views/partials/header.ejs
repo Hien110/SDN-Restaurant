@@ -5,6 +5,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
   <link href="/css/header.css" rel="stylesheet" />
+  <script src="/js/header.js"></script>
 </head>
 
 <body>
@@ -17,26 +18,41 @@
       </div>
     </div>
     <div class="nav-links">
-      <a href="#"> Trang chủ </a>
+      <a href="/"> Trang chủ </a>
       <a href="#"> Về chúng tôi </a>
       <a href="#"> Thực đơn </a>
-      <a href="#"> Đặt chỗ </a>
+      <a href="/bookingTable"> Đặt chỗ </a>
       <a href="#"> Khuyễn mãi </a>
       <a href="#"> Tin tức </a>
     </div>
 
     <div class="user-menu">
-      <div class="auth-links">
-        <% if(typeof user !=='undefined' ){ %>
-          <a href="/login">Đăng nhập</a>
-          <p>|</p>
-          <a href="/register">Đăng ký</a>
-          <%}else{%>
-            <form action="/logout" method="POST">
-              <button type="submit">Đăng xuất</button>
-            </form>
-            <%}%>
-      </div>
+      <% if (user) { %>
+        <div class="user-avatar">
+          <img src="<%= user.avatar %>" alt="Avatar" />
+          <div class="dropdown">
+            <span>
+              <%= user.name %>
+            </span>
+            <span>
+              <%= user.name %>
+            </span>
+            <div class="dropdown-content">
+              <a href="/users/<%= user._id %>">Hồ sơ</a>
+              <form action="/auth/logout" method="POST">
+                <button type="submit">Đăng xuất</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <% } else { %>
+          <div class="auth-links">
+            <a href="/auth/login">Đăng nhập</a>
+            <a href="/">|</a>
+            <a href="/auth/register">Đăng ký</a>
+          </div>
+          <% } %>
+
     </div>
 
   </div>

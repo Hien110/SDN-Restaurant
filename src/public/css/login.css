@@ -5,9 +5,11 @@
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
+
 body {
     background: #000;
 }
+
 body::before {
     content: "";
     position: absolute;
@@ -24,9 +26,11 @@ nav {
     padding: 25px 60px;
     z-index: 1;
 }
+
 nav a img {
     width: 167px;
 }
+
 .form-wrapper {
     position: absolute;
     left: 50%;
@@ -35,15 +39,18 @@ nav a img {
     padding: 70px;
     width: 450px;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, .25);
+    background: rgb(0 0 0 / 30%)
 }
+
 .form-wrapper h2 {
     color: #fff;
     font-size: 2rem;
 }
+
 .form-wrapper form {
     margin: 25px 0 0px;
 }
+
 form .form-control {
     height: 50px;
     position: relative;
@@ -60,6 +67,12 @@ form .form-control {
     font-size: 1rem;
     padding: 0 20px;
 }
+
+.form-control {
+    padding: 0;
+    border: #333;
+}
+
 .form-control input:is(:focus, :valid) {
     background: #444;
     padding: 16px 20px 0;
@@ -92,58 +105,106 @@ form button {
     cursor: pointer;
     transition: 0.1s ease;
 }
+
 form button:hover {
     background: #c40812;
 }
+
 .form-wrapper a {
     text-decoration: none;
 }
+
 .form-wrapper a:hover {
     text-decoration: underline;
 }
+
 .form-wrapper :where(label, p, small, a) {
     color: #b3b3b3;
 }
+
 form .form-help {
     display: flex;
     justify-content: space-between;
 }
+
 form .remember-me {
     display: flex;
 }
+
 form .remember-me input {
     margin-right: 5px;
     accent-color: #b3b3b3;
 }
+
 form .form-help :where(label, a) {
     font-size: 0.9rem;
 }
+
 .form-wrapper p a {
     color: #fff;
 }
+
 .form-wrapper small {
     display: block;
     margin-top: 15px;
     color: #b3b3b3;
 }
+
 .form-wrapper small a {
     color: #0071eb;
 }
+
 @media (max-width: 740px) {
     body::before {
         display: none;
     }
-    nav, .form-wrapper {
+
+    nav,
+    .form-wrapper {
         padding: 20px;
     }
+
     nav a img {
         width: 140px;
     }
+
     .form-wrapper {
         width: 100%;
         top: 43%;
     }
+
     .form-wrapper form {
         margin: 25px 0 40px;
     }
+}
+
+.google-login {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    color: #757575;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-decoration: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.google-btn img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.google-btn:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
