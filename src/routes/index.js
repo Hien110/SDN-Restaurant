@@ -21,7 +21,7 @@ function routes(app) {
   app.use("/", authRouter);
   app.use('/users', userRoutes); 
   app.use('/bookingTable', bookingRouter); 
-  app.use("/staffs", staffRouter);
+  app.use('/admin/staffs', staffRouter);
 
   app.post("/bookingTable", async (req, res) => {
     try {

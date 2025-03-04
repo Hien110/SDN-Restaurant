@@ -20,7 +20,7 @@
 
     <!-- Thanh tìm kiếm -->
     <div class="search-bar">
-        <form action="/staffs" method="GET">
+        <form action="/admin/staffs" method="GET">
             <input type="text" name="search" placeholder="Nhập tên nhân viên..." 
                    value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
 
@@ -39,7 +39,7 @@
 
     <!-- Nút tạo nhân viên -->
     <div class="action-bar">
-      <a href="/staffs/create" class="btn-create">Tạo nhân viên mới</a>
+      <a href="/admin/staffs/create" class="btn-create">Tạo nhân viên mới</a>
     </div>
 
     <table class="employee-table">
@@ -64,7 +64,7 @@
                         <td><%= staff.phoneNumber %></td>
                         <td><%= staff.role %></td>
                         <td>
-                            <form action="/staffs/lock/<%= staff._id %>" method="POST">
+                            <form action="/admin/staffs/lock/<%= staff._id %>" method="POST">
                                 <% if (staff.status === "ACTIVE") { %>
                                     <button type="submit" class="btn-lock">Khóa</button>
                                 <% } else { %>
@@ -73,7 +73,7 @@
                             </form>
                         </td>
                         <td>
-                            <a href="/staffs/detail/<%= staff._id %>" class="btn-view-detail">Xem chi tiết</a>
+                            <a href="/admin/staffs/detail/<%= staff._id %>" class="btn-view-detail">Xem chi tiết</a>
                         </td>
                     </tr>
                 <% }); %>

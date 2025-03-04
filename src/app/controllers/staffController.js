@@ -179,14 +179,14 @@ exports.createStaff = async (req, res) => {
         }
 
         // 2️⃣ Kiểm tra mật khẩu có khớp không
-        if (password !== confirmPassword) {
-            return res.render("createStaff", {
-                layout: "layouts/mainAdmin",
-                title: "Create Staff",
-                errorMessage: "Mật khẩu xác nhận không khớp",
-                successMessage: null,
-            });
-        }
+        // if (password !== confirmPassword) {
+        //     return res.render("createStaff", {
+        //         layout: "layouts/mainAdmin",
+        //         title: "Create Staff",
+        //         errorMessage: "Mật khẩu xác nhận không khớp",
+        //         successMessage: null,
+        //     });
+        // }
 
         // 3️⃣ Mã hóa mật khẩu
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -226,7 +226,7 @@ exports.createStaff = async (req, res) => {
         }
 
         // 8️⃣ Load lại danh sách toàn bộ nhân viên sau khi tạo
-        return res.redirect("/staffs?role="); // ✅ Reset bộ lọc role để hiển thị tất cả nhân viên
+        return res.redirect("/admin/staffs?role="); // ✅ Reset bộ lọc role để hiển thị tất cả nhân viên
 
     } catch (error) {
         console.error("❌ Lỗi khi tạo nhân viên:", error);
@@ -253,7 +253,7 @@ exports.lockStaff = async (req, res) => {
         user.status = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
         await user.save();
 
-        return res.redirect("/staffs"); 
+        return res.redirect("/admin/staffs"); 
     } catch (error) {
         console.error("Lỗi khi cập nhật trạng thái nhân viên:", error);
         return res.render("errorpage", { message: "Lỗi hệ thống, vui lòng thử lại" });

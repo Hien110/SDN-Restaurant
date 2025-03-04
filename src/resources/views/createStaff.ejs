@@ -9,7 +9,7 @@
         <div class="alert error"><%= errorMessage %></div>
     <% } %>
 
-    <form action="/staffs/create" method="POST" class="staff-form">
+    <form action="/admin/staffs/create" method="POST" class="staff-form">
         <div class="input-group">
             <label>Họ</label>
             <input type="text" name="firstName" required placeholder="Nhập họ nhân viên">
@@ -40,6 +40,9 @@
             <input type="password" name="confirmPassword" required placeholder="Nhập lại mật khẩu">
         </div>
 
+        <!-- Error message for password mismatch -->
+        <div id="passwordError" class="alert error" style="display: none;"></div>
+
         <div class="input-group">
             <label>Mức lương</label>
             <input type="number" id="salary" name="salary" required placeholder="Nhập mức lương" oninput="checkSalary()">
@@ -50,12 +53,33 @@
 
         <div class="button-group">
             <button type="submit" class="btn-submit">Tạo nhân viên</button>
-            <a href="/staffs" class="btn-back">Quay lại danh sách</a>
+            <a href="/admin/staffs" class="btn-back">Quay lại danh sách</a>
         </div>
     </form>
 </div>
 
 <script>
+    // Function to check if the password and confirm password match
+    function validatePasswords() {
+        const password = document.querySelector('input[name="password"]').value;
+        const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
+        const errorMessageDiv = document.getElementById("passwordError");
+
+        if (password !== confirmPassword) {
+            // Display an error message if passwords do not match
+            errorMessageDiv.textContent = "Mật khẩu và xác nhận mật khẩu không khớp!";
+            errorMessageDiv.style.display = "block";
+        } else {
+            // Remove the error message if passwords match
+            errorMessageDiv.style.display = "none";
+        }
+    }
+
+    // Attach the validatePasswords function to the input events of both password fields
+    document.querySelector('input[name="password"]').addEventListener('input', validatePasswords);
+    document.querySelector('input[name="confirmPassword"]').addEventListener('input', validatePasswords);
+
+    // Function to check salary
     function checkSalary() {
         const salaryInput = document.getElementById("salary");
         const warning = document.getElementById("salaryWarning");
