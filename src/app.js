@@ -17,6 +17,8 @@ app.set("views", path.join(__dirname, "resources", "views"));
 app.use(expressLayouts);
 app.set("layout", "layouts/main");
 
+app.use(expressLayouts);
+app.set("layout", "layouts/main");
 db.connect();
 
 app.use(express.urlencoded({ extended: true }));

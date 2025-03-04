@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap");
-
 * {
     margin: 0;
     padding: 0;
@@ -22,7 +21,6 @@ body::before {
     background: url("../image/image.png") no-repeat;
     background-position: center;
 }
-
 nav {
     position: fixed;
     padding: 25px 60px;
@@ -58,7 +56,6 @@ form .form-control {
     position: relative;
     margin-bottom: 16px;
 }
-
 .form-control input {
     height: 100%;
     width: 100%;
@@ -80,7 +77,6 @@ form .form-control {
     background: #444;
     padding: 16px 20px 0;
 }
-
 .form-control label {
     position: absolute;
     left: 20px;
@@ -91,12 +87,10 @@ form .form-control {
     color: #8c8c8c;
     transition: all 0.1s ease;
 }
-
 .form-control input:is(:focus, :valid)~label {
     font-size: 0.75rem;
     transform: translateY(-130%);
 }
-
 form button {
     width: 100%;
     padding: 16px 0;
