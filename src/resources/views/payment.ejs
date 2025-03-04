@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Secure Payment Page">
+  <meta name="author" content="Your Company Name">
+  <title>Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    img {
+      width: 100%;
+      max-width: 300px;
+      margin-top: 20px;
+    }
+
+    .info {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    .expires {
+      color: red;
+      font-weight: bold;
+    }
+
+    #countdown {
+      font-size: 18px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+  <script>
+    function startCountdown(expiryTime) {
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const timeLeft = expiryTime - now; // Tính thời gian còn lại
+        console.log(now);
+
+        if (timeLeft <= 0) {
+          document.getElementById("countdown").innerText = "Expired";
+          return;
+        }
+
+        const minutes = Math.floor(timeLeft / (1000 * 60)); // Chuyển đổi thời gian còn lại thành phút
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000); // Chuyển đổi thời gian còn lại thành giây
+
+        document.getElementById("countdown").innerText = `${minutes}m ${seconds}s`;
+        setTimeout(updateCountdown, 1000);
+      }
+      updateCountdown();
+    }
+
+    window.onload = function () {
+      const expiryTime = new Date("<%= bookingTable.expiresAt %>").getTime(); // Lấy thời gian hết hạn
+      startCountdown(expiryTime);
+    };
+
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Payment Details</h2>
+    <p class="info">Please scan the QR code below to complete your payment.</p>
+
+    <img
+      src="https://img.vietqr.io/image/<%= bankId %>-<%= accountNo %>-qr_only.jpg?amount=<%= amount %>&addInfo=<%= bookingTable.bookingTableId %>"
+      alt="QR Code for Payment">
+
+    <div class="info">
+      <p><strong>Booking ID:</strong>
+        <%= bookingTable.bookingTableId %>
+      </p>
+      <p><strong>Amount:</strong>
+        <%= amount %> VND
+      </p>
+      <p><strong>Bank ID:</strong>
+        <%= bankId %>
+      </p>
+      <p><strong>Account Number:</strong>
+        <%= accountNo %>
+      </p>
+      <p class="expires">Expires at: <%= bookingTable.orderDate %>:<%= bookingTable.orderTime %>
+      </p>
+      <p>Time left: <span id="countdown"></span></p>
+    </div>
+  </div>
+</body>
+
+</html>
