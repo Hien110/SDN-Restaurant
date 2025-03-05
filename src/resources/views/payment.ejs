@@ -97,7 +97,11 @@
       <p><strong>Account Number:</strong>
         <%= accountNo %>
       </p>
-      <p class="expires">Expires at: <%= bookingTable.orderDate %>:<%= bookingTable.orderTime %>
+      <p class="expires">Expires at: <%= bookingTable.orderDay %> <span>,</span>
+          <%= bookingTable.orderDate %> <span style="color: black;">:</span>
+            <%= bookingTable.orderTime %><span style="color: black;"></span>
+
+      </p>
       </p>
       <p>Time left: <span id="countdown"></span></p>
     </div>
