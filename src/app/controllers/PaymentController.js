@@ -8,6 +8,10 @@ exports.checkPaid = async (req, res) => {
     }
 
     const dataJson = await response.json();
+    console.log(dataJson);
+    const hasHihiDescription = dataJson.some((item) =>
+      item.description.toLowerCase().includes("hihi")
+    );
 
     res.status(200).json({ success: true, hasHihiDescription });
   } catch (error) {
