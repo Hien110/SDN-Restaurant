@@ -9,10 +9,6 @@ exports.checkPaid = async (req, res) => {
 
     const dataJson = await response.json();
 
-    const hasHihiDescription = dataJson.some(
-      (item) => item["Mô tả"] === "hihi"
-    );
-
     res.status(200).json({ success: true, hasHihiDescription });
   } catch (error) {
     console.error("Error:", error);
