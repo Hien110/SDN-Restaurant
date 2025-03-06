@@ -1,5 +1,3 @@
-module.exports = routes;
-
 const express = require("express");
 const authRouter = require("./authRouter");
 const siteRouter = require("./siteRouter");
@@ -11,6 +9,7 @@ const isAuth = require("../app/middlewares/is-auth");
 const BookingTable = require("../app/models/BookingTable");
 const Table = require("../app/models/Table");
 const User = require("../app/models/User");
+const staffRouter = require("./staffRouter");
 const router = express.Router();
 const menuRoutes = require("./menuRoutes");
 const payment = require("./paymentRoutes");
@@ -21,9 +20,11 @@ function routes(app) {
   app.use("/", isAuth.setUser, getFooterData, siteRouter);
   app.use("/auth", authRouter);
   app.use("/", authRouter);
-  app.use("/users", userRoutes);
+
   app.use("/bookingTable", bookingRouter);
   app.use("/payment", payment);
+  app.use('/users', userRoutes); 
+  app.use('/admin/staffs', staffRout
 
   app.post("/bookingTable", async (req, res) => {
     try {
