@@ -1,4 +1,4 @@
-<html>
+
   <head>
     <title>Footer Section</title>
     <link
@@ -21,7 +21,7 @@
       </div>
       <div>
         <h3>Địa chỉ</h3>
-        <p style="width: 170px; "><%= footerData.address %></p>
+        <p style="width: 170px;"><%= footerData && footerData.address ? footerData.address : 'Địa chỉ chưa cập nhật' %></p>
       </div>
       <div>
         <h3>Thời gian mở cửa</h3>
@@ -44,7 +44,3 @@
       </div>
       <div class="phone-icon">
         <i class="fas fa-phone"> </i>
-      </div>
-    </div>
-  </body>
-</html>

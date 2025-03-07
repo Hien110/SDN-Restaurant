@@ -1,0 +1,31 @@
+
+<div class="container mt-4 shadow-lg p-4 bg-light rounded">
+    <h2 class="text-center mb-4">➕ Thêm Bàn Mới</h2>
+
+    <form action="/tables/create" method="POST" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="idTable" class="form-label">Mã bàn</label>
+            <input type="text" class="form-control" id="idTable" name="idTable" required>
+        </div>
+        <div class="mb-3">
+            <label for="seatNumber" class="form-label">Số chỗ ngồi</label>
+            <input type="number" class="form-control" id="seatNumber" name="seatNumber" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Mô tả</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="depositPrice" class="form-label">Giá đặt cọc</label>
+            <input type="number" class="form-control" id="depositPrice" name="depositPrice">
+        </div>
+        <div class="mb-3">
+            <label for="status" class="form-label">Trạng thái</label>
+            <select class="form-control" id="status" name="status">
+                <option value="available">Có sẵn</option>
+                <option value="reserved">Đã đặt</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success w-100">✅ Thêm Bàn</button>
+    </form>
+</div>
