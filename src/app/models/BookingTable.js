@@ -17,5 +17,11 @@ const BookingTableSchema = new Schema({
 });
 
 BookingTableSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+BookingTableSchema.pre("deleteMany", function (next) {
+  if (this.getFilter().expiresAt) {
+    this.getFilter().isPaid = false;
+  }
+  next();
+});
 
 module.exports = mongoose.model("BookingTable", BookingTableSchema);

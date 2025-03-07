@@ -1,5 +1,6 @@
 require("dotenv").config();
 const apiGetPaid = process.env.API_GET_BANK;
+const BookingTable = require("../models/BookingTable");
 
 exports.checkPaid = async (req, res) => {
   try {
@@ -18,7 +19,7 @@ exports.checkPaid = async (req, res) => {
     }
 
     const descriptions = await response.json();
-
+    console.log("Danh sách mô tả giao dịch:", descriptions);
     if (!Array.isArray(descriptions) || descriptions.length === 0) {
       return res.status(404).json({
         success: false,
@@ -33,7 +34,9 @@ exports.checkPaid = async (req, res) => {
     if (!isPaid) {
       console.log(`Không tìm thấy giao dịch với mô tả: ${description}`);
     }
-
+    const booking = await BookingTable.findByIdAndUpdate(description);
+    booking.isPaid = isPaid;
+    booking.save();
     return res.status(200).json({ success: true, isPaid });
   } catch (error) {
     console.error("Lỗi khi kiểm tra thanh toán:", error);
