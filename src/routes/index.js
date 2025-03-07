@@ -23,8 +23,8 @@ function routes(app) {
 
   app.use("/bookingTable", bookingRouter);
   app.use("/payment", payment);
-  app.use('/users', userRoutes); 
-  app.use('/admin/staffs', staffRout
+  app.use("/users", userRoutes);
+  app.use("/admin/staffs", staffRouter);
 
   app.post("/bookingTable", async (req, res) => {
     try {
