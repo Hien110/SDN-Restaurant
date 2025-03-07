@@ -1,7 +1,7 @@
 <head>
   <link rel="stylesheet" href="/css/bookingTable.css" />
-   <script>
-    window.bookings = <%- JSON.stringify(bookings) %> // Biến toàn cục lưu danh sách bàn đã đặt;
+  <script>
+    window.bookings = <% - JSON.stringify(bookings) %> // Biến toàn cục lưu danh sách bàn đã đặt;
   </script>
   <script src="/js/bookingTable.js"></script>
 </head>
@@ -10,8 +10,7 @@
     <div style="margin-top: 20px; margin-bottom: 20px;" class="image-section">
       <img
         alt="A variety of buffet dishes displayed on a table. Text overlay: 'Ăn buffet mãi mê không giới hạn thời gian. Hotline: 0905 455 033 - 0905 435 033. 209/5 Nguyễn Văn Thoại, Sơn Trà, Đà Nẵng'"
-        src="/image/map.jpg"
-      />
+        src="/image/map.jpg" />
     </div>
     <div class="form-section">
       <h1>HÃY ĐẶT BÀN NGAY NÀO!</h1>
@@ -36,38 +35,31 @@
         <div class="form-group">
           <label for="guests">Chọn bàn</label>
           <div class="table-list">
-            <% tables.forEach(table => { %>
-              <div class="table-card disabled" 
-                  id="table-<%= table._id %>" 
-                  data-table-id="<%= table._id %>" 
-                  >
-                <div class="table-id">Bàn <%= table.idTable %></div>
+            <% tables.forEach(table=> { %>
+              <div class="table-card disabled" id="table-<%= table._id %>" data-table-id="<%= table._id %>">
+                <div class="table-id">Bàn <%= table.idTable %>
+                </div>
+                <div class="deposit-price">Giá đặt cọc: <%= table.depositPrice %>
+                </div>
                 <div class="table-seat">Số ghế: <%= table.seatNumber %> (+2)</div>
                 <div class="table-status unknown">Chưa xác định</div>
               </div>
-            <% }) %>
+              <% }) %>
           </div>
         </div>
-        
+
         <!-- Input ẩn để lưu ID bàn được chọn -->
         <input type="hidden" id="selectedTableId" name="selectedTableId" />
-        
+
         <div class="form-group">
           <label for="email"> Email xác nhận đặt bàn </label>
-          <input
-          readonly value="<%=user.email %>"
-          />
+          <input readonly value="<%= user.email %>" />
         </div>
         <div class="form-group">
           <label for="requests"> Yêu cầu thêm </label>
-          <textarea
-            id="requests"
-            name="requests"
-            placeholder="Nhập yêu cầu cần hỗ trợ..."
-            rows="4"
-          ></textarea>
+          <textarea id="requests" name="requests" placeholder="Nhập yêu cầu cần hỗ trợ..." rows="4"></textarea>
         </div>
-       
+
         <div class="form-group">
           <input type="submit" value="Đặt ngay" />
         </div>
