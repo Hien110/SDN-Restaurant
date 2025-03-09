@@ -1,8 +1,8 @@
 const Table = require("../models/Table");
 const mongoose = require("mongoose");
 
-const cloudinary = require("../config/cloudinary/index.js");
-const multer = require("multe");
+const cloudinary = require("../../config/cloudinary/index");
+const multer = require("multer");
 const fs = require("fs");
 const stream = require("stream");
 const { table } = require("console");
@@ -100,10 +100,10 @@ exports.createTables = async (req, res) => {
 
     await newTable.save(); // Lưu vào database
 
-    res.render("createTables", { success: "Thêm bàn thành công!" });
+    res.render("addTable", { success: "Thêm bàn thành công!" });
   } catch (error) {
     console.error("❌ Lỗi khi tạo bàn:", error);
-    res.render("createTables", { error: "Có lỗi xảy ra khi thêm bàn." });
+    res.render("addTable", { error: "Có lỗi xảy ra khi thêm bàn." });
   }
 };
 

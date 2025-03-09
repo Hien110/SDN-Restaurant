@@ -1,7 +1,59 @@
 
-<div class="container mt-4 shadow-lg p-4 bg-light rounded">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông báo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="container mt-4 shadow-lg p-4 bg-light rounded">
+        <div id="alert-container"></div>
+        <div id="icon-container" class="text-center"></div>
+    </div>
+
+    <script>
+        // Giả lập dữ liệu success hoặc error (trong thực tế có thể lấy từ backend hoặc biến JavaScript khác)
+        var success = "Thành công! Dữ liệu đã được cập nhật.";
+        var error = ""; // Nếu có lỗi, thay đổi giá trị này
+
+        // Lấy phần tử để hiển thị thông báo
+        var alertContainer = document.getElementById("alert-container");
+        var iconContainer = document.getElementById("icon-container");
+
+        if (success) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> ${success}
+                </div>
+            `;
+            iconContainer.innerHTML = `<i class="bi bi-emoji-smile display-3 text-success"></i>`;
+        } else if (error) {
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> ${error}
+                </div>
+            `;
+            iconContainer.innerHTML = `<i class="bi bi-emoji-frown display-3 text-danger"></i>`;
+        }
+    </script>
+</body>
+</html>
+
     <h2 class="text-center mb-4">➕ Thêm Bàn Mới</h2>
 
+    <!-- Form cập nhật ảnh đại diện -->
+    <form action="/tables/update-image" method="POST" enctype="multipart/form-data" class="mb-4">
+        <div class="mb-3">
+            <label for="avatar" class="form-label">Ảnh đại diện</label>
+            <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+        </div>
+        
+    </form>
+
+    <!-- Form tạo bàn mới -->
     <form action="/tables/create" method="POST" class="needs-validation" novalidate>
         <div class="mb-3">
             <label for="idTable" class="form-label">Mã bàn</label>
@@ -28,4 +80,11 @@
         </div>
         <button type="submit" class="btn btn-success w-100">✅ Thêm Bàn</button>
     </form>
+
+    <!-- Điều hướng đến danh sách bàn -->
+    <div class="text-center mt-4">
+        <a href="/tables" class="btn btn-outline-secondary">
+            <i class="bi bi-list"></i> Danh Sách Bàn
+        </a>
+    </div>
 </div>

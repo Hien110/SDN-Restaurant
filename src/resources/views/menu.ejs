@@ -3,13 +3,22 @@
 <head>
   <meta charset="utf-8">
   <title>Danh sách món ăn</title>
+  <!-- Sử dụng file menu.css đã chỉnh sửa -->
   <link rel="stylesheet" href="/css/menu.css">
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 <body>
-  <!-- Header chứa tiêu đề và nút Thêm món ăn cùng hàng -->
+  <!-- Header chứa tiêu đề và nút Thêm món ăn -->
   <header class="menu-header">
     <h1>Danh sách món ăn</h1>
-    <button class="btn-add" onclick="window.location.href='/api/menu/add'">Thêm món ăn</button>
+    <button class="btn-add" onclick="window.location.href='/admin/menu/add'">
+      <i class="fas fa-plus"></i>
+    </button>
   </header>
 
   <main class="menu-container">
@@ -17,39 +26,53 @@
       <div class="menu-list">
         <% menus.forEach((dish) => { %>
           <div class="menu-item">
-            <!-- Ảnh món ăn (bên trái) -->
+            <!-- Cột trái: Ảnh món ăn -->
             <div class="menu-item-left">
               <img 
-                src="/image/com-rang-thap-cam.jpg" 
-                alt="Cơm rang thập cẩm"
+              src="<%= dish.imageUrl %>"
+              alt="<%= dish.foodName %>"
               />
             </div>
-            <!-- Khối thông tin món ăn (bên phải) -->
+
+            <!-- Cột phải: Thông tin món ăn -->
             <div class="menu-item-right">
-              <!-- Hàng trên: Tên món ở bên trái, Giá và nút Sửa ở bên phải -->
-              <div class="menu-text-top">
-                <div class="dish-info-left">
-                  <h3 class="dish-name">
-                    <a href="/chi-tiet/<%= dish._id %>"><%= dish.foodName %></a>
-                  </h3>
-                </div>
-                <div class="dish-info-right">
-                  <span class="dish-price"><%= dish.price %> VND</span>
+
+              <!-- Hàng trên: Tên món + Giá -->
+              <div class="dish-top-row">
+                <h3 class="dish-name">
+                  <a href="/admin/menu/detail/<%= dish._id %>">
+                    <%= dish.foodName %>
+                  </a>
+                </h3>
+                <span class="dish-price">
+                  <%= parseFloat(dish.price.toString()).toLocaleString('vi-VN') %> VND
+                </span>
+              </div>
+
+              <!-- Hàng giữa: Mô tả -->
+              <div class="dish-middle-row">
+                <p class="dish-description">
+                  <%= dish.description %>
+                </p>
+              </div>
+
+              <!-- Hàng dưới: Đánh giá + Nút Sửa/Xóa -->
+              <div class="dish-bottom-row">
+                <span class="dish-rating">
+                  <% for (let i = 0; i < 5; i++) { %>
+                    <i class="fas fa-star star-icon"></i>
+                  <% } %>
+                </span>
+                <div class="dish-actions">
+                  <button class="btn-edit fas fa-edit" onclick="editDish('<%= dish._id %>')">
+                    Sửa
+                  </button>
+                  <button class="btn-delete fas fa-times" onclick="deleteDish('<%= dish._id %>')">
+                    Xóa
+                  </button>
                 </div>
               </div>
-              <!-- Hàng dưới: Mô tả bên trái, Đánh giá sao và nút Xóa bên phải -->
-              <div class="menu-text-bottom">
-                <div class="dish-desc-left">
-                  <p class="dish-description"><%= dish.description %></p>
-                </div>
-                <div class="dish-desc-right">
-                  <span class="dish-rating"><%= dish.starRating %> sao</span>
-                </div>
-              </div>
-              <div class="menu-item-buttons">
-                <button class="btn-edit" onclick="editDish('<%= dish._id %>')">Sửa</button>
-                <button class="btn-delete" onclick="deleteDish('<%= dish._id %>')">Xóa</button>
-              </div>
+
             </div>
           </div>
         <% }) %>
@@ -59,21 +82,36 @@
     <% } %>
   </main>
 
-
+  <!-- Script cho chức năng sửa/xóa -->
   <script>
     function editDish(id) {
-      window.location.href = '/api/menu/edit/' + id;
+      window.location.href = '/admin/menu/edit/' + id;
     }
+
     function deleteDish(id) {
-      if (confirm('Bạn có chắc chắn muốn xóa món ăn này?')) {
-        fetch('/api/menu/' + id, { method: 'DELETE' })
-          .then(res => res.json())
-          .then(data => {
-            alert('Đã xóa món ăn!');
-            window.location.reload();
-          })
-          .catch(err => console.error(err));
-      }
+      Swal.fire({
+        title: 'Xác nhận xóa món ăn',
+        text: 'Bạn có chắc chắn muốn xóa món ăn này?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+        
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch('/admin/menu/' + id, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => {
+              Swal.fire('Đã xóa!', 'Món ăn đã được xóa.', 'success')
+                .then(() => {
+                  window.location.reload();
+                });
+            })
+            .catch(err => console.error(err));
+        }
+      });
     }
   </script>
 </body>

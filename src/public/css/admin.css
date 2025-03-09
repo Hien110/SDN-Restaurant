@@ -37,11 +37,14 @@ body {
   }
   #sidebar .components li a:hover {
     background-color: #e9ecef;
+    transition: background-color 0.3s ease;
   }
   #sidebar .components li.active > a {
-    background-color: #e9ecef;
-    font-weight: 500;
+    background-color: #f0f0f0;
+    color: #1c1c1c;
+    font-weight: bold;
   }
+  
   
   /* Phần nội dung chính (lệch phải do sidebar chiếm 240px) */
   #content {
@@ -52,6 +55,8 @@ body {
   .navbar {
     margin-bottom: 0;
     background-color: #343a40;
+    display: flex;
+    justify-content: space-between;
   }
   
   /* Card */
@@ -67,3 +72,9 @@ body {
     height: auto;
   }
   
+  .tilte-rest{
+    font-size: 35px;
+    font-weight: 900;
+    color: #A82825;
+    margin-right: 80px;
+  }
