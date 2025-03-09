@@ -12,6 +12,8 @@ const User = require("../app/models/User");
 const staffRouter = require("./staffRouter");
 const router = express.Router();
 const menuRoutes = require('./menuRoutes');
+const takeCareRouter = require('./takecareRouter');
+
 
 function routes(app) {
   app.use('/admin/menu', menuRoutes);
@@ -22,6 +24,7 @@ function routes(app) {
   app.use('/users', userRoutes); 
   app.use('/bookingTable', bookingRouter); 
   app.use('/admin/staffs', staffRouter);
+  app.use('/admin/takeCare', takeCareRouter);
 
   app.post("/bookingTable", async (req, res) => {
     try {
