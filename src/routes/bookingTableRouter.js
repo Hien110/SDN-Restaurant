@@ -5,6 +5,7 @@ const userController = require("../app/controllers/userController");
 const bookingTableController = require("../app/controllers/BookingTableController");
 
 bookingRouter.get('/',isAuth.requireAuth, bookingTableController.index);
+bookingRouter.get('/management', bookingTableController.listBookingManagement);
 bookingRouter.get('/bookingHistory/:id', bookingTableController.bookingHistory);
 bookingRouter.get('/bookingDetail/:id', bookingTableController.historyDetail);
 bookingRouter.get('/bookingDetail/:id/edit', bookingTableController.updateForm);

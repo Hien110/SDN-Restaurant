@@ -18,22 +18,50 @@
             <input type="date" id="filter-date" class="w-1/4 p-2 border border-gray-300">
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="reservation-list">
-            <div class="bg-white p-4 rounded-lg shadow-md reservation-row">
-                <h2 class="text-lg font-bold mb-2 customer-name">Nguyễn Văn A</h2>
-                <p class="text-gray-600">ID: 1</p>
-                <p class="text-gray-600">Số Điện Thoại: 0123456789</p>
-                <p class="text-gray-600 reservation-date">2023-10-01</p>
-                <p class="text-gray-600">Giờ Đặt: 18:00</p>
-                <p class="text-gray-600">Số Người: 4</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-md reservation-row">
-                <h2 class="text-lg font-bold mb-2 customer-name">Đỗ Thị L</h2>
-                <p class="text-gray-600">ID: 12</p>
-                <p class="text-gray-600">Số Điện Thoại: 0987654321</p>
-                <p class="text-gray-600 reservation-date">2023-10-12</p>
-                <p class="text-gray-600">Giờ Đặt: 20:00</p>
-                <p class="text-gray-600">Số Người: 3</p>
-            </div>
+            <% if (bookings.length > 0) { %>
+                <% bookings.forEach(booking => { %>
+                    <div class="bg-white p-4 rounded-lg shadow-md reservation-row">
+                        <h2 class="text-lg font-bold mb-2 customer-name"><%= booking.customer.firstName %> <%= booking.customer.lastName %></h2>
+                        <p class="text-gray-600">Số bàn: <%= booking.table.idTable %></p>
+                        <p class="text-gray-600">Số Điện Thoại: <%= booking.customer.phoneNumber %></p>
+                        <p class="text-gray-600 reservation-date"><%= booking.orderDate.toISOString().split('T')[0] %></p>
+                        <p class="text-gray-600">Giờ Đặt: <%= new Date(booking.orderDate).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) %></p>
+                        <p class="text-gray-600">Bàn: <%= booking.table.idTable %></p>
+                        <p class="text-gray-600">Yêu cầu: <%= booking.request || "Không có" %></p>
+                        <% if (booking.isPaid) { %>
+                            <p
+                              class="title-history"
+                              style="
+                                background-color: #6aff68;
+                                text-align: center;
+                                padding: 3px 0px;
+                                border-radius: 10px;
+                              "
+                            >
+                             
+                                Đã thanh toán
+                            
+                            </p>
+                            <% } else { %>
+                              <p
+                              class="title-history"
+                              style="
+                                background-color: #ff5050;
+                                text-align: center;
+                                padding: 3px 10px;
+                                border-radius: 10px;
+                              "
+                            >
+                             
+                                Chưa thanh toán
+                            
+                            </p>
+                            <% } %>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="text-center text-gray-600">Chưa có đặt bàn nào.</p>
+            <% } %>
         </div>
     </div>
 

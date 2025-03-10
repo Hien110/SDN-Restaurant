@@ -46,6 +46,25 @@ class BookingTableController {
     }
   };
 
+
+  listBookingManagement = async (req, res, next) => {
+    try {
+      const bookings = await BookingTable.find()
+      .populate('table')
+      .populate('customer');
+      return res.render("bookingTableManagement", {
+        layout: "layouts/mainAdmin",
+        title: "admin",
+        bookings: bookings,
+      });
+    } catch (err) {
+      console.error("Lỗi tại bookingTable:", err); // Log lỗi ra console
+      return res.render("errorpage", {
+        message: "Đã có lỗi xảy ra, vui lòng thử lại sau.",
+      });
+    }
+  };
+
   findAll = async (req, res) => {
     try {
       const bookings = await BookingTable.find();
