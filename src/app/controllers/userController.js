@@ -230,9 +230,11 @@ exports.getVerify = async (req, res, next) => {
 
 exports.updateProfile = async (req, res) => {
   try {
+    console.log("hihi");
     let avatarUrl = null;
 
     if (req.file) {
+      // Upload the new avatar to Cloudinary
       const result = await cloudinary.uploader.upload_stream(
         {
           folder: "avatars",
@@ -248,7 +250,8 @@ exports.updateProfile = async (req, res) => {
           }
 
           avatarUrl = result.secure_url;
-
+          console.log(avatarUrl);
+          
           const userId = req.params.id;
           const updatedData = {
             firstName: req.body.firstName,
@@ -260,16 +263,21 @@ exports.updateProfile = async (req, res) => {
           };
 
           if (avatarUrl) {
-            updatedData.avatar = avatarUrl;
-            req.session.user.avatar = avatarUrl;
+            updatedData.avatar = avatarUrl; 
+            req.session.user.avatar = avatarUrl; 
           }
-
+          
+          // Update user info in the databa se
           User.findByIdAndUpdate(userId, updatedData, { new: true })
             .then((updatedUser) => {
               if (!updatedUser) {
                 return res.status(404).json({ message: "User not found" });
               }
 
+              // Update the session with the latest user info
+              req.session.user = updatedUser;
+
+              // Render the updated profile page
               return res.render("updateProfile", {
                 successMessage: "Cập nhật thông tin cá nhân thành công",
                 user: updatedUser,
@@ -285,6 +293,7 @@ exports.updateProfile = async (req, res) => {
         }
       );
 
+      // Upload the avatar stream to Cloudinary
       const bufferStream = new stream.PassThrough();
       bufferStream.end(req.file.buffer);
       bufferStream.pipe(result);
@@ -299,11 +308,15 @@ exports.updateProfile = async (req, res) => {
         gender: req.body.gender,
       };
 
+      // If no avatar was uploaded, update only the other user data
       User.findByIdAndUpdate(userId, updatedData, { new: true })
         .then((updatedUser) => {
           if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
           }
+
+          // Update the session with the latest user info (without avatar)
+          req.session.user = updatedUser;
 
           return res.render("updateProfile", {
             successMessage: "Cập nhật thông tin cá nhân thành công",
@@ -321,6 +334,8 @@ exports.updateProfile = async (req, res) => {
     return res.status(500).json({ message: "Lỗi khi cập nhật hồ sơ" });
   }
 };
+
+
 exports.findAll = async (req, res) => {
   try {
     const users = await User.find({});
@@ -340,98 +355,6 @@ exports.create = async (req, res) => {
   }
 };
 
-exports.updateProfile = async (req, res) => {
-  try {
-    let avatarUrl = null;
-
-    if (req.file) {
-      const result = await cloudinary.uploader.upload_stream(
-        {
-          folder: "avatars",
-          public_id: `avatar_${Date.now()}`,
-          overwrite: true,
-        },
-        (error, result) => {
-          if (error) {
-            console.error("Lỗi khi tải ảnh lên Cloudinary:", error);
-            return res
-              .status(500)
-              .json({ message: "Lỗi khi tải ảnh lên Cloudinary" });
-          }
-
-          avatarUrl = result.secure_url;
-
-          const userId = req.params.id;
-          const updatedData = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            phoneNumber: req.body.phoneNumber,
-            address: req.body.address,
-            gender: req.body.gender,
-          };
-
-          if (avatarUrl) {
-            updatedData.avatar = avatarUrl;
-          }
-
-          User.findByIdAndUpdate(userId, updatedData, { new: true })
-            .then((updatedUser) => {
-              if (!updatedUser) {
-                return res.status(404).json({ message: "User not found" });
-              }
-
-              return res.render("updateProfile", {
-                successMessage: "Cập nhật thông tin cá nhân thành công",
-                user: updatedUser,
-                userId: userId,
-              });
-            })
-            .catch((error) => {
-              console.error("Lỗi khi cập nhật hồ sơ:", error);
-              return res
-                .status(500)
-                .json({ message: "Lỗi khi cập nhật hồ sơ" });
-            });
-        }
-      );
-
-      const bufferStream = new stream.PassThrough();
-      bufferStream.end(req.file.buffer);
-      bufferStream.pipe(result);
-    } else {
-      const userId = req.params.id;
-      const updatedData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        phoneNumber: req.body.phoneNumber,
-        address: req.body.address,
-        gender: req.body.gender,
-      };
-
-      User.findByIdAndUpdate(userId, updatedData, { new: true })
-        .then((updatedUser) => {
-          if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
-          }
-
-          return res.render("updateProfile", {
-            successMessage: "Cập nhật thông tin cá nhân thành công",
-            user: updatedUser,
-            userId: userId,
-          });
-        })
-        .catch((error) => {
-          console.error("Lỗi khi cập nhật hồ sơ:", error);
-          return res.status(500).json({ message: "Lỗi khi cập nhật hồ sơ" });
-        });
-    }
-  } catch (error) {
-    console.error("Lỗi khi cập nhật hồ sơ:", error);
-    return res.status(500).json({ message: "Lỗi khi cập nhật hồ sơ" });
-  }
-};
 
 exports.delete = async (req, res) => {
   try {
