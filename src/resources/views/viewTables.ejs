@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý bàn </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="bg-light">
+
+    <div class="container mt-4">
+        <h2 class="text-center text-primary fw-bold">📌 Quản lý bàn</h2>
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="/admin/tables/add" class="btn btn-success">➕ Thêm bàn mới</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover bg-white shadow-sm">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>ID Bàn</th>
+                        <th>Số Ghế</th>
+                        <th>Mô Tả</th>
+                        <th>Ảnh</th>
+                        <th>Giá Đặt Cọc</th>
+                        <th>Trạng Thái</th>
+                        <th>Loại</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <% tables.forEach(function(table) { %>
+                        <tr>
+                            <td><%= table.idTable %></td>
+                            <td><%= table.seatNumber %></td>
+                            <td><%= table.description %></td>
+                            <td>
+                                <% if (table.imageUrl) { %>
+                                    <img src="<%= table.imageUrl %>" alt="Ảnh bàn" class="img-thumbnail" width="60">
+                                <% } else { %>
+                                    <span class="text-muted">Không có ảnh</span>
+                                <% } %>
+                            </td>
+                            <td><%= table.depositPrice.toLocaleString() %> VNĐ</td>
+                            <td>
+                                <% if (table.status === "Trống") { %>
+                                    <span class="badge bg-success">Trống</span>
+                                <% } else { %>
+                                    <span class="badge bg-danger">Đã đặt</span>
+                                <% } %>
+                            </td>
+                            <td><%= table.type %></td>
+                            <td>
+                                <a href="/admin/tables/edit/<%= table._id %>" class="btn btn-warning btn-sm">✏️ Sửa</a>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete('<%= table._id %>')">🗑️ Xóa</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "Bạn có chắc chắn muốn xóa?",
+                text: "Hành động này không thể hoàn tác!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Có, xóa ngay!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/admin/tables/delete/" + id;
+                }
+            });
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
