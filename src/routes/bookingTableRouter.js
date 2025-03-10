@@ -7,7 +7,7 @@ const bookingTableController = require("../app/controllers/BookingTableControlle
 bookingRouter.get('/',isAuth.requireAuth, bookingTableController.index);
 bookingRouter.get('/bookingHistory/:id', bookingTableController.bookingHistory);
 bookingRouter.get('/bookingDetail/:id', bookingTableController.historyDetail);
-bookingRouter.get('/bookingDetail/:id/edit', bookingTableController.historyDetail);
+bookingRouter.get('/bookingDetail/:id/edit', bookingTableController.updateForm);
 bookingRouter.delete('/bookingDetail/:id', bookingTableController.deleteBooking);
 bookingRouter.post('/', bookingTableController.createBooking);
 

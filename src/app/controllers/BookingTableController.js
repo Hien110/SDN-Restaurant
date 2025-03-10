@@ -33,21 +33,6 @@ class BookingTableController {
       today.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00 để lấy từ đầu ngày
 
       const bookings = await BookingTable.find({ orderDate: { $gte: today } });
-      if (!tables.length) {
-        return res.render("bookingTable", {
-          user: user,
-          tables: [],
-          message: "Không có bàn trống.",
-        });
-      }
-
-      if (!bookings.length) {
-        return res.render("bookingTable", {
-          user: user,
-          tables: tables,
-          bookings: [],
-        });
-      }
       return res.render("bookingTable", {
         user: user,
         tables: tables,
@@ -74,18 +59,13 @@ class BookingTableController {
     try {
       const { dateBooking, timeBooking, selectedTableId, requests } = req.body;
       const userId = req.session.user._id;
-
       const table = await Table.findById(selectedTableId);
-      if (!table) {
-        return res.status(404).json({ message: "Bàn không tồn tại" });
-      }
-
       const dateTimeString = `${dateBooking}T${timeBooking}:00Z`;
 
       let bookings = await BookingTable.findOne({
         table: selectedTableId,
         isPaid: false,
-        customer: userId,
+        orderDate: dateTimeString
       });
 
       if (!bookings) {
@@ -94,6 +74,9 @@ class BookingTableController {
           customer: userId,
           table: selectedTableId,
           request: requests,
+          orderDate: dateTimeString,
+          isPaid: false,
+          
         });
 
         bookings = await bookingTable.save();
@@ -121,6 +104,44 @@ class BookingTableController {
       res.status(400).json({ message: error.message });
     }
   };
+
+  updateForm = async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+      const user = await User.findById(userId);
+      if (
+        user.firstName == undefined ||
+        user.firstName == "" ||
+        user.lastName == undefined ||
+        user.lastName == "" ||
+        user.phoneNumber == undefined ||
+        user.phoneNumber == "" ||
+        user.address == undefined ||
+        user.address == ""
+      ) {
+        return res.redirect(
+          `/users/${userId}?error=${encodeURIComponent(
+            "Bạn cần phải nhập đầy đủ thông tin"
+          )}`
+        );
+      }
+      const tables = await Table.find();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00 để lấy từ đầu ngày
+
+      const bookings = await BookingTable.find({ orderDate: { $gte: today } });
+      return res.render("bookingTable", {
+        user: user,
+        tables: tables,
+        bookings: bookings,
+      });
+    } catch (err) {
+      console.error("Lỗi tại bookingTable:", err); // Log lỗi ra console
+      return res.render("errorpage", {
+        message: "Đã có lỗi xảy ra, vui lòng thử lại sau.",
+      });
+    }
+  }
 
   update = async (req, res) => {
     try {
@@ -158,10 +179,6 @@ class BookingTableController {
         .populate("table") // Populate thông tin từ collection `tables`
         .populate("customer"); // Populate thông tin từ collection `customers`
 
-      if (!booking) {
-        return res.status(404).json({ message: "Booking not found." });
-      }
-
       const orderDate = moment(booking.orderDate);
       const formattedBooking = {
         ...booking.toObject(),
@@ -190,12 +207,7 @@ class BookingTableController {
       const userId = new mongoose.Types.ObjectId(String(req.params.id));
       const bookings = await BookingTable.find({ customer: userId }).populate(
         "table"
-      );
-
-      if (!bookings.length) {
-        return res.status(404).json({ message: "Không tìm thấy booking nào" });
-      }
-
+      )
       // Chuyển đổi ngày
       const formattedBookings = bookings.map((booking) => {
         const orderDate = moment(booking.orderDate);
