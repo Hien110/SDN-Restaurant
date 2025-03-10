@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!selectedDate || !selectedTime) return;
 
         const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
+        console.log(selectedDateTime);
         
         document.querySelectorAll(".table-card").forEach(table => {
             const tableId = table.getAttribute("data-table-id");
