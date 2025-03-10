@@ -10,7 +10,7 @@
 </head>
 <div>
   <header class="menu-header">
-    <button class="btn-return fas fa-chevron-left fa-lg" onclick="window.location.href='/admin/menu'">
+    <button class="btn-return fas fa-chevron-left fa-lg" onclick="window.location.href='/admin/editMenu'">
     </button>
     <h1>Tạo món ăn mới</h1>
   </header>
@@ -33,8 +33,8 @@
       </div>
     
       <div class="form-group">
-        <label for="imageUrl">Đường dẫn ảnh</label>
-        <input type="text" id="imageUrl" name="imageUrl" placeholder="URL ảnh món ăn" required>
+        <label for="image">Ảnh món ăn</label>
+        <input type="file" id="image" name="image" placeholder="image/*" required>
       </div>
     
       <button type="submit" class="submit-btn">Tạo món ăn</button>
@@ -42,39 +42,28 @@
   </div>
 </div>
 <script>
-  function handleFormSubmit(event) {
-    event.preventDefault(); // Ngăn chặn form gửi đi theo cách thông thường
-
+  async function handleFormSubmit(event) {
+    event.preventDefault(); // Ngăn form gửi theo cách truyền thống
     const form = document.getElementById("createDishForm");
     const formData = new FormData(form);
 
-    fetch("/admin/menu", {
-      method: "POST",
-      body: new URLSearchParams([...formData]), // Chuyển đổi FormData thành URLSearchParams
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
+    try {
+      // Gửi FormData (bao gồm file) trực tiếp
+      const response = await fetch("/admin/editMenu", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+
       if (data.success) {
         Swal.fire({
           title: "Hoàn tất!",
           text: "🎉 Tạo món ăn thành công",
           icon: "success",
-          background: "#ffffff",
-          color: "#333",
-          confirmButtonColor: "#ff7f50",
           confirmButtonText: "OK",
-          padding: "20px",
-          showClass: {
-            popup: "animate__animated animate__zoomIn"
-          },
-          hideClass: {
-            popup: "animate__animated animate__fadeOutDown"
-          }
         }).then(() => {
-          window.location.href = "/admin/menu"; // Chuyển về danh sách món ăn sau khi user bấm OK
+          window.location.href = "/admin/editMenu"; // Chuyển về danh sách món ăn
         });
       } else {
         Swal.fire({
@@ -84,15 +73,14 @@
           confirmButtonText: "Thử lại",
         });
       }
-    })
-    .catch(error => {
+    } catch (error) {
       Swal.fire({
         title: "Lỗi!",
         text: "Có lỗi xảy ra khi gửi dữ liệu.",
         icon: "error",
         confirmButtonText: "Thử lại",
       });
-    });
+    }
   }
 </script>
 </body>

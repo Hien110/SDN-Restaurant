@@ -12,10 +12,12 @@ const BookingTable = require("../app/models/BookingTable");
 const Table = require("../app/models/Table");
 const User = require("../app/models/User");
 const router = express.Router();
+const editMenuRoutes = require('./editMenuRoutes');
 const menuRoutes = require('./menuRoutes');
 
 function routes(app) {
-  app.use('/admin/menu', menuRoutes);
+  app.use('/menu',isAuth.setUser, getFooterData, menuRoutes)
+  app.use('/admin/editMenu', editMenuRoutes);
   app.use("/restaurantInfor", restaurantRouter);
   app.use("/",isAuth.setUser, getFooterData, siteRouter);
   app.use("/auth", authRouter);

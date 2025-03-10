@@ -1,118 +1,190 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Danh sách món ăn</title>
-  <!-- Sử dụng file menu.css đã chỉnh sửa -->
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Ẩm Thực</title>
+  <!-- Link đến file CSS riêng -->
   <link rel="stylesheet" href="/css/menu.css">
-  <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-  />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <!-- Các thư viện khác -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
-  <!-- Header chứa tiêu đề và nút Thêm món ăn -->
+  <!-- Header -->
   <header class="menu-header">
-    <h1>Danh sách món ăn</h1>
-    <button class="btn-add" onclick="window.location.href='/admin/menu/add'">
-      <i class="fas fa-plus"></i>
-    </button>
+    <h1>Menu Ẩm Thực</h1>
   </header>
-
-  <main class="menu-container">
-    <% if (menus && menus.length > 0) { %>
-      <div class="menu-list">
+  
+  <!-- Phần tìm kiếm và danh mục -->
+  <div class="container">
+    <div class="search-category">
+      <input class="search-input" id="search-dish" placeholder="Search your dish..." type="text"/>
+      <div class="filter-container">
+        <button class="filter-btn" onclick="toggleFilterMenu(event)">
+          <i class="fas fa-filter"></i>
+        </button>
+        <div id="filter-menu">
+          <button>Món mới nhất</button>
+          <button>Giá tăng dần</button>
+          <button>Giá giảm dần</button>
+          <button>Đang ưu đãi</button>
+          <button>Được đề xuất</button>
+        </div>
+      </div>
+    </div>
+    <div class="category-list">
+      <button class="category-btn active">
+        All
+        <span class="category-count"><%= menus.length %></span>
+      </button>
+      <button class="category-btn inactive">
+        Starters 
+        <span class="category-count">2</span>
+      </button>
+      <button class="category-btn inactive">
+        Desserts
+        <span class="category-count">3</span>
+      </button>
+      <button class="category-btn inactive">
+        Drinks
+        <span class="category-count">4</span>
+      </button>
+      <button class="category-btn inactive">
+        Canned Beverages
+        <span class="category-count">5</span>
+      </button>
+    </div>
+    
+    <!-- Danh sách món ăn động -->
+    <h2 class="menu-title">
+      All
+    </h2>
+    <div class="menu-items">
+      <% if (menus && menus.length > 0) { %>
         <% menus.forEach((dish) => { %>
           <div class="menu-item">
-            <!-- Cột trái: Ảnh món ăn -->
-            <div class="menu-item-left">
-              <img 
-              src="<%= dish.imageUrl %>"
-              alt="<%= dish.foodName %>"
-              />
+            <div class="menu-item-image">
+              <img alt="<%= dish.foodName %>" class="img-responsive" height="150" src="<%= dish.imageUrl %>" width="150"/>
             </div>
-
-            <!-- Cột phải: Thông tin món ăn -->
-            <div class="menu-item-right">
-
-              <!-- Hàng trên: Tên món + Giá -->
-              <div class="dish-top-row">
-                <h3 class="dish-name">
-                  <a href="/admin/menu/detail/<%= dish._id %>">
-                    <%= dish.foodName %>
-                  </a>
-                </h3>
-                <span class="dish-price">
-                  <%= parseFloat(dish.price.toString()).toLocaleString('vi-VN') %> VND
-                </span>
-              </div>
-
-              <!-- Hàng giữa: Mô tả -->
-              <div class="dish-middle-row">
-                <p class="dish-description">
-                  <%= dish.description %>
-                </p>
-              </div>
-
-              <!-- Hàng dưới: Đánh giá + Nút Sửa/Xóa -->
-              <div class="dish-bottom-row">
-                <span class="dish-rating">
-                  <% for (let i = 0; i < 5; i++) { %>
-                    <i class="fas fa-star star-icon"></i>
-                  <% } %>
-                </span>
-                <div class="dish-actions">
-                  <button class="btn-edit fas fa-edit" onclick="editDish('<%= dish._id %>')">
-                    Sửa
-                  </button>
-                  <button class="btn-delete fas fa-times" onclick="deleteDish('<%= dish._id %>')">
-                    Xóa
-                  </button>
-                </div>
-              </div>
-
+            <h3 class="menu-item-title">
+              <%= dish.foodName %>
+            </h3>
+            <div class="menu-item-info">
+              <span class="menu-item-price">
+                <%= parseFloat(dish.price.toString()).toLocaleString('vi-VN') %> VND
+              </span>
+              <span class="dish-rating">
+                <% for (let i = 0; i < 5; i++) { %>
+                  <i class="fas fa-star star-icon"></i>
+                <% } %>
+              </span>
             </div>
+            <p class="menu-item-description">
+              <%= dish.description %>
+            </p>
           </div>
         <% }) %>
-      </div>
-    <% } else { %>
-      <p>Hiện không có món ăn nào trong menu.</p>
-    <% } %>
-  </main>
+      <% } else { %>
+        <p>Hiện không có món ăn nào trong menu.</p>
+      <% } %>
+    </div>
+  </div>
 
-  <!-- Script cho chức năng sửa/xóa -->
   <script>
-    function editDish(id) {
-      window.location.href = '/admin/menu/edit/' + id;
+    // Lấy tất cả các nút trong danh sách
+    const categoryButtons = document.querySelectorAll('.category-btn');
+  
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Xoá class active khỏi tất cả các nút và thêm class inactive
+        categoryButtons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.classList.add('inactive');
+        });
+        // Thêm class active cho nút vừa click và xoá class inactive
+        button.classList.add('active');
+        button.classList.remove('inactive');
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search-dish");
+    const menuItems = document.querySelectorAll(".menu-item"); 
+
+    function filterDishes() {
+        const searchValue = searchInput.value.toLowerCase();
+
+        menuItems.forEach(item => {
+            const dishName = item.querySelector(".menu-item-title").textContent.toLowerCase();
+
+            if (dishName.includes(searchValue)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
     }
 
-    function deleteDish(id) {
-      Swal.fire({
-        title: 'Xác nhận xóa món ăn',
-        text: 'Bạn có chắc chắn muốn xóa món ăn này?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy',
-        
-      }).then((result) => {
-        if (result.isConfirmed) {
-          fetch('/admin/menu/' + id, { method: 'DELETE' })
-            .then(res => res.json())
-            .then(data => {
-              Swal.fire('Đã xóa!', 'Món ăn đã được xóa.', 'success')
-                .then(() => {
-                  window.location.reload();
-                });
-            })
-            .catch(err => console.error(err));
-        }
-      });
+    searchInput.addEventListener("input", filterDishes);
+});
+
+function toggleFilterMenu(event) {
+    event.stopPropagation(); // Ngăn click lan ra ngoài
+    const filterMenu = document.getElementById('filter-menu');
+    filterMenu.classList.toggle('show');
+}
+
+document.addEventListener('click', function(event) {
+    const filterContainer = document.querySelector('.filter-container');
+    if (!filterContainer.contains(event.target)) {
+      document.getElementById('filter-menu').classList.remove('show');
     }
+});
+
+
+  // Hàm chuyển đổi giá từ chuỗi sang số để so sánh
+function parsePrice(priceString) {
+    return parseFloat(priceString.replace(/\./g, '').replace(' VND', ''));
+}
+
+// Hàm sắp xếp món ăn
+function sortMenuItems(order) {
+    const menuContainer = document.querySelector('.menu-items');
+    const items = Array.from(menuContainer.querySelectorAll('.menu-item'));
+
+    items.sort((a, b) => {
+        const priceA = parsePrice(a.querySelector('.menu-item-price').textContent);
+        const priceB = parsePrice(b.querySelector('.menu-item-price').textContent);
+
+        return order === 'asc' ? priceA - priceB : priceB - priceA;
+    });
+
+    // Xóa hết item hiện tại và append lại theo thứ tự mới
+    menuContainer.innerHTML = '';
+    items.forEach(item => menuContainer.appendChild(item));
+}
+
+// Gắn sự kiện vào nút filter menu
+document.getElementById('filter-menu').addEventListener('click', (event) => {
+    // Chỉ xử lý nếu click vào button
+    if (event.target.tagName.toLowerCase() !== 'button') return;
+
+    // Loại bỏ active-filter khỏi tất cả các button trong filter-menu
+    const filterButtons = document.querySelectorAll('#filter-menu button');
+    filterButtons.forEach(btn => btn.classList.remove('active-filter'));
+
+    // Thêm active-filter vào button vừa được click
+    event.target.classList.add('active-filter');
+
+    const option = event.target.textContent.trim();
+    if (option === 'Giá tăng dần') {
+        sortMenuItems('asc');
+    } else if (option === 'Giá giảm dần') {
+        sortMenuItems('desc');
+    }
+});
+
   </script>
 </body>
 </html>
