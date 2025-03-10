@@ -12,6 +12,10 @@ const User = require("../app/models/User");
 const staffRouter = require("./staffRouter");
 const router = express.Router();
 const menuRoutes = require('./menuRoutes');
+const tableRouter = require('./tablesRouter')
+const { getAllTable } = require('../app/controllers/TablesController');
+
+
 const takeCareRouter = require('./takecareRouter');
 
 
@@ -25,6 +29,7 @@ function routes(app) {
   app.use('/bookingTable', bookingRouter); 
   app.use('/admin/staffs', staffRouter);
   app.use('/admin/takeCare', takeCareRouter);
+  app.use('/admin/tables', tableRouter);
 
   app.post("/bookingTable", async (req, res) => {
     try {
@@ -77,6 +82,9 @@ function routes(app) {
     }
 });
   
+  
+    // app.use(getFooterData);
+    
 }
 
 module.exports = routes;
