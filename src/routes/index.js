@@ -15,13 +15,12 @@ const menuRoutes = require("./menuRoutes");
 const payment = require("./paymentRoutes");
 const tableRouter = require('./tablesRouter')
 const { getAllTable } = require('../app/controllers/TablesController');
-
-
+const editMenuRoutes = require('./editMenuRoutes');
 const takeCareRouter = require('./takecareRouter');
 
-
-function routes(app) {
-  app.use("/admin/menu", menuRoutes);
+  function routes(app) {
+  app.use('/menu',isAuth.setUser, getFooterData, menuRoutes)
+  app.use('/admin/editMenu', editMenuRoutes);
   app.use("/restaurantInfor", restaurantRouter);
   app.use("/", isAuth.setUser, getFooterData, siteRouter);
   app.use("/auth", authRouter);

@@ -1,178 +1,315 @@
-/* --- Khu vực Header --- */
-.menu-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: #f5f5f5;
+/* Tổng quan */
+
+  /* Header */
+  .menu-header {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  .menu-header h1 {
+    font-size: 2.25rem;
+    font-weight: bold;
+  }
+  
+  /* Container */
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: -0.5rem auto 0;
+  }
+  
+  /* Phần tìm kiếm và danh mục */
+  .search-category {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .search-input {
+    flex-grow: 1;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+  .search-btn {
+    margin-left: 1rem;
+    padding: 0.5rem;
+    background-color: #e3342f;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+  
+  /* Danh mục */
+  .category-list {
+    margin-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+  }
+  /* Nút danh mục mặc định */
+.category-btn {
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    border: none;
+    background-color: transparent;
+    color: black;
+    font-size: 16px;
+    position: relative;
+    cursor: pointer;
 }
 
-.menu-header h1 {
-  padding-left: 200px;
-  flex: 1;
-  margin: 0;
-  text-align: center;
-  font-size: 2.5rem;                         /* Tăng kích cỡ chữ tiêu đề */
-  font-weight: bold;                       /* In đậm tiêu đề */
-  color: #333;                             /* Màu chữ tối dễ đọc */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+/* Viền dưới xuất hiện khi active */
+.category-btn::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: transparent;
+    transition: background-color 0.3s ease;
 }
 
-.btn-add {
-  margin-top: 0.5rem;
-  margin-right: 120px;
-  padding: 0.5rem 1rem;
-  background-color: #ffc107;
-  color: #fff;
-  border: none;
-  cursor: pointer;
+/* Trạng thái inactive */
+.category-btn.inactive {
+    background-color: rgb(241, 240, 240);
+    color: #718096;
+  }
+
+/* Trạng thái active */
+.category-btn.active {
+    font-weight: bold;
+    background-color: #ffe0e0; /* Màu nền nhạt khi active */
 }
 
-/* --- Khu vực danh sách món ăn chung --- */
-.menu-container {
-  display: flex;
-  justify-content: center;
-  padding: 1rem;
+/* // Viền dưới khi active */
+.category-btn.active::after {
+    background-color: red;
 }
 
-.menu-list {
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+/* Phần số trong danh mục */
+.category-count {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 14px;
+    margin-left: 0.65rem;
+    border: 2px solid transparent;
+    transition: all 0.3s ease-in-out;
 }
 
-/* --- Mỗi item món ăn --- */
-.menu-item {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;               /* Bỏ viền cứng */
-  border-radius: 10px;                    /* Bo góc mềm mại hơn */
-  padding: 1.5rem;                        /* Tăng padding cho khoảng cách nội dung */
-  background: linear-gradient(145deg, #ffffff, #f9f9f9d0); /* Nền gradient nhẹ */
-  box-shadow: 5px 5px 10px rgba(0,0,0,0.1), -5px -5px 10px rgba(255,255,255,0.7); /* Bóng đổ tạo chiều sâu */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  gap: 1.5rem;
+/* Khi active, khung số có viền đỏ */
+.category-btn.active .category-count {
+    background-color: #e3342f;
+    color: #ffffff;
 }
 
-.menu-item:hover {
-  transform: translateY(-3px);           /* Hiệu ứng nhô lên khi hover */
-  box-shadow: 8px 8px 15px rgba(0,0,0,0.15), -8px -8px 15px rgba(255,255,255,0.8);
+/* Hiệu ứng hover */
+.category-btn.inactive:hover {
+    background-color: #ec5252e6;
+    color: white;
 }
 
-/* Ảnh món ăn (bên trái) */
-.menu-item-left img {
-  width: 155px;              /* Chiều rộng ảnh tùy chỉnh */
-  height: 103px;              /* Chiều cao ảnh tùy chỉnh */
-  object-fit: cover;         /* Cắt ảnh cho vừa khung */
-  border-radius: 5px;
-  margin-right: 1rem;
+.category-btn.active:hover {
+    background-color: #ec5252e6;
 }
-
-/* Cột bên phải: Thông tin */
-.menu-item-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;                /* Khoảng cách giữa các khối con */
-}
-
-/* Hàng trên: Tên món & Giá */
-.dish-top-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.dish-name {
-  color: #0056b3;
-  font-size: 1.2rem;
-  margin: 0;
-  font-size: 25px;
-}
-
-.dish-name a {
-  text-decoration: none;
-  color: #0056b3;
-  font-size: 31px;
-}
-
-.dish-price {
-  margin-bottom: -30px;
-  padding-right: 40px;
-  text-decoration: none;
-  color: #0056b3;
-  font-size: 30px;
-}
-
-/* Hàng giữa: Mô tả */
-.dish-middle-row {
-  margin-top: 0.25rem;
-}
-
-.dish-description {
-  padding-right: 40%;
-  color: #666;  
-  line-height: 1.5;
-  margin: 0;
-  font-size: 17px;
-}
-
-/* Hàng dưới: Đánh giá & Nút Sửa/Xóa */
-.dish-bottom-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  
+  /* Tiêu đề menu */
+  .menu-title {
+    margin-top: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  /* Danh sách món ăn */
+  .menu-items {
+    padding-bottom: 72px;
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+  @media (min-width: 640px) {
+    .menu-items {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 768px) {
+    .menu-items {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .menu-items {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  /* Món ăn */
+  .menu-item {
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .menu-item-image {
+    position: relative;
+  }
+  .img-responsive {
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+  
+  /* Tiêu đề món ăn */
+  .menu-item-title {
+    text-align: center; /* Căn giữa chữ */
+    display: block; /* Đảm bảo nó là khối để text-align hoạt động */
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  /* Thông tin món ăn */
+  /* .menu-item-info {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #718096;
+  } */
+  
+  /* Mô tả món ăn */
+  .menu-item-description {
+    margin-top: 0.5rem;
+    color: #718096;
+  }
+  
+  .menu-item-info {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between; /* Căn hai bên */
+    align-items: center;
+    font-size: large;
+    font-weight: bold; /* Căn giữa theo chiều dọc */
+    color: blue;
+    position: relative; /* Giữ nguyên nhưng giúp căn chỉnh tốt hơn */
 }
 
 .dish-rating {
-  font-size: 1rem;
-  color: #333;
-  padding-bottom: 2px;
+    position: relative; /* Bỏ absolute để giữ nguyên trên cùng một hàng */
+    display: flex; /* Hiển thị sao theo hàng ngang */
+    align-items: center;
+    margin-left: 10px; /* Tạo khoảng cách giữa giá tiền và sao */
 }
 
-/* Icon sao màu đỏ */
 .star-icon {
-  color: #f4f436;
-  margin-left: 4px;
+    color: #fbbf24; /* Màu vàng như trong hình */
+    margin-right: 2px; /* Tạo khoảng cách giữa các sao */
+    font-size: 16px; /* Điều chỉnh kích thước sao nếu cần */
 }
 
-.dish-actions {
-  margin-top: -40px;
-  padding-right: 37px;
-  display: flex;
-  gap: 0.5rem;
-}
-
-/* --- Nút Sửa / Xóa --- */
-.btn-edit {
-  background-color: #4CAF50; /* Xanh lá */
-  color: #fff;
-  border: 1px solid #4CAF50;
-  border-radius: 3px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-.btn-delete {
-  background-color: #f44336; /* Đỏ */
-  color: #ffffff;
-  border: 1px solid #f44336;
-  border-radius: 3px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-.dish-name a {
-  text-decoration: none;
-  color: #0056b3;
-  font-size: 31px;
+.filter-container {
+  position: relative;
   display: inline-block;
-  transition: transform 0.2s ease-in-out;
+  margin-left: 10px;
 }
 
-.dish-name a:hover {
-  transform: scale(1.2); /* Phóng to 10% khi hover */
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
 }
+
+#filter-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  margin-top: 5px;
+  z-index: 20;
+  flex-direction: column;
+  width: 140px;
+}
+
+#filter-menu button {
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+}
+
+#filter-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+.filter-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.filter-btn {
+  display: inline-flex;
+  align-items: center;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 11px 13px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#filter-menu {
+  display: flex; /* Giữ nguyên kiểu hiển thị flex */
+  flex-direction: column;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  margin-top: 5px;
+  z-index: 20;
+  width: 130px;
+}
+
+#filter-menu.show {
+  transform: scaleY(1);
+}
+
+#filter-menu button {
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+#filter-menu button:hover {
+  background-color: #f0f0f0;
+}
+
+#filter-menu button.active-filter {
+  background-color: #ebebeb;
+  color: black;
+}
+
+
 
