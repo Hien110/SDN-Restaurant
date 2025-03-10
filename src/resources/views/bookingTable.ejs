@@ -1,8 +1,12 @@
 <head>
   <link rel="stylesheet" href="/css/bookingTable.css" />
   <script>
-    window.bookings = <% - JSON.stringify(bookings) %> // Biến toàn cục lưu danh sách bàn đã đặt;
-  </script>
+     <% if (bookings) { %>
+        window.bookings = <%- JSON.stringify(bookings) %>; // Lưu danh sách bàn đã đặt
+    <% } else { %>
+        window.bookings = []; // Lưu danh sách bàn đã đặt
+    <% } %>
+    </script>
   <script src="/js/bookingTable.js"></script>
 </head>
 <div class="container-bookingTable">
@@ -26,14 +30,15 @@
         </div>
         <div class="form-group">
           <label for="date"> Ngày đặt </label>
-          <input id="date" name="dateBooking" placeholder="dd/mm/yyyy" type="date" />
+          <input id="date" name="dateBooking" placeholder="dd/mm/yyyy" type="date" required />
         </div>
         <div class="form-group">
           <label for="time"> Thời gian </label>
-          <input id="time" name="timeBoooking" placeholder="--:-- --" type="time" />
+          <input id="time" name="timeBooking" placeholder="--:-- --" type="time" required />
         </div>
         <div class="form-group">
           <label for="guests">Chọn bàn</label>
+          <% if ( tables.length > 0 ) { %>
           <div class="table-list">
             <% tables.forEach(table=> { %>
               <div class="table-card disabled" id="table-<%= table._id %>" data-table-id="<%= table._id %>">
@@ -46,6 +51,9 @@
               </div>
               <% }) %>
           </div>
+          <% } else { %>
+          <p>Chưa có bàn nào trong cửa hàng</p>
+          <% } %>
         </div>
 
         <!-- Input ẩn để lưu ID bàn được chọn -->

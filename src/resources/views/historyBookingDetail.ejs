@@ -66,6 +66,7 @@
               <p class="content-history">
                 <%= bookingDetail.table.depositPrice %> VNĐ
               </p>
+              <% if (bookingDetail.isPaid) { %>
               <p
                 class="title-history"
                 style="
@@ -75,8 +76,25 @@
                   border-radius: 10px;
                 "
               >
-                Đã đặt cọc
+               
+                  Đã thanh toán
+              
               </p>
+              <% } else { %>
+                <p
+                class="title-history"
+                style="
+                  background-color: #ff5050;
+                  text-align: center;
+                  padding: 3px 10px;
+                  border-radius: 10px;
+                "
+              >
+               
+                  Chưa thanh toán
+              
+              </p>
+              <% } %>
             </div>
           </div>
           <div
