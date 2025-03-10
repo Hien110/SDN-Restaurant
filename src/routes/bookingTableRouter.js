@@ -8,6 +8,7 @@ bookingRouter.get('/',isAuth.requireAuth, bookingTableController.index);
 bookingRouter.get('/bookingHistory/:id', bookingTableController.bookingHistory);
 bookingRouter.get('/bookingDetail/:id', bookingTableController.historyDetail);
 bookingRouter.get('/bookingDetail/:id/edit', bookingTableController.updateForm);
+bookingRouter.put('/bookingUpdate/:id', bookingTableController.updateBookingTable);
 bookingRouter.delete('/bookingDetail/:id', bookingTableController.deleteBooking);
 bookingRouter.post('/', bookingTableController.createBooking);
 
