@@ -1,8 +1,12 @@
+require("dotenv").config();
 const BookingTable = require("../models/BookingTable");
 const User = require("../models/User");
 const Table = require("../models/Table");
 const mongoose = require("mongoose");
+const moment = require("moment");
 
+const bankId = process.env.BANK_ID;
+const accountNo = process.env.ACCOUNT_NO;
 class BookingTableController {
   index = async (req, res, next) => {
     try {
@@ -68,19 +72,51 @@ class BookingTableController {
 
   createBooking = async (req, res) => {
     try {
-      const { dateBooking, timeBoooking, selectedTableId, requests } = req.body;
+      const { dateBooking, timeBooking, selectedTableId, requests } = req.body;
       const userId = req.session.user._id;
+
       const table = await Table.findById(selectedTableId);
-      const dateTimeString = `${dateBooking}T${timeBoooking}:00Z`;
-      const bookingTable = new BookingTable({
-        quantity: table.seatNumber,
-        orderDate: dateTimeString,
-        customer: userId,
+      if (!table) {
+        return res.status(404).json({ message: "Bàn không tồn tại" });
+      }
+
+      const dateTimeString = `${dateBooking}T${timeBooking}:00Z`;
+
+      let bookings = await BookingTable.findOne({
         table: selectedTableId,
-        request: requests,
+        isPaid: false,
+        customer: userId,
       });
-      await bookingTable.save();
-      res.redirect("bookingTable");
+
+      if (!bookings) {
+        const bookingTable = new BookingTable({
+          quantity: table.seatNumber,
+          customer: userId,
+          table: selectedTableId,
+          request: requests,
+        });
+
+        bookings = await bookingTable.save();
+      }
+
+      const orderDate = moment(bookings.orderDate);
+      const formattedBooking = {
+        ...bookings.toObject(),
+        orderDay: orderDate
+          .format("dddd")
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" "),
+        orderDate: orderDate.format("DD/MM/YYYY"),
+        orderTime: orderDate.format("HH:mm"),
+      };
+
+      return res.render("payment", {
+        bookingTable: formattedBooking,
+        amount: table.depositPrice,
+        bankId, // Đảm bảo các biến này đã được định nghĩa trước đó
+        accountNo,
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -119,8 +155,8 @@ class BookingTableController {
     require("moment/locale/vi");
     try {
       const booking = await BookingTable.findById(req.params.id)
-      .populate("table") // Populate thông tin từ collection `tables`
-      .populate("customer"); // Populate thông tin từ collection `customers`
+        .populate("table") // Populate thông tin từ collection `tables`
+        .populate("customer"); // Populate thông tin từ collection `customers`
 
       if (!booking) {
         return res.status(404).json({ message: "Booking not found." });
@@ -184,56 +220,61 @@ class BookingTableController {
     }
   };
 
-historyDetailEdit = async (req, res) => {
-  const moment = require("moment");
-  require("moment/locale/vi");
-  try {
-    const booking = await BookingTable.findById(req.params.id)
-    .populate("table") // Populate thông tin từ collection `tables`
-    .populate("customer"); // Populate thông tin từ collection `customers`
+  historyDetailEdit = async (req, res) => {
+    const moment = require("moment");
+    require("moment/locale/vi");
+    try {
+      const booking = await BookingTable.findById(req.params.id)
+        .populate("table") // Populate thông tin từ collection `tables`
+        .populate("customer"); // Populate thông tin từ collection `customers`
 
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found." });
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found." });
+      }
+
+      const orderDate = moment(booking.orderDate);
+      const formattedBooking = {
+        ...booking.toObject(),
+        orderDay: orderDate
+          .format("dddd") // Lấy thứ (ví dụ: "thứ hai")
+          .split(" ") // Tách thành mảng ["thứ", "hai"]
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu của từng từ
+          .join(" "), // Ghép lại thành "Thứ Hai"// Viết hoa chữ cái đầu của thứ
+        orderDate: orderDate.format("DD/MM/YYYY"),
+        orderTime: orderDate.format("HH:mm"), // Tách riêng giờ
+      };
+
+      return res.render("historyBookingEdit", {
+        bookingDetail: formattedBooking,
+      });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
+  };
 
-    const orderDate = moment(booking.orderDate);
-    const formattedBooking = {
-      ...booking.toObject(),
-      orderDay: orderDate
-        .format("dddd") // Lấy thứ (ví dụ: "thứ hai")
-        .split(" ") // Tách thành mảng ["thứ", "hai"]
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu của từng từ
-        .join(" "), // Ghép lại thành "Thứ Hai"// Viết hoa chữ cái đầu của thứ
-      orderDate: orderDate.format("DD/MM/YYYY"),
-      orderTime: orderDate.format("HH:mm"), // Tách riêng giờ
-    };
+  deleteBooking = async (req, res, next) => {
+    try {
+      const userId = req.session.user._id;
+      const bookingId = req.params.id; // Sửa lại cách lấy id
 
-    return res.render("historyBookingEdit", {
-      bookingDetail: formattedBooking,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+      const booking = await BookingTable.findById(bookingId);
+      if (!booking) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Không tìm thấy đặt bàn!" });
+      }
 
-deleteBooking = async (req, res, next) => {
-  try {
-    const userId = req.session.user._id;
-    const bookingId = req.params.id; // Sửa lại cách lấy id
+      await BookingTable.findByIdAndDelete(bookingId);
 
-    const booking = await BookingTable.findById(bookingId);
-    if (!booking) {
-      return res.status(404).json({ success: false, message: "Không tìm thấy đặt bàn!" });
+      res.json({
+        success: true,
+        redirectURL: `/bookingTable/bookingHistory/${userId}`,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Lỗi server!" });
     }
-
-    await BookingTable.findByIdAndDelete(bookingId);
-
-    res.json({ success: true, redirectURL:`/bookingTable/bookingHistory/${userId}`});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Lỗi server!" });
-  }
-};
+  };
 }
 
 module.exports = new BookingTableController();

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const TableSchema = new Schema({
@@ -13,4 +13,4 @@ const TableSchema = new Schema({
     type: {type: String, enum: ['NORMAL', 'VIP'] , required: true},
 });
 
-module.exports = mongoose.model('Table', TableSchema);
+module.exports = mongoose.model("Table", TableSchema);
