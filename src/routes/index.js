@@ -13,9 +13,21 @@ const staffRouter = require("./staffRouter");
 const router = express.Router();
 const menuRoutes = require("./menuRoutes");
 const payment = require("./paymentRoutes");
+
 const orderRoutes = require('./orderRoutes');
-function routes(app) {
+
+  
+
+const tableRouter = require('./tablesRouter')
+const { getAllTable } = require('../app/controllers/TablesController');
+const editMenuRoutes = require('./editMenuRoutes');
+const takeCareRouter = require('./takecareRouter');
+
+  function routes(app) {
   app.use("/admin/menu", menuRoutes);
+  app.use('/menu',isAuth.setUser, getFooterData, menuRoutes)
+  app.use('/admin/editMenu', editMenuRoutes);
+
   app.use("/restaurantInfor", restaurantRouter);
   app.use("/", isAuth.setUser, getFooterData, siteRouter);
   app.use("/auth", authRouter);
@@ -26,6 +38,8 @@ function routes(app) {
   app.use("/payment", payment);
   app.use("/users", userRoutes);
   app.use("/admin/staffs", staffRouter);
+  app.use('/admin/takeCare', takeCareRouter);
+  app.use('/admin/tables', tableRouter);
 
   app.post("/bookingTable", async (req, res) => {
     try {

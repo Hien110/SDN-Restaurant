@@ -465,7 +465,7 @@ exports.changePassword = async (req, res) => {
 // [POST] => postLogout
 exports.postLogout = async (req, res, next) => {
   req.session.destroy((err) => {
-    res.redirect("/auth/login");
+    res.redirect("/");
   });
 };
 

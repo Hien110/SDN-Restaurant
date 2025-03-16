@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo TakeCare</title>
+    <link rel="stylesheet" href="/css/createTakeCare.css">
+</head>
+<body>
+    <div class="container-takecare">
+        <h2>Tạo Lịch Làm</h2>
+
+        <% if (errorMessage) { %>
+            <p class="alert error"><%= errorMessage %></p>
+        <% } %>
+
+        <form class="form-takecare" action="/admin/takeCare/create" method="POST" onsubmit="return validateForm()">
+            <div>
+                <label for="tableId">Nhập ID Bàn:</label>
+                <input type="text" class="form-control-takecare" name="tableId" id="tableId" required placeholder="VD: TBL001">
+            </div>
+
+            <div>
+                <label for="staffId">Chọn Nhân Viên Phục Vụ:</label>
+                <select class="form-select-takecare" name="staffId" id="staffId" required>
+                    <% if (staffs && staffs.length > 0) { %>
+                        <% staffs.forEach(staff => { %>
+                            <option value="<%= staff._id %>"><%= staff.firstName %> <%= staff.lastName %> - <%= staff.email %></option>
+                        <% }); %>
+                    <% } else { %>
+                        <option disabled>Không có nhân viên nào</option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div>
+                <label for="date">Ngày:</label>
+                <input type="date" class="form-control-takecare" name="date" id="date" required>
+            </div>
+
+            <div>
+                <label for="startTime">Giờ Bắt Đầu:</label>
+                <input type="time" class="form-control-takecare" name="startTime" id="startTime" required>
+            </div>
+
+            <div>
+                <label for="endTime">Giờ Kết Thúc:</label>
+                <input type="time" class="form-control-takecare" name="endTime" id="endTime" required>
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="button-group">
+                <button type="submit" class="btn-success-takecare">Tạo Lịch Làm</button>
+                <a href="/admin/takeCare" class="btn-back-takecare">Quay về danh sách</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            let tableId = document.getElementById("tableId").value.trim();
+            let staffId = document.getElementById("staffId").value;
+            let date = document.getElementById("date").value;
+            let startTime = document.getElementById("startTime").value;
+            let endTime = document.getElementById("endTime").value;
+
+            if (!tableId || !staffId || !date || !startTime || !endTime) {
+                alert("Vui lòng điền đầy đủ thông tin.");
+                return false;
+            }
+
+            if (new Date(startTime) >= new Date(endTime)) {
+                alert("Giờ bắt đầu phải nhỏ hơn giờ kết thúc.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>

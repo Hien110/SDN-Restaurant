@@ -20,7 +20,8 @@
             Lịch sử đặt bàn
           </h2>
         </div>
-        <% historyBookings.forEach(history => { %>
+        <% if (historyBookings.length > 0 ) {
+        historyBookings.forEach(history => { %>
 
         <div class="profile-header">
           <div>
@@ -40,7 +41,10 @@
             </form>
           </div>
         </div>
-        <% }) %>
+        <% }) 
+         } else { %>
+        <p>Chưa có lịch sử đặt bàn nào.</p>
+        <% } %>
       </div>
     </div>
   </body>

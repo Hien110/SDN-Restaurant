@@ -13,19 +13,23 @@
 .profile-card {
   width: 100%;
   max-width: 600px;
-  background-color: rgba(255, 255, 255, 0.8); /* Độ trong suốt cho nền card */
+  background-color: rgba(255, 255, 255, 0.8);
+  /* Độ trong suốt cho nền card */
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Hiệu ứng shadow đậm hơn */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  /* Hiệu ứng shadow đậm hơn */
   padding: 20px;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(10px); /* Làm mờ nền phía sau */
+  backdrop-filter: blur(10px);
+  /* Làm mờ nền phía sau */
 }
 
 .profile-header {
   margin-bottom: 5px;
-  background-color: #fff; /* Màu nền đỏ */
+  background-color: #fff;
+  /* Màu nền đỏ */
   color: white;
   border-radius: 5px;
   padding: 10px;
@@ -35,22 +39,28 @@
 }
 
 .avatar {
-  width: 70px; /* Kích thước avatar nhỏ hơn */
+  width: 70px;
+  /* Kích thước avatar nhỏ hơn */
   height: 70px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 15px; /* Giảm khoảng cách giữa avatar và thông tin */
+  margin-right: 15px;
+  /* Giảm khoảng cách giữa avatar và thông tin */
 }
 
 .profile-info {
   display: flex;
-  flex-direction: column; /* Đảm bảo tên và email nằm theo chiều dọc */
-  margin-left: 10px; /* Khoảng cách giữa avatar và phần thông tin */
+  flex-direction: column;
+  /* Đảm bảo tên và email nằm theo chiều dọc */
+  margin-left: 10px;
+  /* Khoảng cách giữa avatar và phần thông tin */
 }
 
 .profile-info h2 {
-  font-size: 24px; /* Kích thước tên nhỏ hơn */
-  margin-bottom: 5px; /* Giảm khoảng cách giữa tên và email */
+  font-size: 24px;
+  /* Kích thước tên nhỏ hơn */
+  margin-bottom: 5px;
+  /* Giảm khoảng cách giữa tên và email */
 }
 
 .profile-info .profile-email {
@@ -60,9 +70,12 @@
 
 .edit-buttons {
   display: flex;
-  justify-content: center; /* Căn giữa các nút */
-  gap: 15px; /* Khoảng cách giữa các nút */
-  width: 100%; /* Đảm bảo các nút chiếm hết chiều rộng */
+  justify-content: center;
+  /* Căn giữa các nút */
+  gap: 15px;
+  /* Khoảng cách giữa các nút */
+  width: 100%;
+  /* Đảm bảo các nút chiếm hết chiều rộng */
 }
 
 .edit-btn {
@@ -79,6 +92,7 @@
 .edit-btn:hover {
   background-color: #851b11;
 }
+
 .profile-details {
   margin-top: 20px;
 }
@@ -119,6 +133,7 @@
   color: #fff;
   transition: all 0.3s;
 }
+
 .detail:hover {
   background-color: #ce201c;
 }
@@ -127,6 +142,13 @@
   background-color: #eea100;
   color: #FFF;
   transition: all 0.3s;
+}
+
+.history__detail--payment {
+  background-color: blue;
+  color: #FFF;
+  transition: all 0.3s;
+  text-decoration: none;
 }
 
 .history__detail--edit:hover {
@@ -189,6 +211,7 @@
   margin-top: 5px;
   font-weight: bold;
 }
+
 .success-message {
   color: green;
   font-size: 14px;
