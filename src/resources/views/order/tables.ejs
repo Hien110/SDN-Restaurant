@@ -12,8 +12,8 @@
                         <p class="card-text">
                             <strong>Status:</strong>
                             <span class="badge
-                            <%= table.status === 'AVAILABLE' ? 'bg-success' : table.status === 'OCCUPIED' ? 'bg-danger' : 'bg-warning' %>">
-                            <%= table.status %>
+                            <%= table.isInUse ? 'bg-info' : table.status === 'AVAILABLE' ? 'bg-success' : table.status === 'OCCUPIED' ? 'bg-danger' : 'bg-warning' %>">
+                            <%= table.isInUse ? 'Đang sử dụng' : table.status %>
                         </span>
                         </p>
                     </div>

@@ -2,7 +2,61 @@ const Table = require('../models/Table')
 const Menu = require("../models/Menu");
 const Order = require("../models/OrderFood");
 exports.viewAllTables = async (req, resp) => {
-    const tables = await Table.find()
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00:00
+
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999); // Đặt thời gian về 23:59:59
+
+    const tables = await Table.aggregate([
+        {
+            $lookup: {
+                from: "orders", // Tên collection của Order trong MongoDB
+                localField: "_id",
+                foreignField: "table",
+                as: "orders",
+            },
+        },
+        {
+            $addFields: {
+                isInUse: {
+                    $gt: [
+                        {
+                            $size: {
+                                $filter: {
+                                    input: "$orders",
+                                    as: "order",
+                                    cond: {
+                                        $and: [
+                                            {
+                                                $gte: [
+                                                    { $arrayElemAt: ["$$order.dishes.orderDate", 0] },
+                                                    todayStart,
+                                                ],
+                                            },
+                                            {
+                                                $lte: [
+                                                    { $arrayElemAt: ["$$order.dishes.orderDate", 0] },
+                                                    todayEnd,
+                                                ],
+                                            },
+                                            { $eq: ["$$order.statusPayment", "Pending"] },
+                                        ],
+                                    },
+                                },
+                            },
+                        },
+                        0,
+                    ],
+                },
+            },
+        },
+        {
+            $project: {
+                orders: 0, // Ẩn danh sách orders, chỉ lấy thông tin bàn và trạng thái sử dụng
+            },
+        },
+    ]);
     resp.render('order/tables', { tables, layout: 'layouts/order' });
 }
 exports.viewATable = async (req, resp) => {
@@ -96,5 +150,89 @@ exports.getOrderOfTableID = async (req, resp) => {
 
 }
 exports.chefViewDishes = async (req, resp) => {
-    console.log('this func run')
+    try {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const orders = await Order.aggregate([
+            {
+                $addFields: {
+                    firstDishOrderDate: { $arrayElemAt: ["$dishes.orderDate", 0] }, // Extract dishes[0].orderDate
+                },
+            },
+            {
+                $match: {
+                    firstDishOrderDate: { $gte: startOfDay, $lte: endOfDay }, // Filter orders for today
+                },
+            },
+            { $unwind: "$dishes" }, // Unwind dishes
+            { $sort: { "dishes.orderDate": 1 } }, // Sort by orderDate (oldest to latest)
+        ]);
+        resp.render('order/chef', { layout: 'layouts/order' });
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+    }
+}
+exports.chefGetDishesOfDay = async (req, resp) => {
+    try {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const orders = await Order.aggregate([
+            {
+                $addFields: {
+                    firstDishOrderDate: { $arrayElemAt: ["$dishes.orderDate", 0] }, // Extract dishes[0].orderDate
+                },
+            },
+            {
+                $match: {
+                    firstDishOrderDate: { $gte: startOfDay, $lte: endOfDay }, // Filter orders for today
+                },
+            },
+            {
+                $lookup: {
+                    from: "tables", // Join with Table collection
+                    localField: "table",
+                    foreignField: "_id",
+                    as: "tableData",
+                },
+            },
+            { $unwind: "$tableData" }, // Convert table array to an object
+            { $unwind: "$dishes" }, // Unwind dishes array
+            {
+                $lookup: {
+                    from: "menus", // Join with Menu collection
+                    localField: "dishes.menuItem",
+                    foreignField: "_id",
+                    as: "dishes.menuData",
+                },
+            },
+            { $unwind: "$dishes.menuData" }, // Convert menuData array to an object
+            { $sort: { "dishes.orderDate": 1 } }, // Sort by orderDate (oldest to latest)
+        ]);
+
+        resp.json(orders);
+    } catch (error) {
+        console.error("Error fetching orders:", error);
+    }
+}
+exports.chefChangeDishStatus = async (req, resp) => {
+    const { orderId, dishId, status } = req.body;
+    const order = await Order.findById(orderId)
+    if (!order) {
+        return resp.status(500).json({ error: "Order not found" });
+    }
+    const dish = order.dishes.find(dish => dish._id.toString() === dishId);
+    if (!dish) {
+        return resp.status(500).json({ error: "Dish not found" });
+    }
+    dish.statusOrder = status;
+    await order.save();
+    return resp.json({ message: "Change dish status successfully" });
 }

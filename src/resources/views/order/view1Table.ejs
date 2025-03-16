@@ -58,7 +58,21 @@
     let toAddDished = [];
     let toAddDishesPrice = 0;
     let tableId = '<%= table._id %>'
+    const socket = new WebSocket("ws://localhost:3000");
+    socket.onopen = () => {
+        console.log("Connected to WebSocket server");
+    };
 
+    socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.hasOwnProperty('tableId') && data.tableId === tableId) {
+            getTableOrderInfo();
+        }
+    };
+
+    socket.onclose = () => {
+        console.log("Disconnected from WebSocket server");
+    };
     getTableOrderInfo();
     function addPrepareDishes(id, price) {
         toAddDished.push(id);
@@ -104,6 +118,7 @@
                     changeAddButton();
                     getTableOrderInfo();
                     $("span[id^='number_dishes_']").text(0);
+                    socket.send(1)
                 } else {
                     toastr.success('Lỗi hệ thống.')
                 }
@@ -125,7 +140,7 @@
                 $("#orderDataTable tbody").html(html);
                 $("#left-panel-total-price").text('Tổng giá: ' + totalPrice + ' VND')
             }).catch((err) => {
-                toastr.error.message
+                toastr.error(err.response.data.message)
             })
     }
 </script>
