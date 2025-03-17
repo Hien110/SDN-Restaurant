@@ -1,0 +1,64 @@
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: left;
+}
+
+.order-cell {
+  padding: 8px;
+  border: 1px solid #ddd;
+}
+
+.order-row:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.dish-list,
+.quantity-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.dish-item,
+.quantity-item {
+  padding: 3px 0;
+}
+
+.order-cell {
+  text-align: center;
+}
+
+.order-cell.order-actions {
+  text-align: center;
+}
+
+.edit-btn {
+  color: #28a745;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.delete-btn {
+  color: #dc3545;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  text-decoration: underline;
+}
+
+.no-orders {
+  text-align: center;
+  font-size: 18px;
+  color: #666;
+  margin-top: 20px;
+}

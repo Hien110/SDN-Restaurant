@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Food</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Order Food</h1>
+
+    <% if (!bookingTable) { %>
+      <div class="alert">
+        <p>You need to book a table before placing an order.</p>
+        <a href="/booking">Book a Table Now</a>
+      </div>
+      <% } else { %>
+        <form action="/order" method="POST">
+          <input type="hidden" name="bookingTable" value="<%= bookingTable._id %>">
+
+          <label for="table">Table Number:</label>
+          <input type="text" name="table" value="<%= bookingTable.tableNumber %>" readonly>
+
+          <h2>Select Dishes</h2>
+          <% menuItems.forEach(item=> { %>
+            <div class="menu-item">
+              <label>
+                <input type="checkbox" name="dishes[]" value="<%= item._id %>">
+                <%= item.name %> - $<%= item.price %>
+              </label>
+              <input type="number" name="quantities[<%= item._id %>]" min="1" value="1">
+            </div>
+            <% }); %>
+
+              <label for="paymentMethod">Payment Method:</label>
+              <select name="paymentMethod" required>
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+              </select>
+
+              <button type="submit">Place Order</button>
+        </form>
+        <% } %>
+  </div>
+</body>
+
+</html>

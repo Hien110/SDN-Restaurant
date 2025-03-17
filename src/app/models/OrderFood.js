@@ -19,7 +19,6 @@ const orderSchema = new Schema({
       orderDate: { type: Date, default: Date.now },
     },
   ],
-  table: { type: mongoose.Schema.Types.ObjectId, ref: "Table", required: true },
   bookingTable: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "BookingTable",
@@ -38,4 +37,35 @@ const orderSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("Order", orderSchema);
+orderSchema.pre("save", async function (next) {
+  await this.calculateTotalPrice();
+  next();
+});
+
+orderSchema.pre("findOneAndUpdate", async function (next) {
+  const update = this.getUpdate();
+  if (update.dishes) {
+    const order = await this.model
+      .findOne(this.getQuery())
+      .populate("dishes.menuItem");
+    if (order) {
+      order.dishes = update.dishes;
+      await order.calculateTotalPrice();
+      this.set("totalPrice", order.totalPrice);
+    }
+  }
+  next();
+});
+
+orderSchema.methods.calculateTotalPrice = async function () {
+  await this.populate("dishes.menuItem");
+
+  let total = 0;
+  this.dishes.forEach((dish) => {
+    total += parseFloat(dish.menuItem.price) * dish.quantity;
+  });
+
+  this.totalPrice = total;
+};
+
+module.exports = mongoose.model("OrderFood", orderSchema);

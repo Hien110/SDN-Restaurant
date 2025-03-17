@@ -13,14 +13,14 @@ const staffRouter = require("./staffRouter");
 const router = express.Router();
 const menuRoutes = require("./menuRoutes");
 const payment = require("./paymentRoutes");
-const tableRouter = require('./tablesRouter')
-const { getAllTable } = require('../app/controllers/TablesController');
-const editMenuRoutes = require('./editMenuRoutes');
-const takeCareRouter = require('./takecareRouter');
-
-  function routes(app) {
-  app.use('/menu',isAuth.setUser, getFooterData, menuRoutes)
-  app.use('/admin/editMenu', editMenuRoutes);
+const tableRouter = require("./tablesRouter");
+const { getAllTable } = require("../app/controllers/TablesController");
+const editMenuRoutes = require("./editMenuRoutes");
+const takeCareRouter = require("./takecareRouter");
+const orderRoutes = require("./orderRoutes");
+function routes(app) {
+  app.use("/menu", isAuth.setUser, getFooterData, menuRoutes);
+  app.use("/admin/editMenu", editMenuRoutes);
   app.use("/restaurantInfor", restaurantRouter);
   app.use("/", isAuth.setUser, getFooterData, siteRouter);
   app.use("/auth", authRouter);
@@ -30,33 +30,31 @@ const takeCareRouter = require('./takecareRouter');
   app.use("/payment", payment);
   app.use("/users", userRoutes);
   app.use("/admin/staffs", staffRouter);
-  app.use('/admin/takeCare', takeCareRouter);
-  app.use('/admin/tables', tableRouter);
+  app.use("/admin/takeCare", takeCareRouter);
+  app.use("/admin/tables", tableRouter);
+  app.use("/admin/order", orderRoutes);
 
   app.post("/bookingTable", async (req, res) => {
     try {
       const { userId, tableId, orderDate, timeUse, request } = req.body;
 
-      // Kiểm tra user có tồn tại không
       const user = await User.findById(userId);
       if (!user) {
         return res.status(400).json({ message: "Người dùng không tồn tại." });
       }
 
-      // Kiểm tra bàn có tồn tại không
       const table = await Table.findById(tableId);
       if (!table) {
         return res.status(400).json({ message: "Bàn không tồn tại." });
       }
 
-      // Kiểm tra bàn có bị trùng thời gian đặt không
       const existingBooking = await BookingTable.findOne({
         table: tableId,
         orderDate: new Date(orderDate),
         $expr: {
           $lte: [
             { $abs: { $subtract: ["$timeUse", timeUse] } },
-            3 * 60 * 60 * 1000, // 3 giờ
+            3 * 60 * 60 * 1000,
           ],
         },
       });
@@ -67,7 +65,6 @@ const takeCareRouter = require('./takecareRouter');
           .json({ message: "Bàn đã được đặt trong khoảng thời gian này." });
       }
 
-      // Tạo mới bookingTable
       const newBooking = new BookingTable({
         quantity: table.seatNumber,
         orderDate: new Date(orderDate),

@@ -46,12 +46,11 @@ class BookingTableController {
     }
   };
 
-
   listBookingManagement = async (req, res, next) => {
     try {
       const bookings = await BookingTable.find()
-      .populate('table')
-      .populate('customer');
+        .populate("table")
+        .populate("customer");
       return res.render("bookingTableManagement", {
         layout: "layouts/mainAdmin",
         title: "admin",
@@ -80,7 +79,13 @@ class BookingTableController {
       require("moment/locale/vi");
       const { dateBooking, timeBooking, selectedTableId, requests } = req.body;
       const userId = req.session.user._id;
-      const table = await Table.findById(selectedTableId);
+      const table = await Table.findOne({
+        _id: selectedTableId,
+        status: "AVAILABLE",
+      });
+      if (!table) {
+      }
+
       const dateTimeString = `${dateBooking}T${timeBooking}:00Z`;
 
       let bookings = await BookingTable.findOne({
@@ -121,7 +126,9 @@ class BookingTableController {
         accountNo,
       });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      return res.render("errorpage", {
+        message: "Đã có lỗi xảy ra, bàn đã có vấn đề.",
+      });
     }
   };
 
@@ -218,7 +225,7 @@ class BookingTableController {
 
       await booking.save();
 
-      res.redirect('/bookingTable/bookingDetail/' +booking._id);
+      res.redirect("/bookingTable/bookingDetail/" + booking._id);
     } catch (error) {
       console.error("Lỗi khi cập nhật đặt bàn:", error);
       res.status(500).json({ message: "Đã có lỗi xảy ra, vui lòng thử lại." });

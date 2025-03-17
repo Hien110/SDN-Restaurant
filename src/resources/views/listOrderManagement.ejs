@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách đơn hàng</title>
+  <link rel="stylesheet" href="/css/listOrder.css" />
+</head>
+
+<body>
+  <% if (!bookings || bookings.length===0) { %>
+    <p class="no-orders">Không có đơn hàng nào.</p>
+    <% } else { %>
+      <table class="order-table">
+        <thead>
+          <tr>
+            <th class="table-header">Bàn</th>
+            <th class="table-header">Khách hàng</th>
+            <th class="table-header">Món ăn</th>
+            <th class="table-header">Số lượng</th>
+            <th class="table-header">Trạng thái đơn hàng</th>
+            <th class="table-header">Trạng thái thanh toán (Đặt bàn)</th>
+            <th class="table-header">Phương thức thanh toán (Đặt bàn)</th>
+            <th class="table-header">Trạng thái thanh toán (Đơn hàng)</th>
+            <th class="table-header">Phương thức thanh toán (Đơn hàng)</th>
+            <th class="table-header">Tổng tiền</th>
+            <th class="table-header">Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% bookings.forEach(booking=> { %>
+            <% if (booking.orderFood) { %>
+              <tr class="order-row">
+                <td class="order-cell">
+                  <%= booking.table ? booking.table.idTable : "N/A" %>
+                </td>
+                <td class="order-cell">
+                  <%= booking.customer ? booking.customer.firstName + ' ' + booking.customer.lastName : "N/A" %>
+                </td>
+                <td class="order-cell">
+                  <ul class="dish-list">
+                    <% booking.orderFood.dishes.forEach(dish=> { %>
+                      <li class="dish-item">
+                        <%= dish.menuItem ? dish.menuItem.name : "Không xác định" %> (x<%= dish.quantity %>)
+                      </li>
+                      <% }) %>
+                  </ul>
+                </td>
+                <td class="order-cell">
+                  <ul class="quantity-list">
+                    <% booking.orderFood.dishes.forEach(dish=> { %>
+                      <li class="quantity-item">
+                        <%= dish.statusOrder || "N/A" %>
+                      </li>
+                      <% }) %>
+                  </ul>
+                </td>
+                <td class="order-cell">
+                  <%= booking.isPaid ? "Đã thanh toán" : "Chưa thanh toán" %>
+                </td>
+                <td class="order-cell">
+                  <%= booking.paymentMethod ? booking.paymentMethod==="CARD" : "Tiền mặt" %>
+                </td>
+                <td class="order-cell">
+                  <%= booking.orderFood.statusPayment || "Chưa thanh toán" %>
+                </td>
+                <td class="order-cell">
+                  <%= booking.orderFood.paymentMethod || "Tiền mặt" %>
+                </td>
+                <td class="order-cell">
+                  $<%= booking.orderFood.totalPrice ? booking.orderFood.totalPrice.toFixed(2) : "0.00" %>
+                </td>
+                <td class="order-cell order-actions">
+                  <a href="/orderFood/<%= booking.orderFood._id %>/edit" class="edit-btn">Chỉnh sửa</a> |
+                  <a href="/orderFood/<%= booking.orderFood._id %>/delete" class="delete-btn"
+                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+                </td>
+              </tr>
+              <% } %>
+                <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+</body>
+
+</html>

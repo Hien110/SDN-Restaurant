@@ -14,14 +14,11 @@ const BookingTableSchema = new Schema({
   request: { type: String, required: false },
   isPaid: { type: Boolean, default: false },
   expiresAt: { type: Date, default: () => new Date(Date.now() + 30 * 60000) },
-});
-
-BookingTableSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-BookingTableSchema.pre("deleteMany", function (next) {
-  if (this.getFilter().expiresAt) {
-    this.getFilter().isPaid = false;
-  }
-  next();
+  orderFood: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "OrderFood",
+    required: false,
+  },
 });
 
 module.exports = mongoose.model("BookingTable", BookingTableSchema);

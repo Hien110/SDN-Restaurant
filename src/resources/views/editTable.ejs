@@ -1,14 +1,17 @@
-<form action="/admin/tables/edit/<%= table._id %>" method="POST" enctype="multipart/form-data" class="container p-4 shadow-lg rounded bg-light">
+<form action="/admin/tables/edit/<%= table._id %>" method="POST" enctype="multipart/form-data"
+    class="container p-4 shadow-lg rounded bg-light">
     <h2 class="text-center mb-4">Chỉnh sửa thông tin bàn</h2>
 
     <div class="mb-3">
         <label for="idTable" class="form-label">Mã bàn</label>
-        <input type="text" id="idTable" name="idTable" class="form-control" value="<%= table.idTable %>" required readonly>
+        <input type="text" id="idTable" name="idTable" class="form-control" value="<%= table.idTable %>" required
+            readonly>
     </div>
 
     <div class="mb-3">
         <label for="seatNumber" class="form-label">Số ghế</label>
-        <input type="number" id="seatNumber" name="seatNumber" class="form-control" value="<%= table.seatNumber %>" required>
+        <input type="number" id="seatNumber" name="seatNumber" class="form-control" value="<%= table.seatNumber %>"
+            required>
     </div>
 
     <div class="mb-3">
@@ -21,10 +24,11 @@
         <label class="form-label">Ảnh hiện tại</label>
         <div>
             <% if (table.imageUrl) { %>
-                <img id="currentImage" src="<%= table.imageUrl %>" alt="Ảnh bàn" class="img-thumbnail mb-2" style="max-width: 200px;">
-            <% } else { %>
-                <p>Chưa có ảnh</p>
-            <% } %>
+                <img id="currentImage" src="<%= table.imageUrl %>" alt="Ảnh bàn" class="img-thumbnail mb-2"
+                    style="max-width: 200px;">
+                <% } else { %>
+                    <p>Chưa có ảnh</p>
+                    <% } %>
         </div>
     </div>
 
@@ -37,23 +41,23 @@
 
     <div class="mb-3">
         <label for="depositPrice" class="form-label">Giá đặt cọc</label>
-        <input type="number" id="depositPrice" name="depositPrice" class="form-control" value="<%= table.depositPrice %>" required>
+        <input type="number" id="depositPrice" name="depositPrice" class="form-control"
+            value="<%= table.depositPrice %>" required>
     </div>
 
     <div class="mb-3">
         <label for="status" class="form-label">Trạng thái</label>
         <select id="status" name="status" class="form-select" required>
-            <option value="AVAILABLE" <%= table.status === 'AVAILABLE' ? 'selected' : '' %>>Có sẵn</option>
-            <option value="RESERVED" <%= table.status === 'RESERVED' ? 'selected' : '' %>>Đã đặt</option>
-            <option value="OCCUPIED" <%= table.status === 'OCCUPIED' ? 'selected' : '' %>>Đang sử dụng</option>
+            <option value="AVAILABLE" <%=table.status==='AVAILABLE' ? 'selected' : '' %>>Có thể sử dụng</option>
+            <option value="MAINTAIN" <%=table.status==='MAINTAIN' ? 'selected' : '' %>>Không thể sử dụng</option>
         </select>
     </div>
 
     <div class="mb-3">
         <label for="type" class="form-label">Loại bàn</label>
         <select id="type" name="type" class="form-select" required>
-            <option value="NORMAL" <%= table.type === 'NORMAL' ? 'selected' : '' %>>Thường</option>
-            <option value="VIP" <%= table.type === 'VIP' ? 'selected' : '' %>>VIP</option>
+            <option value="NORMAL" <%=table.type==='NORMAL' ? 'selected' : '' %>>Thường</option>
+            <option value="VIP" <%=table.type==='VIP' ? 'selected' : '' %>>VIP</option>
         </select>
     </div>
 

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đặt món ăn online</title>
+  <link rel="stylesheet" href="/path/to/your/styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Đặt món ăn online</h1>
+    <!-- Hiển thị thông báo nếu có -->
+    <% if (typeof message !=='undefined' && message) { %>
+      <div class="alert alert-info">
+        <%= message %>
+      </div>
+      <% } %>
+        <% if (typeof error !=='undefined' && error) { %>
+          <div class="alert alert-danger">
+            <%= error %>
+          </div>
+          <% } %>
+            <!-- Kiểm tra nếu không có bàn đã thanh toán -->
+            <% if (typeof bookings !=='undefined' && bookings.length===0) { %>
+              <div class="alert alert-warning">
+                Bạn chưa thanh toán cho bàn nào, vui lòng quay lại và đặt bàn.
+              </div>
+              <% } %>
+                <!-- Kiểm tra nếu không có món ăn -->
+                <% if (typeof menuItems !=='undefined' && (!menuItems || menuItems.length===0)) { %>
+                  <div class="alert alert-warning">
+                    Hiện tại không có món ăn nào có sẵn để đặt.
+                  </div>
+                  <% } %>
+                    <!-- Form để người dùng chọn bàn và món ăn -->
+                    <form action="/order" method="POST">
+                      <h2>Chọn bàn:</h2>
+                      <div class="form-group">
+                        <label for="table">Bàn đã thanh toán</label>
+                        <select name="table" id="table" class="form-control" required>
+                          <% if (typeof bookings !=='undefined' && bookings.length> 0) { %>
+                            <% bookings.forEach(booking=> { %>
+                              <option value="<%= booking.table._id %>">
+                                Bàn: <%= booking.table.idTable %> - <%= booking.table.description %>
+                              </option>
+                              <% }) %>
+                                <% } %>
+                        </select>
+                      </div>
+                      <h2>Chọn món ăn:</h2>
+                      <div class="form-group">
+                        <label for="dishes">Món ăn</label>
+                        <div id="dishes" class="menu-details">
+                          <% if (typeof menuItems !=='undefined' && menuItems.length> 0) { %>
+                            <% menuItems.forEach((item, index)=> { %>
+                              <div class="menu-item">
+                                <img src="<%= item.imageUrl %>" alt="<%= item.foodName %>" class="menu-item-img">
+                                <h4>
+                                  <%= item.foodName %>
+                                </h4>
+                                <p>
+                                  <%= item.description %>
+                                </p>
+                                <p><strong>Giá:</strong>
+                                  <%= item.price %> VND
+                                </p>
+                                <label for="quantity_<%= index %>">Số lượng:</label>
+                                <input type="number" id="quantity_<%= index %>" name="dishes[<%= item._id %>][quantity]"
+                                  min="1" value="1" class="form-control quantity-input" required>
+                                <input type="checkbox" name="dishes[<%= item._id %>][selected]" value="true"> Chọn món
+                                này
+                              </div>
+                              <% }) %>
+                                <% } %>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Đặt món</button>
+                    </form>
+  </div>
+
+  <style>
+    /* Cải thiện giao diện chung */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #007bff;
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+
+    /* Cải thiện giao diện thông báo */
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .alert-info {
+      background-color: #d9edf7;
+      color: #31708f;
+    }
+
+    .alert-danger {
+      background-color: #f2dede;
+      color: #a94442;
+    }
+
+    .alert-warning {
+      background-color: #fcf8e3;
+      color: #8a6d3b;
+    }
+
+    /* Cải thiện các form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .form-control:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: white;
+      padding: 12px 25px;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+    }
+
+    /* Cải tiến giao diện món ăn */
+    .menu-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+    }
+
+    .menu-item {
+      width: 280px;
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background-color: #ffffff;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .menu-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .menu-item img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .menu-item h4 {
+      font-size: 20px;
+      color: #343a40;
+      margin-top: 15px;
+    }
+
+    .menu-item p {
+      font-size: 15px;
+      color: #6c757d;
+    }
+
+    .menu-item p strong {
+      color: #495057;
+    }
+
+    .quantity-input {
+      margin-top: 10px;
+      width: 60%;
+      font-size: 16px;
+    }
+
+    /* Sửa phần input checkbox */
+    .menu-item input[type="checkbox"] {
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+  </style>
+</body>
+
+</html>
