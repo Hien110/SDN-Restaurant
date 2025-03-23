@@ -11,7 +11,6 @@
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 50px;
       background-color: #f8f9fa;
     }
 
@@ -75,8 +74,7 @@
     }
 
     function checkPaymentStatus() {
-      console.log(`/payment/<%= bookingTable._id %>`);
-      fetch(`/payment/<%= bookingTable._id %>`)
+      fetch(`/payment/<%= bookingTable._id %>/checkPaid`)
         .then(response => response.json())
         .then(data => {
           if (data.success && data.isPaid) {

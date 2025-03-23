@@ -30,7 +30,7 @@
       <div class="nav-links">
         <a href="/"> Trang chủ </a>
         <a href="/aboutUs"> Về chúng tôi </a>
-        <a href="#"> Thực đơn </a>
+        <a href="/menu"> Thực đơn </a>
         <a href="/bookingTable"> Đặt chỗ </a>
         <a href="#"> Khuyễn mãi </a>
         <a href="#"> Tin tức </a>
@@ -47,7 +47,12 @@
               <% if (user.role === 'CUSTOMER') { %>
                 <a href="/users/<%= user._id %>">Hồ sơ</a>
               <% } else if (user.role === 'RESOWNER') { %>
-                <a href="/admin">Quản lí</a>
+
+                <a href="/admin%>">Quản lí</a>
+              <% } else if (user.role === 'WAITER'){ %>
+                <a href="/order">Gọi món (waiter)</a>
+
+
               <% } else { %>
                 <a href="/admin">Quản lí</a>
               <% } %>
