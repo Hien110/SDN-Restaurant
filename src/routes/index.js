@@ -13,18 +13,26 @@ const staffRouter = require("./staffRouter");
 const router = express.Router();
 const menuRoutes = require("./menuRoutes");
 const payment = require("./paymentRoutes");
+
+const orderRoutes = require('./orderRoutes');
+
+  
+
 const tableRouter = require('./tablesRouter')
 const { getAllTable } = require('../app/controllers/TablesController');
 const editMenuRoutes = require('./editMenuRoutes');
 const takeCareRouter = require('./takecareRouter');
 
   function routes(app) {
+  app.use("/admin/menu", menuRoutes);
   app.use('/menu',isAuth.setUser, getFooterData, menuRoutes)
   app.use('/admin/editMenu', editMenuRoutes);
+
   app.use("/restaurantInfor", restaurantRouter);
   app.use("/", isAuth.setUser, getFooterData, siteRouter);
   app.use("/auth", authRouter);
   app.use("/", authRouter);
+  app.use('/order', orderRoutes);
 
   app.use("/bookingTable", bookingRouter);
   app.use("/payment", payment);
