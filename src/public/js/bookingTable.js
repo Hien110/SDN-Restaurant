@@ -49,17 +49,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (booking.table.toString() !== tableId) return false;
                 
                 const bookedDateTime = new Date(booking.orderDate);
-                console.log("test1 ", booking.orderDate);
-                
+
                 // Trừ đi 7 giờ bằng cách sử dụng getTime()
                 const adjustedBookedDateTime = new Date(bookedDateTime.getTime() - 7 * 60 * 60 * 1000);
-                
-                console.log("test2 ", adjustedBookedDateTime);
 
                 const timeDiff = Math.abs((selectedDateTime - adjustedBookedDateTime) / (1000 * 60 * 60));
-                console.log(selectedDateTime);
-                
-                console.log(timeDiff);
                 
                 return timeDiff < 3; // Nếu chênh lệch dưới 3 giờ thì bàn đã đặt
             });
