@@ -76,7 +76,7 @@
     text-decoration: none;
 }
 
-/* Hiệu ứng cảnh báo khi không có dữ liệu */
+
 .no-data {
     text-align: center;
     font-size: 16px;
@@ -84,3 +84,37 @@
     font-weight: bold;
     padding: 10px;
 }
+
+.btn-update-takecare {
+    background-color: #f1c40f;
+    color: #fff;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.btn-update-takecare:hover {
+    background-color: #f39c12;
+}
+
+.btn-delete-takecare {
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-delete-takecare:hover {
+    background-color: #c0392b;
+}
+

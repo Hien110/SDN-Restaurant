@@ -18,6 +18,6 @@ router.get('/edit/:tableId', tablesController.getEditTableForm);
 router.post('/edit/:tableId', tablesController.upload.single('image'), tablesController.updateTable);
 
 // GET: Delete a table
-router.get('/delete/:tableId', tablesController.deleteTable);
+router.post('/delete/:tableId', tablesController.deleteTable);
 
 module.exports = router;

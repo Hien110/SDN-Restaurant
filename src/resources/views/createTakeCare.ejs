@@ -15,12 +15,27 @@
         <% } %>
 
         <form class="form-takecare" action="/admin/takeCare/create" method="POST" onsubmit="return validateForm()">
-            <div>
-                <label for="tableId">Nhập ID Bàn:</label>
-                <input type="text" class="form-control-takecare" name="tableId" id="tableId" required placeholder="VD: TBL001">
+            
+            <!-- Danh sách bàn dưới dạng checkbox -->
+            <div class="form-group">
+                <label>Chọn Bàn:</label>
+                <div class="checkbox-group">
+                    <% if (tables && tables.length > 0) { %>
+                        <% tables.forEach(table => { %>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="table-checkbox" name="tableIds" value="<%= table.idTable %>">
+                                <span class="checkbox-custom"></span>
+                                <%= table.idTable %>
+                            </label>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="no-tables">Không có bàn nào</p>
+                    <% } %>
+                </div>
+                <input type="hidden" name="selectedTables" id="selectedTables">
             </div>
 
-            <div>
+            <div class="form-group">
                 <label for="staffId">Chọn Nhân Viên Phục Vụ:</label>
                 <select class="form-select-takecare" name="staffId" id="staffId" required>
                     <% if (staffs && staffs.length > 0) { %>
@@ -33,22 +48,21 @@
                 </select>
             </div>
 
-            <div>
+            <div class="form-group">
                 <label for="date">Ngày:</label>
                 <input type="date" class="form-control-takecare" name="date" id="date" required>
             </div>
 
-            <div>
+            <div class="form-group">
                 <label for="startTime">Giờ Bắt Đầu:</label>
                 <input type="time" class="form-control-takecare" name="startTime" id="startTime" required>
             </div>
 
-            <div>
+            <div class="form-group">
                 <label for="endTime">Giờ Kết Thúc:</label>
                 <input type="time" class="form-control-takecare" name="endTime" id="endTime" required>
             </div>
 
-            <!-- Nút hành động -->
             <div class="button-group">
                 <button type="submit" class="btn-success-takecare">Tạo Lịch Làm</button>
                 <a href="/admin/takeCare" class="btn-back-takecare">Quay về danh sách</a>
@@ -58,22 +72,15 @@
 
     <script>
         function validateForm() {
-            let tableId = document.getElementById("tableId").value.trim();
-            let staffId = document.getElementById("staffId").value;
-            let date = document.getElementById("date").value;
-            let startTime = document.getElementById("startTime").value;
-            let endTime = document.getElementById("endTime").value;
+            const checkboxes = document.querySelectorAll(".table-checkbox:checked");
+            const selectedTables = Array.from(checkboxes).map(cb => cb.value);
 
-            if (!tableId || !staffId || !date || !startTime || !endTime) {
-                alert("Vui lòng điền đầy đủ thông tin.");
+            if (selectedTables.length === 0) {
+                alert("Vui lòng chọn ít nhất một bàn.");
                 return false;
             }
 
-            if (new Date(startTime) >= new Date(endTime)) {
-                alert("Giờ bắt đầu phải nhỏ hơn giờ kết thúc.");
-                return false;
-            }
-
+            document.getElementById("selectedTables").value = JSON.stringify(selectedTables);
             return true;
         }
     </script>
