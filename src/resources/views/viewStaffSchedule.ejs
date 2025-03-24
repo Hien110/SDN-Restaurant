@@ -1,0 +1,63 @@
+<head>
+    <link rel="stylesheet" href="/css/viewStaffSchedule.css">
+</head>
+
+<div class="schedule-container">
+    <h1>Lịch làm của nhân viên: <%= staff.firstName %> <%= staff.lastName %></h1>
+
+    <!-- Hiển thị thông báo nếu có -->
+    <% if (typeof successMessage !== "undefined" && successMessage) { %>
+        <div class="alert success">
+            <%= successMessage %>
+        </div>
+    <% } %>
+
+    <% if (typeof errorMessage !== "undefined" && errorMessage) { %>
+        <div class="alert error">
+            <%= errorMessage %>
+        </div>
+    <% } %>
+
+    <!-- Nút quay lại danh sách nhân viên -->
+    <div class="action-bar">
+        <a href="/admin/staffs" class="btn-back">Quay lại danh sách nhân viên</a>
+    </div>
+
+    <table class="schedule-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Bàn</th>
+                <th>Nhân Viên</th>
+                <th>Ngày</th>
+                <th>Giờ Bắt Đầu</th>
+                <th>Giờ Kết Thúc</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (takeCares && takeCares.length > 0) { %>
+                <% takeCares.forEach((tc, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= tc.tableNames.join(", ") %></td>
+                        <td><%= tc.staff ? tc.staff.firstName + " " + tc.staff.lastName : "Không có nhân viên" %></td>
+                        <td><%= tc.date %></td>
+                        <td><%= tc.startTime %></td>
+                        <td><%= tc.endTime %></td>
+                        <td>
+                            <a href="/admin/takeCare/update/<%= tc._id %>" class="btn-update">Sửa</a>
+                            <form action="/admin/takeCare/delete/<%= tc._id %>" method="POST" style="display: inline;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('Bạn có chắc chắn muốn xóa lịch làm này?')">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="7" class="no-result">Nhân viên này chưa có lịch làm!</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>

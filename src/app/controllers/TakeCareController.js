@@ -299,4 +299,51 @@ exports.deleteTakeCare = async (req, res) => {
     }
 };
 
+exports.getStaffSchedule = async (req, res) => {
+    try {
+        const { userId } = req.params; // Lấy userId từ params
+
+        // Kiểm tra xem nhân viên có tồn tại không
+        const staff = await User.findById(userId);
+        if (!staff) {
+            console.log("❌ Nhân viên không tồn tại:", userId);
+            return res.render("errorpage", {
+                message: "Nhân viên không tồn tại",
+                layout: "layouts/mainAdmin",
+            });
+        }
+
+        // Lấy danh sách lịch làm của nhân viên
+        const takeCares = await TakeCare.find({ staff: userId })
+            .populate('staff'); // Populate thông tin nhân viên
+
+        // Lấy danh sách tất cả các bàn để map idTable
+        const tables = await Table.find({}, 'idTable');
+        const tableMap = new Map(tables.map(table => [table.idTable, table.idTable]));
+
+        // Cập nhật thông tin bàn để hiển thị
+        takeCares.forEach(tc => {
+            tc.tableNames = tc.table.map(tId => tableMap.get(tId) || "Không có thông tin bàn");
+        });
+
+        console.log(`✅ Lấy thành công lịch làm của nhân viên: ${staff.firstName} ${staff.lastName}`);
+        takeCares.forEach(tc => {
+            console.log(`🆔 ID: ${tc._id}, Bàn: ${tc.tableNames.join(", ")}, Ngày: ${tc.date}, Thời gian: ${tc.startTime} - ${tc.endTime}`);
+        });
+
+        res.render('viewStaffSchedule', {
+            layout: "layouts/mainAdmin",
+            title: "Lịch làm của nhân viên",
+            takeCares,
+            staff // Truyền thông tin nhân viên để hiển thị tên
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi lấy lịch làm của nhân viên:", error);
+        return res.render("errorpage", {
+            message: "Lỗi hệ thống, vui lòng thử lại",
+            layout: "layouts/mainAdmin",
+        });
+    }
+};
+
 

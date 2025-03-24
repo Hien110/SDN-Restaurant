@@ -15,4 +15,6 @@ takeCareRouter.post("/update/:id", takeCareController.updateTakeCare);
 
 takeCareRouter.post("/delete/:id", isAuth.requireAuth, takeCareController.deleteTakeCare);
 
+takeCareRouter.get("/staff/:userId", isAuth.requireAuth, takeCareController.getStaffSchedule);
+
 module.exports = takeCareRouter;
