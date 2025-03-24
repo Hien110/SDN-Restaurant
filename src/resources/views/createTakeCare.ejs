@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo TakeCare</title>
+    <link rel="stylesheet" href="/css/createTakeCare.css">
+</head>
+<body>
+    <div class="container-takecare">
+        <h2>Tạo Lịch Làm</h2>
+
+        <% if (errorMessage) { %>
+            <p class="alert error"><%= errorMessage %></p>
+        <% } %>
+
+        <form class="form-takecare" action="/admin/takeCare/create" method="POST" onsubmit="return validateForm()">
+            
+            <!-- Danh sách bàn dưới dạng checkbox -->
+            <div class="form-group">
+                <label>Chọn Bàn:</label>
+                <div class="checkbox-group">
+                    <% if (tables && tables.length > 0) { %>
+                        <% tables.forEach(table => { %>
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="table-checkbox" name="tableIds" value="<%= table.idTable %>">
+                                <span class="checkbox-custom"></span>
+                                <%= table.idTable %>
+                            </label>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="no-tables">Không có bàn nào</p>
+                    <% } %>
+                </div>
+                <input type="hidden" name="selectedTables" id="selectedTables">
+            </div>
+
+            <div class="form-group">
+                <label for="staffId">Chọn Nhân Viên Phục Vụ:</label>
+                <select class="form-select-takecare" name="staffId" id="staffId" required>
+                    <% if (staffs && staffs.length > 0) { %>
+                        <% staffs.forEach(staff => { %>
+                            <option value="<%= staff._id %>"><%= staff.firstName %> <%= staff.lastName %> - <%= staff.email %></option>
+                        <% }); %>
+                    <% } else { %>
+                        <option disabled>Không có nhân viên nào</option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Ngày:</label>
+                <input type="date" class="form-control-takecare" name="date" id="date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="startTime">Giờ Bắt Đầu:</label>
+                <input type="time" class="form-control-takecare" name="startTime" id="startTime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="endTime">Giờ Kết Thúc:</label>
+                <input type="time" class="form-control-takecare" name="endTime" id="endTime" required>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn-success-takecare">Tạo Lịch Làm</button>
+                <a href="/admin/takeCare" class="btn-back-takecare">Quay về danh sách</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            const checkboxes = document.querySelectorAll(".table-checkbox:checked");
+            const selectedTables = Array.from(checkboxes).map(cb => cb.value);
+
+            if (selectedTables.length === 0) {
+                alert("Vui lòng chọn ít nhất một bàn.");
+                return false;
+            }
+
+            document.getElementById("selectedTables").value = JSON.stringify(selectedTables);
+            return true;
+        }
+    </script>
+</body>
+</html>

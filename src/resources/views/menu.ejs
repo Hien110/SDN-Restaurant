@@ -1,80 +1,191 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Danh sách món ăn</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Ẩm Thực</title>
+  <!-- Link đến file CSS riêng -->
   <link rel="stylesheet" href="/css/menu.css">
+  <!-- Các thư viện khác -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
 </head>
 <body>
-  <!-- Header chứa tiêu đề và nút Thêm món ăn cùng hàng -->
-  <header class="menu-header">
-    <h1>Danh sách món ăn</h1>
-    <button class="btn-add" onclick="window.location.href='/api/menu/add'">Thêm món ăn</button>
-  </header>
-
-  <main class="menu-container">
-    <% if (menus && menus.length > 0) { %>
-      <div class="menu-list">
+  <!-- Header -->
+   <div class="menu">
+    <header class="menu-header">
+      <h1>Thực đơn</h1>
+    </header>
+  </div>
+  <!-- Phần tìm kiếm và danh mục -->
+  <div class="container">
+    <div class="search-category">
+      <input class="search-input" id="search-dish" placeholder="Tìm kiếm món ăn..." type="text"/>
+      <div class="filter-container">
+        <button class="filter-btn" onclick="toggleFilterMenu(event)">
+          <i class="fas fa-filter"></i>
+        </button>
+        <div id="filter-menu">
+          <button>Món mới nhất</button>
+          <button>Giá tăng dần</button>
+          <button>Giá giảm dần</button>
+          <button>Đang ưu đãi</button>
+          <button>Được đề xuất</button>
+        </div>
+      </div>
+    </div>
+    <div class="category-list">
+      <button class="category-btn active">
+        All
+        <span class="category-count"><%= menus.length %></span>
+      </button>
+      <button class="category-btn inactive">
+        Starters 
+        <span class="category-count">2</span>
+      </button>
+      <button class="category-btn inactive">
+        Desserts
+        <span class="category-count">3</span>
+      </button>
+      <button class="category-btn inactive">
+        Drinks
+        <span class="category-count">4</span>
+      </button>
+      <button class="category-btn inactive">
+        Canned Beverages
+        <span class="category-count">5</span>
+      </button>
+    </div>
+    
+    <!-- Danh sách món ăn động -->
+    <h2 class="menu-title">
+      All
+    </h2>
+    <div class="menu-items">
+      <% if (menus && menus.length > 0) { %>
         <% menus.forEach((dish) => { %>
           <div class="menu-item">
-            <!-- Ảnh món ăn (bên trái) -->
-            <div class="menu-item-left">
-              <img 
-                src="/image/com-rang-thap-cam.jpg" 
-                alt="Cơm rang thập cẩm"
-              />
+            <div class="menu-item-image">
+              <img alt="<%= dish.foodName %>" class="img-responsive" height="150" src="<%= dish.imageUrl %>" width="150"/>
             </div>
-            <!-- Khối thông tin món ăn (bên phải) -->
-            <div class="menu-item-right">
-              <!-- Hàng trên: Tên món ở bên trái, Giá và nút Sửa ở bên phải -->
-              <div class="menu-text-top">
-                <div class="dish-info-left">
-                  <h3 class="dish-name">
-                    <a href="/chi-tiet/<%= dish._id %>"><%= dish.foodName %></a>
-                  </h3>
-                </div>
-                <div class="dish-info-right">
-                  <span class="dish-price"><%= dish.price %> VND</span>
-                </div>
-              </div>
-              <!-- Hàng dưới: Mô tả bên trái, Đánh giá sao và nút Xóa bên phải -->
-              <div class="menu-text-bottom">
-                <div class="dish-desc-left">
-                  <p class="dish-description"><%= dish.description %></p>
-                </div>
-                <div class="dish-desc-right">
-                  <span class="dish-rating"><%= dish.starRating %> sao</span>
-                </div>
-              </div>
-              <div class="menu-item-buttons">
-                <button class="btn-edit" onclick="editDish('<%= dish._id %>')">Sửa</button>
-                <button class="btn-delete" onclick="deleteDish('<%= dish._id %>')">Xóa</button>
-              </div>
+            <h3 class="menu-item-title">
+              <%= dish.foodName %>
+            </h3>
+            <div class="menu-item-info">
+              <span class="menu-item-price">
+                <%= parseFloat(dish.price.toString()).toLocaleString('vi-VN') %> VND
+              </span>
+              <span class="dish-rating">
+                <% for (let i = 0; i < 5; i++) { %>
+                  <i class="fas fa-star star-icon"></i>
+                <% } %>
+              </span>
             </div>
+            <p class="menu-item-description">
+              <%= dish.description %>
+            </p>
           </div>
         <% }) %>
-      </div>
-    <% } else { %>
-      <p>Hiện không có món ăn nào trong menu.</p>
-    <% } %>
-  </main>
-
+      <% } else { %>
+        <p>Hiện không có món ăn nào trong menu.</p>
+      <% } %>
+    </div>
+  </div>
 
   <script>
-    function editDish(id) {
-      window.location.href = '/api/menu/edit/' + id;
+    // Lấy tất cả các nút trong danh sách
+    const categoryButtons = document.querySelectorAll('.category-btn');
+  
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Xoá class active khỏi tất cả các nút và thêm class inactive
+        categoryButtons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.classList.add('inactive');
+        });
+        // Thêm class active cho nút vừa click và xoá class inactive
+        button.classList.add('active');
+        button.classList.remove('inactive');
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("search-dish");
+    const menuItems = document.querySelectorAll(".menu-item"); 
+
+    function filterDishes() {
+        const searchValue = searchInput.value.toLowerCase();
+
+        menuItems.forEach(item => {
+            const dishName = item.querySelector(".menu-item-title").textContent.toLowerCase();
+
+            if (dishName.includes(searchValue)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
     }
-    function deleteDish(id) {
-      if (confirm('Bạn có chắc chắn muốn xóa món ăn này?')) {
-        fetch('/api/menu/' + id, { method: 'DELETE' })
-          .then(res => res.json())
-          .then(data => {
-            alert('Đã xóa món ăn!');
-            window.location.reload();
-          })
-          .catch(err => console.error(err));
-      }
+
+    searchInput.addEventListener("input", filterDishes);
+});
+
+function toggleFilterMenu(event) {
+    event.stopPropagation(); // Ngăn click lan ra ngoài
+    const filterMenu = document.getElementById('filter-menu');
+    filterMenu.classList.toggle('show');
+}
+
+document.addEventListener('click', function(event) {
+    const filterContainer = document.querySelector('.filter-container');
+    if (!filterContainer.contains(event.target)) {
+      document.getElementById('filter-menu').classList.remove('show');
     }
+});
+
+
+  // Hàm chuyển đổi giá từ chuỗi sang số để so sánh
+function parsePrice(priceString) {
+    return parseFloat(priceString.replace(/\./g, '').replace(' VND', ''));
+}
+
+// Hàm sắp xếp món ăn
+function sortMenuItems(order) {
+    const menuContainer = document.querySelector('.menu-items');
+    const items = Array.from(menuContainer.querySelectorAll('.menu-item'));
+
+    items.sort((a, b) => {
+        const priceA = parsePrice(a.querySelector('.menu-item-price').textContent);
+        const priceB = parsePrice(b.querySelector('.menu-item-price').textContent);
+
+        return order === 'asc' ? priceA - priceB : priceB - priceA;
+    });
+
+    // Xóa hết item hiện tại và append lại theo thứ tự mới
+    menuContainer.innerHTML = '';
+    items.forEach(item => menuContainer.appendChild(item));
+}
+
+// Gắn sự kiện vào nút filter menu
+document.getElementById('filter-menu').addEventListener('click', (event) => {
+    // Chỉ xử lý nếu click vào button
+    if (event.target.tagName.toLowerCase() !== 'button') return;
+
+    // Loại bỏ active-filter khỏi tất cả các button trong filter-menu
+    const filterButtons = document.querySelectorAll('#filter-menu button');
+    filterButtons.forEach(btn => btn.classList.remove('active-filter'));
+
+    // Thêm active-filter vào button vừa được click
+    event.target.classList.add('active-filter');
+
+    const option = event.target.textContent.trim();
+    if (option === 'Giá tăng dần') {
+        sortMenuItems('asc');
+    } else if (option === 'Giá giảm dần') {
+        sortMenuItems('desc');
+    }
+});
+
   </script>
 </body>
 </html>

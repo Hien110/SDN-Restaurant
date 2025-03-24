@@ -8,12 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let today = new Date().toISOString().split("T")[0];
     dateInput.setAttribute("min", today);
 
+    console.log(bookings);
     /** 🕒 Cập nhật min cho giờ khi chọn ngày */
     dateInput.addEventListener("change", function () {
         const selectedDate = new Date(dateInput.value);
         const now = new Date();
         const timeInput = document.getElementById("time");
-    
         // Trừ 3 tiếng
         let minTime = new Date();
         minTime.setHours(now.getHours() + 1);
@@ -39,17 +39,22 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!selectedDate || !selectedTime) return;
 
         const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
-
+        console.log(selectedDateTime);
+        
         document.querySelectorAll(".table-card").forEach(table => {
             const tableId = table.getAttribute("data-table-id");
             const statusDiv = table.querySelector(".table-status");
 
             const isReserved = bookings.some(booking => {
                 if (booking.table.toString() !== tableId) return false;
-
+                
                 const bookedDateTime = new Date(booking.orderDate);
-                const timeDiff = Math.abs((selectedDateTime - bookedDateTime) / (1000 * 60 * 60));
 
+                // Trừ đi 7 giờ bằng cách sử dụng getTime()
+                const adjustedBookedDateTime = new Date(bookedDateTime.getTime() - 7 * 60 * 60 * 1000);
+
+                const timeDiff = Math.abs((selectedDateTime - adjustedBookedDateTime) / (1000 * 60 * 60));
+                
                 return timeDiff < 3; // Nếu chênh lệch dưới 3 giờ thì bàn đã đặt
             });
 
