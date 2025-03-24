@@ -57,7 +57,7 @@ exports.viewAllTables = async (req, resp) => {
       },
     },
   ]);
-  resp.render("order/tables", { tables, layout: "layouts/order" });
+  resp.render("order/tables", { tables, layout: "layouts/mainAdmin" });
 };
 exports.viewATable = async (req, resp) => {
   const tableId = req.params.tableId;
@@ -66,7 +66,7 @@ exports.viewATable = async (req, resp) => {
     return resp.status(404).send("Table not found");
   }
   const menus = await Menu.find().populate("category");
-  resp.render("order/view1Table", { table, menus, layout: "layouts/order" });
+  resp.render("order/view1Table", { table, menus, layout: "layouts/mainAdmin" });
 };
 exports.addDishes2Table = async (req, resp) => {
   const { tableId, dishes } = req.body;
@@ -180,7 +180,7 @@ exports.chefViewDishes = async (req, resp) => {
       { $unwind: "$dishes" }, // Unwind dishes
       { $sort: { "dishes.orderDate": 1 } }, // Sort by orderDate (oldest to latest)
     ]);
-    resp.render("order/chef", { layout: "layouts/order" });
+    resp.render("order/chef", { layout: "layouts/mainAdmin" });
   } catch (error) {
     console.error("Error fetching orders:", error);
   }

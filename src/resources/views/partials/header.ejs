@@ -31,7 +31,9 @@
         <a href="/"> Trang chủ </a>
         <a href="/aboutUs"> Về chúng tôi </a>
         <a href="/menu"> Thực đơn </a>
+        <% if (user.role === "CUSTOMER") { %>
         <a href="/bookingTable"> Đặt chỗ </a>
+        <% } %>
         <a href="#"> Khuyễn mãi </a>
         <a href="#"> Tin tức </a>
       </div>
@@ -47,16 +49,14 @@
               <% if (user.role === 'CUSTOMER') { %>
                 <a href="/users/<%= user._id %>">Hồ sơ</a>
               <% } else if (user.role === 'RESOWNER') { %>
-
                 <a href="/admin%>">Quản lí</a>
-              <% } else if (user.role === 'WAITER'){ %>
-                <a href="/order">Gọi món (waiter)</a>
-
-
+              <% } else if (user.role === 'WAITER' || user.role === 'KITCHENSTAFF'){ %>
+                <a href="/users/<%= user._id %>">Hồ sơ</a>
+                <a href="/order">Gọi món</a>
               <% } else { %>
+                <a href="/users/<%= user._id %>">Hồ sơ</a>
                 <a href="/admin">Quản lí</a>
               <% } %>
-
               <form action="/auth/logout" method="POST">
                 <button
                   type="submit"
