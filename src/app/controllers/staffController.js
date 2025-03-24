@@ -10,7 +10,8 @@ exports.getStaffs = async (req, res) => {
         const searchQuery = req.query.search ? req.query.search.trim() : ""; 
         const roleFilter = req.query.role && req.query.role.trim() !== "" ? req.query.role.trim() : null; 
 
-        let queryCondition = { role: { $ne: "CUSTOMER" } };
+        // Loại bỏ cả CUSTOMER và RESOWNER
+        let queryCondition = { role: { $nin: ["CUSTOMER", "RESOWNER"] } };
 
         if (searchQuery) {
             queryCondition.$or = [
@@ -26,10 +27,24 @@ exports.getStaffs = async (req, res) => {
 
         const staffs = await User.find(queryCondition);
 
+        // Ánh xạ role sang tiếng Việt
+        const roleMap = {
+            WAITER: "Nhân viên phục vụ",
+            KITCHENSTAFF: "Nhân viên phụ bếp",
+            RESMANAGER: "Quản lý nhà hàng"
+        };
+
+        const staffsWithVietnameseRoles = staffs.map(staff => {
+            return {
+                ...staff._doc, // Lấy toàn bộ dữ liệu của staff
+                role: roleMap[staff.role] || staff.role // Thay thế role bằng tiếng Việt, nếu không có trong map thì giữ nguyên
+            };
+        });
+
         return res.render("viewStaffInformation", {
             layout: "layouts/mainAdmin",
             title: "Danh sách nhân viên",
-            staffs,
+            staffs: staffsWithVietnameseRoles, // Sử dụng danh sách đã được ánh xạ
             searchQuery: searchQuery || "",  
             selectedRole: roleFilter !== null ? roleFilter : "",  // ✅ Đảm bảo `selectedRole` rỗng nếu không chọn gì
         });
@@ -42,8 +57,6 @@ exports.getStaffs = async (req, res) => {
         });
     }
 };
-
-
 
 
 
@@ -63,13 +76,25 @@ exports.getStaffDetail = async (req, res) => {
         // Kiểm tra nếu nhân viên có `createdAt`, format lại ngày, nếu không thì trả về "Không có dữ liệu"
         const createdAt = staff.createdAt ? new Date(staff.createdAt).toLocaleDateString("vi-VN") : "Không có dữ liệu";
 
+        // Ánh xạ role sang tiếng Việt
+        const roleMap = {
+            WAITER: "Nhân viên phục vụ",
+            KITCHENSTAFF: "Nhân viên phụ bếp",
+            RESMANAGER: "Quản lý nhà hàng"
+        };
+
+        const staffWithVietnameseRole = {
+            ...staff._doc, 
+            role: roleMap[staff.role] || staff.role
+        };
+
         console.log("✅ Nhân viên tìm thấy:", staff);
         console.log("✅ createdAt:", createdAt);
 
         return res.render("viewDetailStaff", {
             layout: "layouts/mainAdmin",
             title: "Chi tiết nhân viên",
-            staff,
+            staff: staffWithVietnameseRole, // Sử dụng staff đã được ánh xạ role
             salary: staffDetails ? staffDetails.salary : "Chưa cập nhật",
             createdAt // ✅ Đảm bảo truyền `createdAt` vào EJS
         });
@@ -78,7 +103,6 @@ exports.getStaffDetail = async (req, res) => {
         return res.render("errorpage", { message: "Lỗi hệ thống, vui lòng thử lại" });
     }
 };
-
 
 
 exports.updateStaff = async (req, res) => {
@@ -189,23 +213,28 @@ exports.createStaff = async (req, res) => {
         // }
 
         // 3️⃣ Mã hóa mật khẩu
+      // 3️⃣ Mã hóa mật khẩu
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // 4️⃣ Tạo tài khoản nhân viên
+        // 4️⃣ Kiểm tra và gán role hợp lệ
+        const validRoles = ["WAITER", "KITCHENSTAFF", "RESMANAGER"];
+        const selectedRole = validRoles.includes(role) ? role : "WAITER"; // Đã sửa lỗi cú pháp
+
+        // 5️⃣ Tạo tài khoản nhân viên
         const newUser = new User({
             firstName,
             lastName,
             email,
             password: hashedPassword,
             phoneNumber: phone,
-            role: role || "WAITER",
+            role: selectedRole,
             status: "ACTIVE",
         });
 
-        // 5️⃣ Lưu nhân viên vào database
+        // 6️⃣ Lưu nhân viên vào database
         await newUser.save();
 
-        // 6️⃣ Thêm mức lương vào `StaffInfor`
+        // 7️⃣ Thêm mức lương vào `StaffInfor`
         const newStaffInfor = new StaffInfor({
             staff: newUser._id,
             salary: salary,
@@ -214,7 +243,7 @@ exports.createStaff = async (req, res) => {
 
         await newStaffInfor.save();
 
-        // 7️⃣ Gửi email kích hoạt tài khoản (nếu cần)
+        // 8️⃣ Gửi email kích hoạt tài khoản (nếu cần)
         try {
             const resetToken = await genarateResetToken();
             newUser.resetToken = resetToken;
@@ -225,7 +254,7 @@ exports.createStaff = async (req, res) => {
             console.error("Lỗi gửi email:", err);
         }
 
-        // 8️⃣ Load lại danh sách toàn bộ nhân viên sau khi tạo
+        // 9️⃣ Load lại danh sách toàn bộ nhân viên sau khi tạo
         return res.redirect("/admin/staffs?role="); // ✅ Reset bộ lọc role để hiển thị tất cả nhân viên
 
     } catch (error) {
