@@ -14,7 +14,14 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
     <!-- File CSS riêng -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link rel="stylesheet" href="/css/admin.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.8/axios.min.js" integrity="sha512-v8+bPcpk4Sj7CKB11+gK/FnsbgQ15jTwZamnBf/xDmiQDcgOIYufBo6Acu1y30vrk8gg5su4x0CG3zfPaq5Fcg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   </head>
   <body>
     <!-- Sidebar -->
@@ -23,7 +30,7 @@
       <a class="navbar-brand d-flex align-items-center" href="#">
         <!-- Ảnh logo -->
         <img
-          src="/image/logoRes2.png"
+          src="/image/logoRes.png"
           alt="Logo"
           style="margin-left: 60px; width: 131px"
           class="mr-2"
@@ -31,17 +38,21 @@
       </a>
       <!-- Menu -->
       <ul class="list-unstyled components mt-3">
+        <% if (user.role == 'admin') { %>
         <li>
           <a href="#"
-            ><i class="fas fa-chart-line mr-2 mb-2 mt-2"></i>Xem báo cáo doanh
-            thu</a
+            ><i class="fas fa-chart-line mr-2 mb-2 mt-2"></i>Xem báo cáo doanh thu</a
           >
         </li>
         <li>
-          <a href="/admin/staffs"><i class="fas fa-users mr-2 mb-2 mt-2"></i>Quản lý nhân viên</a>
+          <a href="/admin/staffs"
+            ><i class="fas fa-users mr-2 mb-2 mt-2"></i>Quản lý nhân viên</a
+          >
         </li>
         <li>
-          <a href="/admin/tables"><i class="fas fa-table mr-2 mb-2 mt-2"></i>Quản lý bàn</a>
+          <a href="/admin/tables"
+            ><i class="fas fa-table mr-2 mb-2 mt-2"></i>Quản lý bàn</a
+          >
         </li>
         <li>
           <a href="#"
@@ -49,12 +60,9 @@
           >
         </li>
         <li>
-          <a href="#"
-            ><i class="fas fa-clipboard mr-2 mb-2 mt-2"></i>Quản lý đặt bàn</a
+          <a href="/admin/editMenu"
+            ><i class="fas fa-utensils mr-2 mb-2 mt-2"></i>Quản lý món ăn</a
           >
-        </li>
-        <li>
-          <a href="/admin/editMenu"><i class="fas fa-utensils mr-2 mb-2 mt-2"></i>Quản lý món ăn</a>
         </li>
         <li>
           <a href="/admin/takeCare"
@@ -66,6 +74,28 @@
             ><i class="fas fa-newspaper mr-2 mb-2 mt-2"></i>Quản lý tin tức</a
           >
         </li>
+        <% } %>
+        <li>
+          <a href="/bookingTable/management"
+            ><i class="fas fa-clipboard mr-2 mb-2 mt-2"></i>Quản lý đặt bàn</a
+          >
+        </li>
+     
+        <li>
+          <a href="/staff/viewSchedule/<%= user._id%>"
+            ><i class="fas fa-clock mr-2 mb-2 mt-2"></i>Xem lịch làm</a
+          >
+        </li>
+        <li>
+          <a href="/order">
+            <i class="fas fa-clipboard mr-2 mb-2 mt-2"></i>Gọi món
+          </a>
+        </li>
+        <li>
+          <a href="/order/chef">
+            <i class="fas fa-clipboard mr-2 mb-2 mt-2"></i>Các món đang đợi
+          </a>
+        </li>
       </ul>
     </nav>
 
@@ -75,14 +105,21 @@
       <nav class="navbar navbar-expand navbar-dark bg-white shadow-sm">
         <div class="user-profile text-center p-3 border-bottom">
           <h5 class="mb-0">Xin chào</h5>
-          <span class="text-muted">Owner Restaurant</span>
+          <span class="text-muted"><%= user.firstName%> <%= user.lastName %></span>
         </div>
         <div class="user-profile text-center p-3">
-          <h5 class="mb-0 tilte-rest">Nhà hàng Thư Vãn</h5>
+          <h5
+            style="font-size: 32px; color: #a82825; margin-right: 114px"
+            class="mb-0 tilte-rest"
+          >
+            NHÀ HÀNG THƯ VÃN
+          </h5>
         </div>
         <div class="d-flex align-items-center">
           <div class="dropdown">
-              <a href="/"><i style="font-size: 24px; color: black;" class="fas fa-home"></i></a>
+            <a href="/"
+              ><i style="font-size: 24px; color: black" class="fas fa-home"></i
+            ></a>
           </div>
         </div>
       </nav>
@@ -101,11 +138,10 @@
     <!-- JavaScript xử lý active sidebar -->
     <script>
       $(document).ready(function () {
-        // Đánh dấu active dựa trên URL hiện tại
         var currentPath = window.location.pathname;
         $(".components li a").each(function () {
           var href = $(this).attr("href");
-          if (href && currentPath.indexOf(href) !== -1) {
+          if (href === currentPath) {
             $(this).parent().addClass("active");
           }
         });

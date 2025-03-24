@@ -7,9 +7,18 @@ const passport = require("./config/oauth20");
 const sessionMiddleware = require("./config/session");
 const expressLayouts = require("express-ejs-layouts");
 
+const WebSocket = require("ws");
+const http = require("http");
+
+const methodOverride = require('method-override');
+
+
 const app = express();
 const port = process.env.PORT || 3000;
+const server = http.createServer(app); // Create an HTTP server
+const wss = new WebSocket.Server({ server }); // Attach WebSocket to the server
 
+app.use(methodOverride('_method'));
 app.use("/image", express.static(path.join(__dirname, "public", "image"), { maxAge: "1y" }));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "resources", "views"));
@@ -17,8 +26,6 @@ app.set("views", path.join(__dirname, "resources", "views"));
 app.use(expressLayouts);
 app.set("layout", "layouts/main");
 
-app.use(expressLayouts);
-app.set("layout", "layouts/main");
 db.connect();
 
 app.use(express.urlencoded({ extended: true }));
@@ -38,6 +45,20 @@ app.use(express.static(path.join(__dirname, "public")));
 
 router(app);
 
-app.listen(port, () => {
-  console.log(`Server đang chạy`);
+// WebSocket server logic
+wss.on("connection", (ws) => {
+  ws.on("message", (message) => {
+    wss.clients.forEach((client) => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(`${message}`);
+      }
+    });
+  });
+
+  ws.on("close", () => {
+    console.log("WebSocket client disconnected");
+  });
+});
+server.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
 });

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/updateTakeCare.css">
+</head>
+<body>
+    <div class="container-update-takecare">
+        <h2>Cập Nhật Lịch Làm</h2>
+
+        <% if (errorMessage) { %>
+            <p class="alert-update error-update"><%= errorMessage %></p>
+        <% } %>
+
+        <form class="form-update-takecare" action="/admin/takeCare/update/<%= takeCare._id %>" method="POST" onsubmit="return validateForm()">
+            
+            <!-- Danh sách bàn dưới dạng checkbox -->
+            <div class="form-group">
+                <label>Chọn Bàn:</label>
+                <div class="checkbox-group">
+                    <% if (tables && tables.length > 0) { %>
+                        <% tables.forEach(table => { %>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="tableIds" value="<%= table.idTable %>" 
+                                    <%= takeCare.table.includes(table.idTable) ? "checked" : "" %> >
+                                <span class="checkbox-custom"></span>
+                                <%= table.idTable %>
+                            </label>
+                        <% }); %>
+                    <% } else { %>
+                        <p class="no-tables">Không có bàn nào</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="staffId">Nhân Viên Phục Vụ:</label>
+                <select class="form-select-update" name="staffId" id="staffId" required>
+                    <% if (staffs && staffs.length > 0) { %>
+                        <% staffs.forEach(staff => { %>
+                            <option value="<%= staff._id %>" <%= takeCare.staff && staff._id.toString() === takeCare.staff._id.toString() ? "selected" : "" %> >
+                                <%= staff.firstName %> <%= staff.lastName %> - <%= staff.email %>
+                            </option>
+                        <% }); %>
+                    <% } else { %>
+                        <option value="" disabled>Không có nhân viên nào</option>
+                    <% } %>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Ngày:</label>
+                <input type="date" class="form-control-update" name="date" id="date" required 
+                       value="<%= takeCare.date ? takeCare.date.toISOString().split('T')[0] : '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="startTime">Giờ Bắt Đầu:</label>
+                <input type="time" class="form-control-update" name="startTime" id="startTime" required 
+                       value="<%= takeCare.startTime || '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="endTime">Giờ Kết Thúc:</label>
+                <input type="time" class="form-control-update" name="endTime" id="endTime" required 
+                       value="<%= takeCare.endTime || '' %>">
+            </div>
+
+            <div class="button-group-update">
+                <a href="/admin/takeCare" class="btn-update-cancel">Quay Lại</a>
+                <button type="submit" class="btn-update-success">Lưu Thay Đổi</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            const checkboxes = document.querySelectorAll("input[name='tableIds']:checked");
+            if (checkboxes.length === 0) {
+                alert("Vui lòng chọn ít nhất một bàn.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

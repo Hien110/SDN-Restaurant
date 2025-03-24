@@ -2,6 +2,7 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const User = require("../models/User");
+const Staff = require("../models/StaffInfor");
 const { sendMail } = require("../../config/email");
 const { genarateResetToken } = require("../../util");
 
@@ -371,11 +372,19 @@ exports.findById = async (req, res) => {
   try {
     const userId = req.params.id;
     const user = await User.findById(userId);
+    let staffInfor = null;
+    
     if (!user) {
       return res.render("errorpage");
     }
+
+    if (user.role != 'CUSTOMER' ) {
+       staffInfor = await Staff.findOne({ staff: userId });
+    }
+    console.log(staffInfor);
+    
     const error = req.query.error || "";
-    res.render("informationUser", { users: user, error  });
+    res.render("informationUser", { users: user, staff: staffInfor, error  });
   } catch (error) {
     console.error(error);
     res.status(500).send("Lỗi server");
@@ -465,7 +474,7 @@ exports.changePassword = async (req, res) => {
 // [POST] => postLogout
 exports.postLogout = async (req, res, next) => {
   req.session.destroy((err) => {
-    res.redirect("/auth/login");
+    res.redirect("/");
   });
 };
 

@@ -1,22 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Secure Payment Page">
-  <meta name="author" content="Your Company Name">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Payment</title>
+  <meta name="description" content="Trang thanh toán" />
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 50px;
       background-color: #f8f9fa;
     }
 
     .container {
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
       background: white;
       padding: 20px;
@@ -52,11 +50,105 @@
       margin-top: 10px;
       color: green;
     }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
   </style>
 
+  <% const expiryTimeISO=(bookingTable.expiresAt || new Date(Date.now() + 10 * 60 * 1000)).toISOString(); const
+    amountValue=typeof amount==="number" ? amount : parseInt(amount); const description=(type==='booking' ||
+    type==='order' ) ? bookingTable._id : '' ; %>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Chi tiết thanh toán</h2>
+    <p class="info">Vui lòng quét mã QR bên dưới để thanh toán.</p>
+
+    <img
+      src="https://img.vietqr.io/image/<%= bankId %>-<%= accountNo %>-qr_only.jpg?amount=<%= amount %>&addInfo=<%= bookingTable._id %>"
+      alt="QR Code for Payment" />
+
+    <div class="info">
+      <% if (type==='booking' ) { %>
+        <p><strong>Booking ID:</strong>
+          <%= bookingTable.bookingTableId %>
+        </p>
+        <p><strong>Số lượng ghế:</strong>
+          <%= bookingTable.quantity %>
+        </p>
+        <% } else if (type==='order' ) { %>
+          <p><strong>Order ID:</strong>
+            <%= bookingTable._id %>
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Món ăn</th>
+                <th>Số lượng</th>
+                <th>Giá (VND)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% bookingTable.dishes.forEach(dish=> { %>
+                <tr>
+                  <td>
+                    <%= dish.menuItem.name %>
+                  </td>
+                  <td>
+                    <%= dish.quantity %>
+                  </td>
+                  <td>
+                    <%= dish.menuItem.price %>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+          <% } %>
+
+            <p><strong>Số tiền:</strong>
+              <%= amount %> VND
+            </p>
+            <p><strong>Ngân hàng:</strong>
+              <%= bankId %>
+            </p>
+            <p><strong>Số tài khoản:</strong>
+              <%= accountNo %>
+            </p>
+
+            <p class="expires">
+              Hết hạn lúc: <%= bookingTable.orderDay %>
+                <%= bookingTable.orderDate %>
+                  <%= bookingTable.orderTime %>
+            </p>
+            <p>Thời gian còn lại: <span id="countdown"></span></p>
+            <p id="payment-status"></p>
+    </div>
+  </div>
+
   <script>
-    function startCountdown(expiryTime) {
-      function updateCountdown() {
+    window.addEventListener("load", function () {
+      const expiryTime = new Date("<%= expiryTimeISO %>").getTime();
+      const description = "<%= description %>";
+      const amount = <%= amountValue %>;
+
+      function startCountdown() {
         const now = new Date().getTime();
         const timeLeft = expiryTime - now;
 
@@ -67,72 +159,45 @@
 
         const minutes = Math.floor(timeLeft / (1000 * 60));
         const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
         document.getElementById("countdown").innerText = `${minutes}m ${seconds}s`;
-        setTimeout(updateCountdown, 1000);
+
+        setTimeout(startCountdown, 1000);
       }
-      updateCountdown();
-    }
 
-    function checkPaymentStatus() {
-      console.log(`/payment/<%= bookingTable._id %>`);
-      fetch(`/payment/<%= bookingTable._id %>`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.success && data.isPaid) {
-            clearInterval(paymentCheckInterval);
-            document.getElementById("payment-status").innerText = "Thanh toán thành công! Đang chuyển hướng...";
+      startCountdown();
 
-            setTimeout(() => {
-              window.location.href = "/";
-            }, 3000);
-          }
+      function checkPaymentStatus() {
+        if (!description || isNaN(amount)) {
+          console.warn("Thiếu thông tin description hoặc amount.");
+          return;
+        }
 
-        })
-        .catch(error => console.error("Lỗi khi kiểm tra thanh toán:", error));
-    }
+        const url = `/payment/${description}/checkPaid?amount=${amount}`;
+        console.log("Kiểm tra thanh toán tại:", url);
 
-    window.onload = function () {
-      const expiryTime = new Date("<%= bookingTable.expiresAt %>").getTime();
-      startCountdown(expiryTime);
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success && data.isPaid) {
+              clearInterval(paymentCheckInterval);
+              document.getElementById("payment-status").innerText = "Thanh toán thành công! Đang chuyển hướng...";
+              setTimeout(() => {
+                if ("<%= type %>" === "booking") {
+                  window.location.href = "/booking";
+                } else if ("<%= type %>" === "order") {
+                  window.location.href = "/order";
+                }
+              }, 3000);
+            }
+          })
+          .catch(error => {
+            console.error("Lỗi khi kiểm tra thanh toán:", error);
+          });
+      }
 
-      paymentCheckInterval = setInterval(checkPaymentStatus, 5000);
-    };
+      const paymentCheckInterval = setInterval(checkPaymentStatus, 5000);
+    });
   </script>
-
-</head>
-
-<body>
-
-  <div class="container">
-    <h2>Payment Details</h2>
-    <p class="info">Please scan the QR code below to complete your payment.</p>
-
-    <img
-      src="https://img.vietqr.io/image/<%= bankId %>-<%= accountNo %>-qr_only.jpg?amount=<%= amount %>&addInfo=<%= bookingTable._id %>"
-      alt="QR Code for Payment">
-    <div class="info">
-      <p><strong>Booking ID:</strong>
-        <%= bookingTable.bookingTableId %>
-      </p>
-      <p><strong>Amount:</strong>
-        <%= amount %> VND
-      </p>
-      <p><strong>Bank ID:</strong>
-        <%= bankId %>
-      </p>
-      <p><strong>Account Number:</strong>
-        <%= accountNo %>
-      </p>
-      <p class="expires">Expires at: <%= bookingTable.orderDay %>
-          <%= bookingTable.orderDate %>
-            <%= bookingTable.orderTime %>
-      </p>
-      <p>Time left: <span id="countdown"></span></p>
-      <p id="payment-status"></p>
-    </div>
-  </div>
-
 </body>
 
 </html>
