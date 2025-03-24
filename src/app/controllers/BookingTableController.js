@@ -46,12 +46,11 @@ class BookingTableController {
     }
   };
 
-
   listBookingManagement = async (req, res, next) => {
     try {
       const bookings = await BookingTable.find()
-      .populate('table')
-      .populate('customer');
+        .populate("table")
+        .populate("customer");
       return res.render("bookingTableManagement", {
         layout: "layouts/mainAdmin",
         title: "admin",
@@ -119,6 +118,7 @@ class BookingTableController {
         amount: table.depositPrice,
         bankId, // Đảm bảo các biến này đã được định nghĩa trước đó
         accountNo,
+        type: "booking",
       });
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -218,7 +218,7 @@ class BookingTableController {
 
       await booking.save();
 
-      res.redirect('/bookingTable/bookingDetail/' +booking._id);
+      res.redirect("/bookingTable/bookingDetail/" + booking._id);
     } catch (error) {
       console.error("Lỗi khi cập nhật đặt bàn:", error);
       res.status(500).json({ message: "Đã có lỗi xảy ra, vui lòng thử lại." });
