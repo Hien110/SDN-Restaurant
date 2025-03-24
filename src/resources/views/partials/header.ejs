@@ -31,9 +31,10 @@
         <a href="/"> Trang chủ </a>
         <a href="/aboutUs"> Về chúng tôi </a>
         <a href="/menu"> Thực đơn </a>
-        <% if (user.role === "CUSTOMER") { %>
+        <% if (user && user.role === "CUSTOMER") { %>
         <a href="/bookingTable"> Đặt chỗ </a>
-        <a href="#"> Khuyến mãi </a>
+        <% } %>
+        <a href="#"> Khuyễn mãi </a>
         <a href="/news"> Tin tức </a>
       </div>
 
