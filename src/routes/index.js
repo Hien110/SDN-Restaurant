@@ -22,10 +22,13 @@ const tableRouter = require('./tablesRouter')
 const { getAllTable } = require('../app/controllers/TablesController');
 const editMenuRoutes = require('./editMenuRoutes');
 const takeCareRouter = require('./takecareRouter');
+const newsRoutes = require('./newsRoutes');
+const editNewsRoutes = require('./editNewsRoutes');
 
   function routes(app) {
-  app.use("/admin/menu", menuRoutes);
-  app.use('/menu',isAuth.setUser, getFooterData, menuRoutes)
+  app.use('/news',isAuth.setUser, getFooterData, newsRoutes);
+  app.use('/admin/adminNews', editNewsRoutes);
+  app.use('/menu',isAuth.setUser, getFooterData, menuRoutes);
   app.use('/admin/editMenu', editMenuRoutes);
 
   app.use("/restaurantInfor", restaurantRouter);

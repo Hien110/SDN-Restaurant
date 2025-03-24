@@ -44,6 +44,15 @@
         <div id="passwordError" class="alert error" style="display: none;"></div>
 
         <div class="input-group">
+            <label>Vai trò</label>
+            <select name="role" required>
+                <option value="WAITER">Nhân viên phục vụ</option>
+                <option value="KITCHENSTAFF">Nhân viên bếp</option>
+                <option value="RESMANAGER">Quản lý nhà hàng</option>
+            </select>
+        </div>
+
+        <div class="input-group">
             <label>Mức lương</label>
             <input type="number" id="salary" name="salary" required placeholder="Nhập mức lương" oninput="checkSalary()">
             <p id="salaryWarning" class="salary-warning" style="color: rgb(207, 207, 20); display: none; font-weight: bold;">

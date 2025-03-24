@@ -35,10 +35,9 @@
         <div class="input-group">
             <label>Vai trò</label>
             <select name="role" required>
-                <option value="WAITER" <%= staff.role === "WAITER" ? "selected" : "" %>>Waiter</option>
-                <option value="KITCHENSTAFF" <%= staff.role === "KITCHENSTAFF" ? "selected" : "" %>>Kitchen Staff</option>
-                <option value="RESMANAGER" <%= staff.role === "RESMANAGER" ? "selected" : "" %>>Restaurant Manager</option>
-                <option value="RESOWNER" <%= staff.role === "RESOWNER" ? "selected" : "" %>>Restaurant Owner</option>
+                <option value="WAITER" <%= staff.role === "WAITER" ? "selected" : "" %>>Nhân viên phục vụ</option>
+                <option value="KITCHENSTAFF" <%= staff.role === "KITCHENSTAFF" ? "selected" : "" %>>Nhân viên bếp</option>
+                <option value="RESMANAGER" <%= staff.role === "RESMANAGER" ? "selected" : "" %>>Quản lý nhà hàng</option>
             </select>
         </div>
 
