@@ -1,4 +1,4 @@
-<form action="/admin/tables/edit/<%= table._id %>" method="POST" enctype="multipart/form-data" class="container p-4 shadow-lg rounded bg-light">
+<form action="/admin/tables/edit/<%= table._id %>" method="POST" enctype="multipart/form-data" class="container p-4 shadow-lg rounded bg-light" onsubmit="return validateForm()">
     <h2 class="text-center mb-4">Chỉnh sửa thông tin bàn</h2>
 
     <div class="mb-3">
@@ -71,6 +71,28 @@
             preview.src = URL.createObjectURL(event.target.files[0]);
             preview.style.display = "block";
         }
+    }
+
+    // Function to validate the form
+    function validateForm() {
+        const depositPrice = document.getElementById("depositPrice").value;
+        const description = document.getElementById("description").value;
+
+        // Kiểm tra giá đặt cọc (tối đa 1,000,000)
+        const maxDepositPrice = 1000000;
+        if (parseInt(depositPrice) > maxDepositPrice) {
+            alert("Giá đặt cọc không được lớn hơn 1,000,000. Vui lòng nhập lại.");
+            return false;
+        }
+
+        // Kiểm tra độ dài mô tả (tối đa 200 ký tự)
+        const maxDescriptionLength = 200;
+        if (description.length > maxDescriptionLength) {
+            alert("Mô tả không được dài quá 200 ký tự. Vui lòng nhập lại.");
+            return false;
+        }
+
+        return true;
     }
 </script>
 
