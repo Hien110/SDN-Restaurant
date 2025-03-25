@@ -36,17 +36,21 @@
       <span class="info-content"><%= dish.description %></span>
     </div>
 
+    <div class="info-row">
+      <span class="info-label">Danh mục:</span>
+      <span class="info-content"><%= dish.category?.categoryName || "Không xác định" %></span>
+    </div>
+    
     <!-- Hàng hiển thị Đánh giá -->
     <div class="info-row">
       <span class="info-label">Đánh giá: </span>
-<span class="info-content">
-  <span class="star-rating">
-    <% for (let i = 0; i < 5; i++) { %>
-      <i class="fas fa-star star-filled"></i>
-    <% } %>
-  </span>
-</span>
-
+      <span class="info-content">
+      <span class="star-rating">
+        <% for (let i = 0; i < 5; i++) { %>
+          <i class="fas fa-star star-filled"></i>
+        <% } %>
+      </span>
+      </span>
     </div>
   </div>
 </div>
