@@ -52,8 +52,9 @@ console.log(selectedDate.toDateString() === now.toDateString());
     console.log( minTime.toTimeString().slice(0, 5));
     
     if (selectedDate.toDateString() === now.toDateString()) {
-      timeInput.setAttribute("min", minTime.toTimeString().slice(0, 5));
-
+        const minValue = minTime < openingHours ? minTime.toTimeString().slice(0, 5) : timeOpening;
+        timeInput.setAttribute("min", minValue);
+        timeInput.setAttribute("max", timeClosing);
     } else {
         timeInput.setAttribute("min", timeOpening);
         timeInput.setAttribute("max", timeClosing);
