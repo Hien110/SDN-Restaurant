@@ -54,6 +54,8 @@ exports.postSignUp = async (req, res, next) => {
     await user.save();
 
     res.render("login", {
+      layout: "layouts/auth",
+      title: "Forgot password",
       title: "Login",
       message: "Hãy kiểm tra email của bạn để xác thực tài khoản",
     });
@@ -71,6 +73,8 @@ exports.postSignIn = async (req, res, next) => {
 
     if (!user) {
       return res.render("login", {
+        layout: "layouts/auth",
+        title: "Forgot password",
         title: "Login",
         error: "Tài khoản không tồn tại",
       });
@@ -78,6 +82,8 @@ exports.postSignIn = async (req, res, next) => {
 
     if (user.provider === "google") {
       return res.render("login", {
+        layout: "layouts/auth",
+        title: "Forgot password",
         title: "Login",
         error:
           "Tài khoản này đã đăng ký bằng Google. Vui lòng đăng nhập bằng Google.",
@@ -86,6 +92,8 @@ exports.postSignIn = async (req, res, next) => {
 
     if (user.status !== "ACTIVE") {
       return res.render("login", {
+        layout: "layouts/auth",
+        title: "Forgot password",
         title: "Login",
         error: "Tài khoản của bạn chưa kích hoạt",
       });
@@ -94,6 +102,8 @@ exports.postSignIn = async (req, res, next) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.render("login", {
+        layout: "layouts/auth",
+        title: "Forgot password",
         title: "Login",
         error: "Mật khẩu sai",
       });
@@ -107,6 +117,8 @@ exports.postSignIn = async (req, res, next) => {
   } catch (err) {
     console.error(err);
     res.render("login", {
+      layout: "layouts/auth",
+      title: "Forgot password",
       title: "Login",
       error: "Có sự cố, vui lòng đăng nhập sau",
     });
@@ -115,7 +127,11 @@ exports.postSignIn = async (req, res, next) => {
 
 // [GET] => getResetPassword
 exports.getResetPassword = async (req, res, next) => {
-  res.render("reset-password", { title: "Reset", layout: "layouts/auth", title: "Forgot password" });
+  res.render("reset-password", {
+    title: "Reset",
+    layout: "layouts/auth",
+    title: "Forgot password",
+  });
 };
 
 // [POST] => postNewPassword
@@ -124,7 +140,8 @@ exports.postResetNewPassword = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.render("reset-password", {
-        layout: "layouts/auth", title: "Forgot password" ,
+        layout: "layouts/auth",
+        title: "Forgot password",
         title: "Reset",
         error: "Tài khoản không tồn tại",
       });
@@ -140,7 +157,8 @@ exports.postResetNewPassword = async (req, res, next) => {
     await sendMail(req.body.email, resetToken, false);
 
     res.render("login", {
-      layout: "layouts/auth", title: "Forgot password",
+      layout: "layouts/auth",
+      title: "Forgot password",
       title: "Login",
       message: "Kiểm tra tài khoản email của bạn để thay đổi mật khẩu",
     });
@@ -164,13 +182,15 @@ exports.getNewPassword = async (req, res, next) => {
 
     if (!user) {
       return res.render("login", {
-        layout: "layouts/auth", title: "Forgot password",
+        layout: "layouts/auth",
+        title: "Forgot password",
         message: "Xác thực tài khoản không thành công, token không hợp lệ",
       });
     }
 
     res.render("new-password", {
-      layout: "layouts/auth", title: "Forgot password",
+      layout: "layouts/auth",
+      title: "Forgot password",
       title: "New Password",
       userId: user._id.toString(),
     });
@@ -193,7 +213,11 @@ exports.postNewPassword = async (req, res, next) => {
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
-    res.render("login", { message: "Thay đổi mật khẩu thành công!" , layout: "layouts/auth", title: "Forgot password" });
+    res.render("login", {
+      message: "Thay đổi mật khẩu thành công!",
+      layout: "layouts/auth",
+      title: "Forgot password",
+    });
   } catch (err) {
     res.redirect("/auth/login");
   }
@@ -213,7 +237,8 @@ exports.getVerify = async (req, res, next) => {
 
     if (!user) {
       return res.render("login", {
-        layout: "layouts/auth", title: "Forgot password",
+        layout: "layouts/auth",
+        title: "Forgot password",
         title: "Login",
         message: "Xác thực tài khoản không thành công, token không hợp lệ",
       });
@@ -225,7 +250,8 @@ exports.getVerify = async (req, res, next) => {
     await user.save();
 
     res.render("login", {
-      layout: "layouts/auth", title: "Forgot password",
+      layout: "layouts/auth",
+      title: "Forgot password",
       title: "Login",
       message: "Xác thực tài khoản thành công!",
     });
@@ -258,7 +284,7 @@ exports.updateProfile = async (req, res) => {
 
           avatarUrl = result.secure_url;
           console.log(avatarUrl);
-          
+
           const userId = req.params.id;
           const updatedData = {
             firstName: req.body.firstName,
@@ -270,10 +296,10 @@ exports.updateProfile = async (req, res) => {
           };
 
           if (avatarUrl) {
-            updatedData.avatar = avatarUrl; 
-            req.session.user.avatar = avatarUrl; 
+            updatedData.avatar = avatarUrl;
+            req.session.user.avatar = avatarUrl;
           }
-          
+
           // Update user info in the databa se
           User.findByIdAndUpdate(userId, updatedData, { new: true })
             .then((updatedUser) => {
@@ -342,7 +368,6 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-
 exports.findAll = async (req, res) => {
   try {
     const users = await User.find({});
@@ -362,7 +387,6 @@ exports.create = async (req, res) => {
   }
 };
 
-
 exports.delete = async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -379,18 +403,18 @@ exports.findById = async (req, res) => {
     const userId = req.params.id;
     const user = await User.findById(userId);
     let staffInfor = null;
-    
+
     if (!user) {
       return res.render("errorpage");
     }
 
-    if (user.role != 'CUSTOMER' ) {
-       staffInfor = await Staff.findOne({ staff: userId });
+    if (user.role != "CUSTOMER") {
+      staffInfor = await Staff.findOne({ staff: userId });
     }
     console.log(staffInfor);
-    
+
     const error = req.query.error || "";
-    res.render("informationUser", { users: user, staff: staffInfor, error  });
+    res.render("informationUser", { users: user, staff: staffInfor, error });
   } catch (error) {
     console.error(error);
     res.status(500).send("Lỗi server");

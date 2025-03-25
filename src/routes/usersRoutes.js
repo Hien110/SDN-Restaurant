@@ -45,12 +45,7 @@ userRoutes.use("/:id", (req, res, next) => {
   next();
 });
 
-userRoutes.get(
-  "/:id",
-  isAuth.requireAuth,
-  isPermissions(["RESOWNER", "RESMANAGER"]),
-  userController.findById
-);
+userRoutes.get("/:id", isAuth.requireAuth, userController.findById);
 
 userRoutes
   .route("/:id", isAuth.requireAuth, isPermissions(["RESOWNER", "RESMANAGER"]))

@@ -8,7 +8,7 @@ const isPermission = require("../app/middlewares/isPermissions");
 bookingRouter.get("/", isAuth.requireAuth, bookingTableController.index);
 bookingRouter.get(
   "/management",
-  isPermission(["ADMIN"]),
+  isPermission(["RESOWNER", "RESMANAGER", "WAITER"]),
   bookingTableController.listBookingManagement
 );
 bookingRouter.get(
