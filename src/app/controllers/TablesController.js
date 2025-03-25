@@ -31,7 +31,7 @@ exports.getTables = async (req, res) => {
             selectedType: typeFilter,
         });
     } catch (error) {
-        console.error("❌ Lỗi khi lấy danh sách bàn:", error);
+        console.error("Lỗi khi lấy danh sách bàn:", error);
         return res.render("errorpage", { message: "Lỗi hệ thống, vui lòng thử lại" });
     }
 };
@@ -49,21 +49,21 @@ exports.getTableDetail = async (req, res) => {
             table,
         });
     } catch (error) {
-        console.error("❌ Lỗi khi lấy thông tin bàn:", error);
+        console.error("Lỗi khi lấy thông tin bàn:", error);
         return res.render("errorpage", { message: "Lỗi hệ thống, vui lòng thử lại" });
     }
 };
 
 exports.updateTable = async (req, res) => {
-    console.log('Reached updateTable controller'); // Debug log
-    console.log('req.params:', req.params); // Log the tableId
-    console.log('req.body:', req.body); // Log the form data
-    console.log('req.file:', req.file); // Log the uploaded file
+    console.log('Reached updateTable controller'); 
+    console.log('req.params:', req.params); 
+    console.log('req.body:', req.body);
+    console.log('req.file:', req.file); 
 
     const { tableId } = req.params;
     const { seatNumber, description, depositPrice, status, type } = req.body;
 
-    // Validate required fields
+    
     if (!seatNumber || !depositPrice || !status || !type) {
         console.error('Missing required fields');
         return res.render('editTable', {
@@ -82,9 +82,9 @@ exports.updateTable = async (req, res) => {
             return res.render('errorpage', { message: 'Bàn không tồn tại' });
         }
 
-        let newImageUrl = table.imageUrl; // Keep the old image if no new image is uploaded
+        let newImageUrl = table.imageUrl; 
 
-        // If a new image file is uploaded, upload it to Cloudinary
+       
         if (req.file) {
             try {
                 const result = await new Promise((resolve, reject) => {
@@ -98,33 +98,33 @@ exports.updateTable = async (req, res) => {
                     uploadStream.end(req.file.buffer);
                 });
 
-                // Delete the old image from Cloudinary if it exists
+                
                 if (table.imageUrl) {
                     const publicId = table.imageUrl.split('/').pop().split('.')[0];
                     await cloudinary.uploader.destroy(`tables/${publicId}`);
                 }
 
-                newImageUrl = result.secure_url; // Update with the new image URL
+                newImageUrl = result.secure_url; 
             } catch (uploadError) {
-                console.error('❌ Lỗi khi tải ảnh lên Cloudinary:', uploadError);
+                console.error('Lỗi khi tải ảnh lên Cloudinary:', uploadError);
                 return res.render('errorpage', { message: 'Lỗi khi tải ảnh lên Cloudinary' });
             }
         }
 
-        // Update table information
-        table.seatNumber = parseInt(seatNumber, 10); // Ensure seatNumber is a number
-        table.description = description || ''; // Default to empty string if undefined
+        
+        table.seatNumber = parseInt(seatNumber, 10); 
+        table.description = description || ''; 
         table.imageUrl = newImageUrl;
-        table.depositPrice = parseFloat(depositPrice); // Ensure depositPrice is a number
-        table.status = status.toUpperCase(); // Standardize ENUM
-        table.type = type.toUpperCase(); // Standardize ENUM
+        table.depositPrice = parseFloat(depositPrice); 
+        table.status = status.toUpperCase(); 
+        table.type = type.toUpperCase(); 
         table.updatedAt = Date.now();
 
         await table.save();
 
         return res.redirect('/admin/tables/');
     } catch (error) {
-        console.error('❌ Lỗi khi cập nhật bàn:', error);
+        console.error('Lỗi khi cập nhật bàn:', error);
         return res.render('errorpage', { message: 'Lỗi hệ thống, vui lòng thử lại' });
     }
 };
@@ -134,7 +134,6 @@ exports.createTables = async (req, res) => {
         const { idTable, seatNumber, description, depositPrice, status, type } = req.body;
         let imageUrl = null;
 
-        // Nếu có file ảnh, tải lên Cloudinary
         if (req.file) {
             const result = await new Promise((resolve, reject) => {
                 const uploadStream = cloudinary.uploader.upload_stream(
@@ -150,11 +149,11 @@ exports.createTables = async (req, res) => {
             imageUrl = result.secure_url;
         }
 
-        // Chuyển đổi giá trị status & type thành chữ HOA để phù hợp với ENUM
+        
         const formattedStatus = status.toUpperCase();
         const formattedType = type.toUpperCase();
 
-        // Kiểm tra nếu giá trị status hoặc type không hợp lệ
+        
         if (!['AVAILABLE', 'RESERVED', 'OCCUPIED'].includes(formattedStatus)) {
             return res.render("addTable", { 
                 layout: "layouts/mainAdmin",
@@ -191,7 +190,7 @@ exports.createTables = async (req, res) => {
             idTable: "", seatNumber: "", description: "", depositPrice: "", status: "AVAILABLE", type: "NORMAL"
         });
     } catch (error) {
-        console.error("❌ Lỗi khi tạo bàn:", error);
+        console.error("Lỗi khi tạo bàn:", error);
         return res.render("addTable", { 
             layout: "layouts/mainAdmin",
             title: "Thêm Bàn Mới",
@@ -208,7 +207,7 @@ exports.deleteTable = async (req, res) => {
         await Table.findByIdAndDelete(tableId);
         return res.redirect("/admin/tables");
     } catch (error) {
-        console.error("❌ Lỗi khi xóa bàn:", error);
+        console.error("Lỗi khi xóa bàn:", error);
         return res.render("errorpage", { message: "Lỗi hệ thống, vui lòng thử lại" });
     }
 };
@@ -223,11 +222,11 @@ exports.getEditTableForm = async (req, res) => {
             layout: "layouts/mainAdmin",
             title: "Chỉnh sửa bàn",
             table,
-            errorMessage: null,  // ✅ Tránh lỗi biến không tồn tại
-            successMessage: null // ✅ Tránh lỗi biến không tồn tại
+            errorMessage: null,  
+            successMessage: null 
         });
     } catch (error) {
-        console.error("❌ Lỗi khi lấy thông tin bàn:", error);
+        console.error("Lỗi khi lấy thông tin bàn:", error);
         return res.render("errorpage", { message: "Lỗi hệ thống, vui lòng thử lại" });
     }
   };

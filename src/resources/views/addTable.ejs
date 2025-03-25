@@ -19,7 +19,7 @@
         <% } %>
 
         <!-- Form tạo bàn mới -->
-        <form action="/admin/tables/create" method="POST" enctype="multipart/form-data" class="form-table needs-validation" novalidate>
+        <form action="/admin/tables/create" method="POST" enctype="multipart/form-data" class="form-table needs-validation" novalidate onsubmit="return validateForm()">
             <div class="mb-3">
                 <label for="idTable" class="form-label">Mã bàn</label>
                 <input type="text" class="form-control-table" id="idTable" name="idTable" required 
@@ -66,5 +66,37 @@
             </div>
         </form>
     </div>
+
+    <script>
+        // Function to validate the form
+        function validateForm() {
+            const idTable = document.getElementById("idTable").value;
+            const depositPrice = document.getElementById("depositPrice").value;
+            const description = document.getElementById("description").value;
+
+            // Kiểm tra độ dài mã bàn (tối đa 8 ký tự)
+            const maxIdTableLength = 8;
+            if (idTable.length > maxIdTableLength) {
+                alert("Mã bàn không được dài quá 8 ký tự. Vui lòng nhập lại.");
+                return false;
+            }
+
+            // Kiểm tra giá đặt cọc (tối đa 1,000,000)
+            const maxDepositPrice = 1000000;
+            if (depositPrice && parseInt(depositPrice) > maxDepositPrice) {
+                alert("Giá đặt cọc không được lớn hơn 1,000,000. Vui lòng nhập lại.");
+                return false;
+            }
+
+            // Kiểm tra độ dài mô tả (tối đa 200 ký tự)
+            const maxDescriptionLength = 200;
+            if (description.length > maxDescriptionLength) {
+                alert("Mô tả không được dài quá 200 ký tự. Vui lòng nhập lại.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>
