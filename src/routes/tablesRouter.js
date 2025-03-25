@@ -30,7 +30,12 @@ router.post(
 );
 
 // GET: Show form to edit a table
-router.get("/edit/:tableId", tablesController.getEditTableForm);
+router.get(
+  "/edit/:tableId",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  tablesController.getEditTableForm
+);
 
 router.post(
   "/edit/:tableId",

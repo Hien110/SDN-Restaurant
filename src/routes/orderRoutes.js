@@ -3,7 +3,12 @@ const router = express.Router();
 const orderController = require("../app/controllers/OrderController");
 const isAuth = require("../app/middlewares/is-auth");
 const isPermissions = require("../app/middlewares/isPermissions");
-router.get("/", isAuth.requireAuth, orderController.viewAllTables);
+router.get(
+  "/",
+  isAuth.requireAuth,
+  isPermissions(["KITCHENSTAFF", "WAITER", "RESMANAGER"]),
+  orderController.viewAllTables
+);
 router.get(
   "/chef",
   isAuth.requireAuth,

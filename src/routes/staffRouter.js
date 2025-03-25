@@ -11,7 +11,12 @@ staffRouter.get(
   staffController.getStaffs
 );
 
-staffRouter.get("/create", staffController.create);
+staffRouter.get(
+  "/create",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  staffController.create
+);
 
 staffRouter.get(
   "/detail/:userId",

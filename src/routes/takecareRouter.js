@@ -39,7 +39,12 @@ takeCareRouter.get(
   takeCareController.renderUpdateTakeCare
 );
 
-takeCareRouter.post("/update/:id", takeCareController.updateTakeCare);
+takeCareRouter.post(
+  "/update/:id",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.updateTakeCare
+);
 
 takeCareRouter.post(
   "/delete/:id",
