@@ -18,4 +18,7 @@ restaurantRoute.get(
   restaurantsControllers.getAll
 );
 
+
+restaurantRoute.get('/managers', restaurantsControllers.getInformationRes)
+restaurantRoute.put('/updateInforRes', restaurantsControllers.updateRestaurant)
 module.exports = restaurantRoute;

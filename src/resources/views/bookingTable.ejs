@@ -6,6 +6,12 @@
     <% } else { %>
         window.bookings = []; // Lưu danh sách bàn đã đặt
     <% } %>
+    <% if (restaurantInfor) { %>
+    window.restaurantInfor = <%- JSON.stringify(restaurantInfor) %>;
+    <% } else { %>
+        window.restaurantInfor = null;
+    <% } %>
+
     </script>
   <script src="/js/bookingTable.js"></script>
 </head>
@@ -34,7 +40,7 @@
         </div>
         <div class="form-group">
           <label for="time"> Thời gian </label>
-          <input id="time" name="timeBooking" placeholder="--:-- --" type="time" required />
+          <input id="time" name="timeBooking" type="time" min="05:00" max="08:00" required />
         </div>
         <div class="form-group">
           <label for="guests">Chọn bàn</label>
