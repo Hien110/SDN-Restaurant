@@ -4,7 +4,7 @@ const User = require('../models/User');
 
 exports.renderCreateTakeCare = async (req, res) => {
     try {
-        const staffs = await User.find({ role: "WAITER" });
+        const staffs = await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } });
         const tables = await Table.find({}, 'idTable'); 
 
         res.render('createTakeCare', { 
@@ -20,58 +20,74 @@ exports.renderCreateTakeCare = async (req, res) => {
     }
 };
 
-
 exports.createTakeCare = async (req, res) => {
     try {
         let { tableIds, staffId, date, startTime, endTime } = req.body;
 
-        // Kiểm tra dữ liệu đầu vào có đầy đủ không
-        if (!tableIds || !staffId || !date || !startTime || !endTime) {
+        // Kiểm tra dữ liệu đầu vào cơ bản
+        if (!staffId || !date || !startTime || !endTime) {
             return res.render('createTakeCare', {
                 layout: "layouts/mainAdmin",
                 title: "Tạo TakeCare",
-                staffs: await User.find({ role: "WAITER" }),
+                staffs: await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } }),
                 tables: await Table.find({}, 'idTable'),
-                errorMessage: "Vui lòng điền đầy đủ thông tin."
+                errorMessage: "Vui lòng điền đầy đủ thông tin (nhân viên, ngày, giờ bắt đầu, giờ kết thúc)."
             });
         }
 
-        // Chuyển tableIds thành array nếu nó là string (trường hợp chỉ chọn 1 bàn)
-        if (!Array.isArray(tableIds)) {
-            try {
-                tableIds = JSON.parse(tableIds);
-            } catch (error) {
-                tableIds = [tableIds]; // Nếu JSON.parse lỗi thì ép nó thành mảng
+        // Xử lý tableIds: Nếu không có tableIds (cho KITCHENSTAFF hoặc RESMANAGER), gán mảng rỗng
+        if (!tableIds) {
+            tableIds = [];
+        } else {
+            // Chuyển tableIds thành array nếu nó là string (trường hợp chỉ chọn 1 bàn)
+            if (!Array.isArray(tableIds)) {
+                try {
+                    tableIds = JSON.parse(tableIds);
+                } catch (error) {
+                    tableIds = [tableIds]; // Nếu JSON.parse lỗi thì ép nó thành mảng
+                }
             }
         }
 
-        // Kiểm tra xem tất cả các bàn có tồn tại không
-        const tables = await Table.find({ idTable: { $in: tableIds } });
-        if (tables.length !== tableIds.length) {
-            return res.render('createTakeCare', {
-                layout: "layouts/mainAdmin",
-                title: "Tạo TakeCare",
-                staffs: await User.find({ role: "WAITER" }),
-                tables: await Table.find({}, 'idTable'),
-                errorMessage: "Một hoặc nhiều bàn không tồn tại. Vui lòng kiểm tra lại."
-            });
-        }
-
-        // Kiểm tra nhân viên có tồn tại không
+        // Kiểm tra nhân viên có tồn tại không và vai trò hợp lệ
         const staffMember = await User.findById(staffId);
-        if (!staffMember || staffMember.role !== "WAITER") {
+        if (!staffMember || !["WAITER", "KITCHENSTAFF", "RESMANAGER"].includes(staffMember.role)) {
             return res.render('createTakeCare', {
                 layout: "layouts/mainAdmin",
                 title: "Tạo TakeCare",
-                staffs: await User.find({ role: "WAITER" }),
+                staffs: await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } }),
                 tables: await Table.find({}, 'idTable'),
-                errorMessage: "Nhân viên không hợp lệ hoặc không phải phục vụ (WAITER)."
+                errorMessage: "Nhân viên không hợp lệ hoặc không thuộc vai trò WAITER, KITCHENSTAFF, hoặc RESMANAGER."
             });
         }
 
-        
+        // Kiểm tra nếu vai trò là WAITER thì phải chọn ít nhất một bàn
+        if (staffMember.role === "WAITER" && tableIds.length === 0) {
+            return res.render('createTakeCare', {
+                layout: "layouts/mainAdmin",
+                title: "Tạo TakeCare",
+                staffs: await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } }),
+                tables: await Table.find({}, 'idTable'),
+                errorMessage: "Nhân viên phục vụ (WAITER) phải chọn ít nhất một bàn."
+            });
+        }
+
+        // Kiểm tra xem tất cả các bàn có tồn tại không (nếu có bàn được chọn)
+        if (tableIds.length > 0) {
+            const tables = await Table.find({ idTable: { $in: tableIds } });
+            if (tables.length !== tableIds.length) {
+                return res.render('createTakeCare', {
+                    layout: "layouts/mainAdmin",
+                    title: "Tạo TakeCare",
+                    staffs: await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } }),
+                    tables: await Table.find({}, 'idTable'),
+                    errorMessage: "Một hoặc nhiều bàn không tồn tại. Vui lòng kiểm tra lại."
+                });
+            }
+        }
+
         const newTakeCare = new TakeCare({
-            table: tableIds,  
+            table: tableIds, // Cập nhật danh sách bàn (có thể là mảng rỗng nếu không chọn bàn)
             staff: staffMember._id,
             date,
             startTime,
@@ -85,13 +101,12 @@ exports.createTakeCare = async (req, res) => {
         return res.render('createTakeCare', {
             layout: "layouts/mainAdmin",
             title: "Tạo TakeCare",
-            staffs: await User.find({ role: "WAITER" }),
+            staffs: await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } }),
             tables: await Table.find({}, 'idTable'),
             errorMessage: "Lỗi máy chủ. Vui lòng thử lại sau."
         });
     }
 };
-
 
 exports.getTakeCares = async (req, res) => {
     try {
@@ -145,8 +160,8 @@ exports.renderUpdateTakeCare = async (req, res) => {
             });
         }
 
-        // Lấy danh sách nhân viên phục vụ
-        const staffs = await User.find({ role: "WAITER" });
+        // Lấy danh sách nhân viên thuộc 3 vai trò: WAITER, KITCHENSTAFF, RESMANAGER
+        const staffs = await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } });
 
         // Lấy danh sách tất cả các bàn để hiển thị dropdown chọn bàn
         const tables = await Table.find({}, 'idTable');
@@ -176,15 +191,17 @@ exports.updateTakeCare = async (req, res) => {
         const { id } = req.params;
         let { tableIds, staffId, date, startTime, endTime } = req.body;
 
-        // Đảm bảo `tableIds` là một mảng nếu có nhiều bàn
-        if (!Array.isArray(tableIds)) {
+        // Đảm bảo `tableIds` là một mảng nếu có nhiều bàn, hoặc gán mảng rỗng nếu không có
+        if (!tableIds) {
+            tableIds = []; // Gán mảng rỗng nếu tableIds không được gửi
+        } else if (!Array.isArray(tableIds)) {
             tableIds = [tableIds]; // Chuyển thành mảng nếu chỉ có một bàn
         }
 
-        // Kiểm tra dữ liệu đầu vào
-        if (!tableIds.length || !staffId || !date || !startTime || !endTime) {
+        // Kiểm tra dữ liệu đầu vào cơ bản
+        if (!staffId || !date || !startTime || !endTime) {
             const takeCare = await TakeCare.findById(id).populate('table').populate('staff');
-            const staffs = await User.find({ role: "WAITER" });
+            const staffs = await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } });
             const tables = await Table.find({}, 'idTable'); // Lấy danh sách bàn
             return res.render('updateTakeCare', {
                 layout: "layouts/mainAdmin",
@@ -192,31 +209,15 @@ exports.updateTakeCare = async (req, res) => {
                 takeCare,
                 staffs,
                 tables,
-                errorMessage: "Vui lòng điền đầy đủ thông tin."
-            });
-        }
-
-        // Kiểm tra tất cả bàn tồn tại
-        const tables = await Table.find({ idTable: { $in: tableIds } });
-        if (tables.length !== tableIds.length) {
-            const takeCare = await TakeCare.findById(id).populate('table').populate('staff');
-            const staffs = await User.find({ role: "WAITER" });
-            const allTables = await Table.find({}, 'idTable'); // Lấy danh sách bàn
-            return res.render('updateTakeCare', {
-                layout: "layouts/mainAdmin",
-                title: "Chỉnh sửa lịch làm",
-                takeCare,
-                staffs,
-                tables: allTables,
-                errorMessage: "Một hoặc nhiều bàn không tồn tại. Vui lòng nhập ID bàn hợp lệ."
+                errorMessage: "Vui lòng điền đầy đủ thông tin (ngày, giờ bắt đầu, giờ kết thúc, nhân viên)."
             });
         }
 
         // Kiểm tra nhân viên tồn tại và vai trò
         const staffMember = await User.findById(staffId);
-        if (!staffMember || staffMember.role !== "WAITER") {
+        if (!staffMember || !["WAITER", "KITCHENSTAFF", "RESMANAGER"].includes(staffMember.role)) {
             const takeCare = await TakeCare.findById(id).populate('table').populate('staff');
-            const staffs = await User.find({ role: "WAITER" });
+            const staffs = await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } });
             const allTables = await Table.find({}, 'idTable');
             return res.render('updateTakeCare', {
                 layout: "layouts/mainAdmin",
@@ -224,15 +225,48 @@ exports.updateTakeCare = async (req, res) => {
                 takeCare,
                 staffs,
                 tables: allTables,
-                errorMessage: "Nhân viên không hợp lệ hoặc không phải phục vụ (WAITER)."
+                errorMessage: "Nhân viên không hợp lệ hoặc không thuộc vai trò WAITER, KITCHENSTAFF, hoặc RESMANAGER."
             });
+        }
+
+        // Kiểm tra nếu vai trò là WAITER thì phải chọn ít nhất một bàn
+        if (staffMember.role === "WAITER" && tableIds.length === 0) {
+            const takeCare = await TakeCare.findById(id).populate('table').populate('staff');
+            const staffs = await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } });
+            const tables = await Table.find({}, 'idTable');
+            return res.render('updateTakeCare', {
+                layout: "layouts/mainAdmin",
+                title: "Chỉnh sửa lịch làm",
+                takeCare,
+                staffs,
+                tables,
+                errorMessage: "Nhân viên phục vụ (WAITER) phải chọn ít nhất một bàn."
+            });
+        }
+
+        // Kiểm tra tất cả bàn tồn tại (nếu có bàn được chọn)
+        if (tableIds.length > 0) {
+            const tables = await Table.find({ idTable: { $in: tableIds } });
+            if (tables.length !== tableIds.length) {
+                const takeCare = await TakeCare.findById(id).populate('table').populate('staff');
+                const staffs = await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } });
+                const allTables = await Table.find({}, 'idTable');
+                return res.render('updateTakeCare', {
+                    layout: "layouts/mainAdmin",
+                    title: "Chỉnh sửa lịch làm",
+                    takeCare,
+                    staffs,
+                    tables: allTables,
+                    errorMessage: "Một hoặc nhiều bàn không tồn tại. Vui lòng nhập ID bàn hợp lệ."
+                });
+            }
         }
 
         // Cập nhật TakeCare
         const updatedTakeCare = await TakeCare.findByIdAndUpdate(
             id,
             {
-                table: tableIds, // Cập nhật danh sách bàn
+                table: tableIds, // Cập nhật danh sách bàn (có thể là mảng rỗng nếu không chọn bàn)
                 staff: staffMember._id,
                 date,
                 startTime,
@@ -249,8 +283,8 @@ exports.updateTakeCare = async (req, res) => {
         }
 
         console.log(`✅ Cập nhật thành công lịch làm với ID: ${id}`);
-        console.log(`📌 Bàn mới: ${tableIds.join(", ")}`);
-        console.log(`📌 Nhân viên: ${staffMember.firstName} ${staffMember.lastName}`);
+        console.log(`📌 Bàn mới: ${tableIds.length > 0 ? tableIds.join(", ") : "Không có bàn"}`);
+        console.log(`📌 Nhân viên: ${staffMember.firstName} ${staffMember.lastName} (${staffMember.role})`);
         console.log(`📌 Ngày: ${date}`);
         console.log(`📌 Thời gian: ${startTime} - ${endTime}`);
 
@@ -258,7 +292,7 @@ exports.updateTakeCare = async (req, res) => {
     } catch (error) {
         console.error("❌ Lỗi khi cập nhật TakeCare:", error);
         const takeCare = await TakeCare.findById(id).populate('table').populate('staff');
-        const staffs = await User.find({ role: "WAITER" });
+        const staffs = await User.find({ role: { $in: ["WAITER", "KITCHENSTAFF", "RESMANAGER"] } });
         const tables = await Table.find({}, 'idTable'); // Lấy danh sách bàn
         return res.render('updateTakeCare', {
             layout: "layouts/mainAdmin",
@@ -343,6 +377,37 @@ exports.getStaffSchedule = async (req, res) => {
             message: "Lỗi hệ thống, vui lòng thử lại",
             layout: "layouts/mainAdmin",
         });
+    }
+};
+
+exports.renderDetailTakeCare = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Lấy thông tin lịch làm cần xem chi tiết
+        const takeCare = await TakeCare.findById(id)
+            .populate('staff'); 
+
+        if (!takeCare) {
+            console.warn(`⚠️ Cảnh báo: Lịch làm với ID ${id} không tồn tại.`);
+            return res.render("errorpage", {
+                message: "Lịch làm không tồn tại.",
+                layout: "layouts/mainAdmin",
+            });
+        }
+
+        console.log(`✅ Đang xem chi tiết lịch làm: ID ${id}`);
+        console.log(`📌 Nhân viên: ${takeCare.staff ? takeCare.staff.firstName + " " + takeCare.staff.lastName : "Không có nhân viên"}`);
+        console.log(`📌 Bàn: ${takeCare.table ? takeCare.table.join(", ") : "Không có bàn"}`);
+
+        res.render('detailTakeCare', { 
+            layout: "layouts/mainAdmin",
+            title: "Chi tiết lịch làm",
+            takeCare
+        });
+    } catch (error) {
+        console.error("❌ Lỗi khi tải trang chi tiết TakeCare:", error);
+        res.status(500).send("Lỗi khi tải trang chi tiết TakeCare.");
     }
 };
 

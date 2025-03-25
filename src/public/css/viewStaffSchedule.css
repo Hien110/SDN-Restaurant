@@ -36,6 +36,65 @@
     background: #b71c1c;
 }
 
+/* Thanh tìm kiếm */
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.search-label {
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+}
+
+.search-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 200px;
+    transition: border-color 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #1976d2; /* Màu xanh giống header bảng */
+    box-shadow: 0 0 5px rgba(25, 118, 210, 0.3);
+}
+
+.btn-search {
+    background: #1976d2; /* Màu xanh giống header bảng */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn-search:hover {
+    background: #1565c0;
+}
+
+.btn-clear {
+    background: #d32f2f; /* Màu đỏ giống layout */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn-clear:hover {
+    background: #b71c1c;
+}
+
 /* Bảng lịch làm */
 .schedule-table {
     width: 100%;

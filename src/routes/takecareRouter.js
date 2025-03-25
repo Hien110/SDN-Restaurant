@@ -7,6 +7,8 @@ takeCareRouter.get("/", isAuth.requireAuth, takeCareController.getTakeCares);
 
 takeCareRouter.get("/create", takeCareController.renderCreateTakeCare);
 
+takeCareRouter.get('/detail/:id', takeCareController.renderDetailTakeCare);
+
 takeCareRouter.post("/create", isAuth.requireAuth, takeCareController.createTakeCare);
 
 takeCareRouter.get("/update/:id", isAuth.requireAuth, takeCareController.renderUpdateTakeCare);

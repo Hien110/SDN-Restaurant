@@ -98,6 +98,8 @@
 
 .btn-update-cancel:hover {
     background-color: #7f8c8d;
+    color: white;
+    text-decoration: none;
 }
 
 .btn-update-success {
