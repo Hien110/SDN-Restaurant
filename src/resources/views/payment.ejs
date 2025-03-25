@@ -183,7 +183,7 @@
               document.getElementById("payment-status").innerText = "Thanh toán thành công! Đang chuyển hướng...";
               setTimeout(() => {
                 if ("<%= type %>" === "booking") {
-                  window.location.href = "/booking";
+                  window.location.href = "/bookingTable/bookingDetail/<%= bookingTable._id %>";
                 } else if ("<%= type %>" === "order") {
                   window.location.href = "/order";
                 }
