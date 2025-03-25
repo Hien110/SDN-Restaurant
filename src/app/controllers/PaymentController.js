@@ -9,6 +9,8 @@ exports.checkPaid = async (req, res) => {
   try {
     const description = req.params.description?.trim();
     const amount = parseInt(req.query.amount);
+    console.log("Mô tả:", description);
+    console.log("Giá trị thanh toán:", amount);
 
     if (!description || isNaN(amount)) {
       return res.status(400).json({

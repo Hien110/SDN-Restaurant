@@ -1,7 +1,8 @@
 const Menu = require('../models/Menu');
+const CategoryFood = require('../models/CategoryFood');
+
 const stream = require("stream");
 const cloudinary = require('../../config/cloudinary/index')
-require('../models/CategoryFood'); 
 
 exports.getList = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ exports.getList = async (req, res) => {
 
 exports.renderDetailDish = async (req, res) => {
   try {
-    const dish = await Menu.findById(req.params.id);
+    const dish = await Menu.findById(req.params.id).populate('category');
     if (!dish) {
       return res.status(404).send("Món ăn không tồn tại");
     }
@@ -38,8 +39,13 @@ exports.deleteDish = async (req, res) => {
   }
 };
 
-exports.renderCreateForm = (req, res) => {
-  res.render('createDish', { layout: 'layouts/mainAdmin' });
+exports.renderCreateForm = async (req, res) => {
+  try {
+    const categories = await CategoryFood.find();
+    res.render('createDish', { categories, layout: 'layouts/mainAdmin' });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 };
 
 
@@ -74,7 +80,7 @@ exports.createDish = async (req, res) => {
           imageUrl: dishImageUrl,
           statusFood: "AVAILABLE",
           // Nếu cần, set category mặc định hoặc lấy từ form:
-          category: "64e72dfc1234567890abcdef"
+          category: req.body.category
         });
 
         newDish.save()
@@ -102,10 +108,9 @@ exports.createDish = async (req, res) => {
 exports.renderEditForm = async (req, res) => {
   try {
     const dish = await Menu.findById(req.params.id);
-    if (!dish) {
-      return res.status(404).send('Dish not found');
-    }
-    res.render('editDish', { dish, layout: 'layouts/mainAdmin' });
+    const categories = await CategoryFood.find();
+    if (!dish) return res.status(404).send('Dish not found');
+    res.render('editDish', { dish, categories, layout: 'layouts/mainAdmin' });
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -119,6 +124,7 @@ exports.updateDish = async (req, res) => {
       foodName: req.body.foodName,
       description: req.body.description,
       price: req.body.price,
+      category: req.body.category,
       // Nếu admin không chọn file mới, có thể giữ lại imageUrl cũ từ form (nếu có)
       imageUrl: req.body.imageUrl 
     };

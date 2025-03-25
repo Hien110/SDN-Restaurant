@@ -1,5 +1,6 @@
 require("dotenv").config();
 const BookingTable = require("../models/BookingTable");
+const RestaurantInfor = require("../models/RestaurantInfor");
 const User = require("../models/User");
 const Table = require("../models/Table");
 const mongoose = require("mongoose");
@@ -31,12 +32,19 @@ class BookingTableController {
       const tables = await Table.find();
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Đặt thời gian về 00:00 để lấy từ đầu ngày
+      const restaurantInfor = await RestaurantInfor.findOne();
+      if (restaurantInfor) {
+        restaurantInfor.openingHours = moment(restaurantInfor.openingHours).format("HH:mm");
+        restaurantInfor.closingHours = moment(restaurantInfor.closingHours).format("HH:mm");
+      }
 
+      console.log(restaurantInfor)
       const bookings = await BookingTable.find({ orderDate: { $gte: today } });
       return res.render("bookingTable", {
         user: user,
         tables: tables,
         bookings: bookings,
+        restaurantInfor: restaurantInfor,
       });
     } catch (err) {
       console.error("Lỗi tại bookingTable:", err); // Log lỗi ra console

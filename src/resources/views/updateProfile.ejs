@@ -15,7 +15,7 @@
                 <div class="success-message"><%= successMessage %></div>
             <% } %>
 
-            <form action="/users/update-profile/<%= userId %>" method="POST" enctype="multipart/form-data">
+            <form action="/users/update-profile/<%= userId %>" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                 <div class="avatar-container">
                     <label for="avatar">Ảnh đại diện</label>
                     <input type="file" id="avatar" name="avatar" accept="image/*">
@@ -57,5 +57,41 @@
             </a>
         </div>
     </div>
+
+    <script>
+        // Function to validate the form
+        function validateForm() {
+            const firstName = document.getElementById("firstName").value;
+            const lastName = document.getElementById("lastName").value;
+            const phoneNumber = document.getElementById("phoneNumber").value;
+            const address = document.getElementById("address").value;
+
+            // Kiểm tra độ dài họ (firstName) và tên (lastName) - tối đa 15 ký tự
+            const maxNameLength = 15;
+            if (firstName.length > maxNameLength) {
+                alert("Họ không được dài quá 15 ký tự. Vui lòng nhập lại.");
+                return false;
+            }
+            if (lastName.length > maxNameLength) {
+                alert("Tên không được dài quá 15 ký tự. Vui lòng nhập lại.");
+                return false;
+            }
+
+            // Kiểm tra độ dài số điện thoại (tối đa 11 số)
+            if (phoneNumber.length > 11) {
+                alert("Số điện thoại không được dài quá 11 số. Vui lòng nhập lại.");
+                return false;
+            }
+
+            // Kiểm tra độ dài địa chỉ (tối đa 50 ký tự)
+            const maxAddressLength = 50;
+            if (address.length > maxAddressLength) {
+                alert("Địa chỉ không được dài quá 50 ký tự. Vui lòng nhập lại.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </body>
 </html>

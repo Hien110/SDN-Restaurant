@@ -24,7 +24,7 @@
       </div>
       <div>
         <h3>Thời gian mở cửa</h3>
-        <p><%= footerData.openingHours %> – <%= footerData.closingHours %></p>
+        <p><%= footerData.openingHours ? new Date(footerData.openingHours).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "Chưa cập nhật" %> -  <%= footerData.closingHours ? new Date(footerData.closingHours).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "Chưa cập nhật" %></p>
         <p><%= footerData.openingDay %> - <%= footerData.closingDay %></p>
       </div>
       <div>

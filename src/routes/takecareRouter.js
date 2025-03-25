@@ -2,17 +2,62 @@ const express = require("express");
 const takeCareRouter = express.Router();
 const takeCareController = require("../app/controllers/TakeCareController");
 const isAuth = require("../app/middlewares/is-auth");
+const isPermissions = require("../app/middlewares/isPermissions");
 
-takeCareRouter.get("/", isAuth.requireAuth, takeCareController.getTakeCares);
+takeCareRouter.get(
+  "/",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.getTakeCares
+);
 
-takeCareRouter.get("/create", takeCareController.renderCreateTakeCare);
+takeCareRouter.get(
+  "/create",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.renderCreateTakeCare
+);
 
-takeCareRouter.post("/create", isAuth.requireAuth, takeCareController.createTakeCare);
+takeCareRouter.get(
+  "/detail/:id",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.renderDetailTakeCare
+);
 
-takeCareRouter.get("/update/:id", isAuth.requireAuth, takeCareController.renderUpdateTakeCare);
+takeCareRouter.post(
+  "/create",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.createTakeCare
+);
 
-takeCareRouter.post("/update/:id", takeCareController.updateTakeCare);
+takeCareRouter.get(
+  "/update/:id",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.renderUpdateTakeCare
+);
 
-takeCareRouter.post("/delete/:id", isAuth.requireAuth, takeCareController.deleteTakeCare);
+takeCareRouter.post(
+  "/update/:id",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.updateTakeCare
+);
+
+takeCareRouter.post(
+  "/delete/:id",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER"]),
+  takeCareController.deleteTakeCare
+);
+
+takeCareRouter.get(
+  "/staff/:userId",
+  isAuth.requireAuth,
+  isPermissions(["RESOWNER", "RESMANAGER", "WAITER", "KITCHENSTAFF"]),
+  takeCareController.getStaffSchedule
+);
 
 module.exports = takeCareRouter;
