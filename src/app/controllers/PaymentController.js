@@ -76,7 +76,6 @@ exports.reOpenPayment = async (req, res) => {
       .populate("table")
       .populate("customer")
       .exec();
-    console.log("Đơn đặt bàn:", booking);
 
     if (!booking) {
       return res.status(404).json({
@@ -107,6 +106,7 @@ exports.reOpenPayment = async (req, res) => {
     return res.render("payment", {
       bookingTable: formattedBooking,
       amount: booking.table.depositPrice,
+      type: "booking",
       bankId,
       accountNo,
     });
