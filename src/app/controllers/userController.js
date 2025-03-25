@@ -115,7 +115,7 @@ exports.postSignIn = async (req, res, next) => {
 
 // [GET] => getResetPassword
 exports.getResetPassword = async (req, res, next) => {
-  res.render("reset-password", { title: "Reset" });
+  res.render("reset-password", { title: "Reset", layout: "layouts/auth", title: "Forgot password" });
 };
 
 // [POST] => postNewPassword
@@ -124,6 +124,7 @@ exports.postResetNewPassword = async (req, res, next) => {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
       return res.render("reset-password", {
+        layout: "layouts/auth", title: "Forgot password" ,
         title: "Reset",
         error: "Tài khoản không tồn tại",
       });
@@ -139,6 +140,7 @@ exports.postResetNewPassword = async (req, res, next) => {
     await sendMail(req.body.email, resetToken, false);
 
     res.render("login", {
+      layout: "layouts/auth", title: "Forgot password",
       title: "Login",
       message: "Kiểm tra tài khoản email của bạn để thay đổi mật khẩu",
     });
@@ -162,11 +164,13 @@ exports.getNewPassword = async (req, res, next) => {
 
     if (!user) {
       return res.render("login", {
+        layout: "layouts/auth", title: "Forgot password",
         message: "Xác thực tài khoản không thành công, token không hợp lệ",
       });
     }
 
     res.render("new-password", {
+      layout: "layouts/auth", title: "Forgot password",
       title: "New Password",
       userId: user._id.toString(),
     });
@@ -189,7 +193,7 @@ exports.postNewPassword = async (req, res, next) => {
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
     await user.save();
-    res.render("login", { message: "Thay đổi mật khẩu thành công!" });
+    res.render("login", { message: "Thay đổi mật khẩu thành công!" , layout: "layouts/auth", title: "Forgot password" });
   } catch (err) {
     res.redirect("/auth/login");
   }
@@ -209,6 +213,7 @@ exports.getVerify = async (req, res, next) => {
 
     if (!user) {
       return res.render("login", {
+        layout: "layouts/auth", title: "Forgot password",
         title: "Login",
         message: "Xác thực tài khoản không thành công, token không hợp lệ",
       });
@@ -220,6 +225,7 @@ exports.getVerify = async (req, res, next) => {
     await user.save();
 
     res.render("login", {
+      layout: "layouts/auth", title: "Forgot password",
       title: "Login",
       message: "Xác thực tài khoản thành công!",
     });

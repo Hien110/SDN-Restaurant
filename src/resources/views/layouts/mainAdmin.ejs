@@ -40,7 +40,7 @@
       <ul class="list-unstyled components mt-3">
         <% if (user.role == 'RESOWNER') { %>
         <li>
-          <a href="#"
+          <a href="/admin"
             ><i class="fas fa-chart-line mr-2 mb-2 mt-2"></i>Xem báo cáo doanh thu</a
           >
         </li>
@@ -50,13 +50,13 @@
           >
         </li>
         <li>
-          <a href="/admin/tables"
-            ><i class="fas fa-table mr-2 mb-2 mt-2"></i>Quản lý bàn</a
+          <a href="/admin/takeCare"
+            ><i class="fas fa-clock mr-2 mb-2 mt-2"></i>Quản lý lịch làm</a
           >
         </li>
         <li>
-          <a href="#"
-            ><i class="fas fa-calendar-day mr-2 mb-2 mt-2"></i>Quản lý sự kiện</a
+          <a href="/admin/tables"
+            ><i class="fas fa-table mr-2 mb-2 mt-2"></i>Quản lý bàn</a
           >
         </li>
         <li>
@@ -65,14 +65,13 @@
           >
         </li>
         <li>
-          <a href="/admin/takeCare"
-            ><i class="fas fa-clock mr-2 mb-2 mt-2"></i>Quản lý lịch làm</a
-          >
-        </li>
-        <li>
           <a href="/admin/adminNews"
             ><i class="fas fa-newspaper mr-2 mb-2 mt-2"></i>Quản lý tin tức</a
           >
+        </li>
+        <li>
+          <a href="/restaurantInfor/managers"
+            ><i class="fas fa-cog mr-2 mb-2 mt-2"></i>Thông tin nhà hàng</a>
         </li>
         <% } %>
         <li>
