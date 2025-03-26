@@ -35,7 +35,7 @@ exports.checkPaid = async (req, res) => {
 
     const isPaid = transactions.some(
       (item) =>
-        item["Mô tả"]?.trim() === description &&
+        item["Mô tả"].includes(description) &&
         parseInt(item["Giá trị"]) === amount
     );
 
